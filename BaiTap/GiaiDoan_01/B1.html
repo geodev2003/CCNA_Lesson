@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA Practice – OSI Model & Network Fundamentals</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#efefec;--bg4:#e8e8e4;
+  --text:#1a1a18;--text2:#5a5a56;--text3:#9a9a94;
+  --border:rgba(0,0,0,0.10);--border2:rgba(0,0,0,0.18);
+  --info-bg:#e6f1fb;--info-text:#0c447c;--info-border:rgba(55,138,221,0.25);
+  --success-bg:#eaf3de;--success-text:#27500a;--success-border:rgba(99,153,34,0.25);
+  --warn-bg:#faeeda;--warn-text:#633806;--warn-border:rgba(186,117,23,0.25);
+  --danger-bg:#fcebeb;--danger-text:#791f1f;--danger-border:rgba(226,75,74,0.25);
+  --teal-bg:#e1f5ee;--teal-text:#04342c;
+  --radius:8px;--radius-lg:12px;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono','Courier New',monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;--bg4:#363633;
+  --text:#e8e8e2;--text2:#9a9a94;--text3:#5a5a56;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --info-bg:#0c2a4a;--info-text:#85b7eb;--info-border:rgba(55,138,221,0.2);
+  --success-bg:#172204;--success-text:#97c459;--success-border:rgba(99,153,34,0.2);
+  --warn-bg:#251600;--warn-text:#ef9f27;--warn-border:rgba(186,117,23,0.2);
+  --danger-bg:#2a0808;--danger-text:#f09595;--danger-border:rgba(226,75,74,0.2);
+  --teal-bg:#04342c;--teal-text:#9fe1cb;
+}}
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&family=DM+Mono:wght@400;500&display=swap');
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh}
+.page{max-width:900px;margin:0 auto;padding:1.5rem 1.25rem 5rem}
+
+/* Header */
+.hdr{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.hdr-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.hdr-left h1{font-size:20px;font-weight:600;margin-bottom:.25rem}
+.hdr-left p{font-size:13px;color:var(--text2);line-height:1.6}
+.stats-row{display:flex;gap:10px;margin-top:1rem;flex-wrap:wrap}
+.stat-pill{background:var(--bg3);border:0.5px solid var(--border);border-radius:20px;padding:5px 14px;font-size:12px;display:flex;align-items:center;gap:5px}
+.stat-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* Mode tabs */
+.mode-bar{display:flex;gap:6px;margin-bottom:1.25rem;flex-wrap:wrap}
+.mode-btn{padding:7px 16px;border-radius:20px;border:0.5px solid var(--border2);cursor:pointer;font-size:13px;background:var(--bg2);color:var(--text2);font-family:var(--font);transition:all .15s}
+.mode-btn:hover{background:var(--bg3)}
+.mode-btn.on{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);font-weight:500}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;align-items:center}
+.filter-lbl{font-size:11px;color:var(--text3);font-weight:600;text-transform:uppercase;letter-spacing:.07em}
+.filter-btn{padding:4px 12px;border-radius:16px;border:0.5px solid var(--border2);cursor:pointer;font-size:11px;background:var(--bg);color:var(--text2);font-family:var(--font);transition:all .12s;font-weight:500}
+.filter-btn:hover{background:var(--bg3)}
+.filter-btn.on{font-weight:600}
+.filter-btn.diff-easy.on{background:#eaf3de;color:#27500a;border-color:rgba(99,153,34,.3)}
+.filter-btn.diff-med.on{background:#faeeda;color:#633806;border-color:rgba(186,117,23,.3)}
+.filter-btn.diff-hard.on{background:#fcebeb;color:#791f1f;border-color:rgba(226,75,74,.3)}
+
+/* Question card */
+.q-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem 1.5rem;margin-bottom:1rem;transition:border-color .2s}
+.q-card.answered-correct{border-color:var(--success-border)}
+.q-card.answered-wrong{border-color:var(--danger-border)}
+.q-top{display:flex;align-items:flex-start;gap:10px;margin-bottom:.85rem}
+.q-num{font-size:11px;font-weight:600;color:var(--text3);flex-shrink:0;margin-top:2px;min-width:24px}
+.q-meta{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-bottom:.6rem}
+.q-badge{font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.diff-easy{background:#eaf3de;color:#27500a}
+.diff-med{background:#faeeda;color:#633806}
+.diff-hard{background:#fcebeb;color:#791f1f}
+.topic-badge{background:var(--bg3);color:var(--text2);font-size:10px;padding:2px 8px;border-radius:10px}
+.exam-badge{background:var(--info-bg);color:var(--info-text);font-size:10px;padding:2px 8px;border-radius:10px;font-weight:600}
+.q-text{font-size:14px;font-weight:500;line-height:1.65;color:var(--text)}
+.q-note{font-size:12px;color:var(--text3);margin-top:.3rem;font-style:italic}
+
+/* Options */
+.opts{display:flex;flex-direction:column;gap:6px;margin:.85rem 0}
+.opt{padding:9px 14px;border-radius:var(--radius);border:0.5px solid var(--border2);cursor:pointer;font-size:13px;background:var(--bg);color:var(--text);text-align:left;font-family:var(--font);line-height:1.5;transition:background .12s;display:flex;align-items:flex-start;gap:9px;width:100%}
+.opt:hover:not(:disabled){background:var(--bg3)}
+.opt:disabled{cursor:default}
+.opt-letter{font-size:11px;font-weight:600;color:var(--text3);flex-shrink:0;margin-top:1px;min-width:16px}
+.opt.correct{background:var(--success-bg)!important;color:var(--success-text)!important;border-color:var(--success-border)!important}
+.opt.wrong{background:var(--danger-bg)!important;color:var(--danger-text)!important;border-color:var(--danger-border)!important}
+.opt.correct .opt-letter{color:var(--success-text)}
+.opt.wrong .opt-letter{color:var(--danger-text)}
+.opt-icon{margin-left:auto;font-size:14px;flex-shrink:0}
+
+/* Explanation */
+.explanation{display:none;margin-top:.85rem;border-radius:var(--radius);overflow:hidden;border:0.5px solid var(--border)}
+.explanation.show{display:block}
+.exp-header{padding:9px 14px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:6px}
+.exp-header.ok{background:var(--success-bg);color:var(--success-text)}
+.exp-header.err{background:var(--danger-bg);color:var(--danger-text)}
+.exp-body{padding:10px 14px;background:var(--bg);font-size:13px;color:var(--text2);line-height:1.7}
+.exp-body strong{color:var(--text);font-weight:500}
+.exp-body code{font-family:var(--mono);font-size:11px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:3px;padding:1px 5px;color:var(--text)}
+.exp-extra{margin-top:.75rem;padding:8px 12px;background:var(--info-bg);border-radius:var(--radius);font-size:12px;color:var(--info-text);line-height:1.65;border:0.5px solid var(--info-border)}
+.exp-extra strong{font-weight:600;color:var(--info-text)}
+
+/* Drag-drop */
+.dnd-wrap{margin:.75rem 0}
+.dnd-source-area{display:flex;flex-wrap:wrap;gap:7px;padding:10px 12px;background:var(--bg3);border:0.5px dashed var(--border2);border-radius:var(--radius);margin-bottom:10px;min-height:48px}
+.dnd-chip{padding:5px 12px;background:var(--bg);border:0.5px solid var(--border2);border-radius:20px;font-size:12px;cursor:grab;user-select:none;transition:all .15s;font-family:var(--mono)}
+.dnd-chip:hover{border-color:var(--info-text);background:var(--info-bg);color:var(--info-text)}
+.dnd-chip.placed{opacity:.4;cursor:default}
+.dnd-chip.dragging{opacity:.5}
+.dnd-table{width:100%;border-collapse:collapse}
+.dnd-table th{font-size:11px;font-weight:600;padding:7px 10px;background:var(--bg3);border:0.5px solid var(--border2);color:var(--text2);text-align:left}
+.dnd-table td{padding:6px 8px;border:0.5px solid var(--border2);vertical-align:middle}
+.dnd-table tr:nth-child(even) td{background:var(--bg2)}
+.dnd-drop-zone{min-height:32px;border-radius:5px;border:1px dashed var(--border2);padding:4px 8px;display:flex;align-items:center;flex-wrap:wrap;gap:4px;transition:border-color .15s;background:var(--bg);cursor:pointer}
+.dnd-drop-zone.drag-over{border-color:var(--info-text);background:var(--info-bg)}
+.dnd-drop-zone .dnd-chip{cursor:pointer;font-size:11px;padding:3px 9px}
+.dnd-drop-zone .dnd-chip:hover{background:var(--danger-bg);color:var(--danger-text);border-color:var(--danger-border)}
+.dnd-check-btn{margin-top:10px;padding:7px 18px;border-radius:var(--radius);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font)}
+.dnd-check-btn:hover{opacity:.85}
+.dnd-result{margin-top:8px;padding:8px 12px;border-radius:var(--radius);font-size:12px;line-height:1.65;display:none}
+.dnd-result.show{display:block}
+
+/* Ordering question */
+.order-list{display:flex;flex-direction:column;gap:5px;margin:.75rem 0}
+.order-item{display:flex;align-items:center;gap:8px;padding:8px 12px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);cursor:grab;user-select:none;font-size:13px}
+.order-item:hover{border-color:var(--border2);background:var(--bg3)}
+.order-item.dragging-order{opacity:.5}
+.order-handle{color:var(--text3);font-size:16px;flex-shrink:0}
+.order-check-btn{margin-top:8px;padding:7px 18px;border-radius:var(--radius);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);font-size:13px;font-weight:500;cursor:pointer;font-family:var(--font)}
+
+/* Progress */
+.progress-section{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1.1rem 1.35rem;margin-bottom:1.25rem;display:flex;align-items:center;gap:1.25rem;flex-wrap:wrap}
+.prog-ring{flex-shrink:0}
+.prog-stats{flex:1;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.prog-stat{text-align:center}
+.prog-num{font-size:22px;font-weight:600}
+.prog-lbl{font-size:11px;color:var(--text3)}
+
+/* Tip box */
+.tip-card{background:var(--warn-bg);border:0.5px solid var(--warn-border);border-radius:var(--radius);padding:9px 13px;margin-top:.75rem;font-size:12px;color:var(--warn-text);line-height:1.65}
+.tip-card strong{font-weight:600}
+
+/* Scroll to top */
+.scroll-top{position:fixed;bottom:1.5rem;right:1.5rem;width:40px;height:40px;border-radius:50%;background:var(--bg2);border:0.5px solid var(--border2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--text2);opacity:0;transition:opacity .2s;pointer-events:none;z-index:100}
+.scroll-top.visible{opacity:1;pointer-events:all}
+.scroll-top:hover{background:var(--bg3)}
+
+.section-divider{font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin:1.5rem 0 .75rem;display:flex;align-items:center;gap:10px}
+.section-divider::after{content:'';flex:1;height:0.5px;background:var(--border2)}
+
+code{font-family:var(--mono);font-size:12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;padding:1px 5px;color:var(--text)}
+@media(max-width:560px){.prog-stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<div class="page">
+
+<div class="hdr">
+  <div class="hdr-top">
+    <div class="hdr-left">
+      <h1>CCNA 200-301 — Luyện thi Giai đoạn 1, Tuần 1</h1>
+      <p>Mô hình OSI, TCP/IP, Encapsulation, PDU, Giao thức cơ bản — chuẩn đề thi Cisco CCNA thực tế.<br>Câu hỏi trắc nghiệm + kéo-thả + sắp xếp. Bấm đáp án để xem giải thích chi tiết.</p>
+    </div>
+  </div>
+  <div class="stats-row">
+    <div class="stat-pill"><div class="stat-dot" style="background:#639922"></div><span id="st-correct">0</span> đúng</div>
+    <div class="stat-pill"><div class="stat-dot" style="background:#e24b4a"></div><span id="st-wrong">0</span> sai</div>
+    <div class="stat-pill"><div class="stat-dot" style="background:#888780"></div><span id="st-remain">25</span> chưa làm</div>
+    <div class="stat-pill" id="st-pct-pill">Tỉ lệ đúng: <span id="st-pct">–</span></div>
+  </div>
+</div>
+
+<div class="mode-bar">
+  <button class="mode-btn on" data-mode="all">Tất cả (25)</button>
+  <button class="mode-btn" data-mode="mc">Trắc nghiệm (18)</button>
+  <button class="mode-btn" data-mode="dnd">Kéo-thả (4)</button>
+  <button class="mode-btn" data-mode="wrong">Câu sai (0)</button>
+</div>
+
+<div class="filter-bar">
+  <span class="filter-lbl">Độ khó:</span>
+  <button class="filter-btn diff-easy on" data-diff="easy">Dễ</button>
+  <button class="filter-btn diff-med on" data-diff="med">Trung bình</button>
+  <button class="filter-btn diff-hard on" data-diff="hard">Khó (thi thật)</button>
+</div>
+
+<div id="questions-container"></div>
+
+</div>
+
+<div class="scroll-top" id="scroll-top" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</div>
+
+<script>
+/* ════════════════════════════════════════════
+   DATA — 25 câu, chuẩn CCNA 200-301
+════════════════════════════════════════════ */
+var qdata=[
+/* ── TRẮC NGHIỆM ── */
+{id:1,type:'mc',diff:'easy',topic:'OSI Layers',
+ q:'Mô hình OSI có bao nhiêu tầng? Tầng nào chịu trách nhiệm chuyển dữ liệu thành bit và truyền qua môi trường vật lý?',
+ opts:['5 tầng — tầng Physical','6 tầng — tầng Data Link','7 tầng — tầng Physical','7 tầng — tầng Network'],
+ correct:2,
+ exp:'Mô hình OSI (Open Systems Interconnection) được ISO phát triển có đúng <strong>7 tầng</strong>. Tầng <strong>Physical (tầng 1)</strong> là tầng thấp nhất, chịu trách nhiệm chuyển đổi bit thành tín hiệu vật lý (điện áp, ánh sáng, sóng radio) và truyền qua môi trường.',
+ extra:'Thứ tự 7 tầng từ cao xuống thấp: Application (7) → Presentation (6) → Session (5) → Transport (4) → Network (3) → Data Link (2) → Physical (1). Mẹo nhớ: <strong>"All People Seem To Need Data Processing"</strong>. Đây là câu hỏi cơ bản CCNA hay hỏi để kiểm tra nền tảng.',
+},
+{id:2,type:'mc',diff:'easy',topic:'PDU',
+ q:'Đơn vị dữ liệu (PDU) của tầng Transport trong mô hình OSI được gọi là gì khi dùng giao thức TCP?',
+ opts:['Bit','Frame','Packet','Segment'],
+ correct:3,
+ exp:'Tầng Transport dùng TCP tạo ra đơn vị dữ liệu gọi là <strong>Segment</strong>. Segment chứa TCP header (port nguồn, port đích, sequence number, ACK number, flags, window size) + data từ tầng trên.',
+ extra:'Bảng PDU của từng tầng:<br>• Tầng 1 Physical: <strong>Bit</strong><br>• Tầng 2 Data Link: <strong>Frame</strong><br>• Tầng 3 Network: <strong>Packet</strong><br>• Tầng 4 Transport TCP: <strong>Segment</strong> | UDP: <strong>Datagram</strong><br>• Tầng 5–7: <strong>Data</strong><br>CCNA thường hỏi nhầm giữa Segment và Packet — nhớ: Segment = tầng 4, Packet = tầng 3.',
+},
+{id:3,type:'mc',diff:'easy',topic:'OSI vs TCP/IP',
+ q:'Mô hình TCP/IP có bao nhiêu tầng? Tầng nào của TCP/IP tương đương với tầng 5, 6, 7 của OSI?',
+ opts:['3 tầng — tầng Network','4 tầng — tầng Application','4 tầng — tầng Internet','5 tầng — tầng Session'],
+ correct:1,
+ exp:'Mô hình TCP/IP (DoD model) có <strong>4 tầng</strong>: Application, Transport, Internet (Network), Network Access (Link). Tầng <strong>Application</strong> của TCP/IP gộp 3 tầng Session (5), Presentation (6), Application (7) của OSI vào một.',
+ extra:'So sánh OSI ↔ TCP/IP:<br>• OSI 7,6,5 ↔ TCP/IP <strong>Application</strong><br>• OSI 4 ↔ TCP/IP <strong>Transport</strong><br>• OSI 3 ↔ TCP/IP <strong>Internet/Network</strong><br>• OSI 2,1 ↔ TCP/IP <strong>Network Access/Link</strong><br>Trong thực tế, kỹ sư dùng TCP/IP nhiều hơn OSI, nhưng OSI dùng để troubleshoot theo từng tầng.',
+},
+{id:4,type:'mc',diff:'easy',topic:'Devices & Layers',
+ q:'Switch Layer 2 (Cisco Catalyst 2960) hoạt động ở tầng OSI nào và đọc thông tin gì để quyết định forward traffic?',
+ opts:['Tầng 1 — đọc tín hiệu điện','Tầng 2 — đọc địa chỉ MAC','Tầng 3 — đọc địa chỉ IP','Tầng 4 — đọc TCP/UDP port'],
+ correct:1,
+ exp:'Switch Layer 2 hoạt động ở <strong>tầng 2 (Data Link)</strong>. Nó đọc địa chỉ <strong>MAC (48-bit)</strong> trong Ethernet frame header để tra MAC address table và quyết định forward frame ra port nào.',
+ extra:'Bảng thiết bị và tầng hoạt động:<br>• Hub/Repeater → Tầng 1 (chỉ khuếch đại tín hiệu, không đọc địa chỉ gì)<br>• Switch L2 → Tầng 2 (đọc MAC, forward frame)<br>• Router → Tầng 3 (đọc IP, route packet)<br>• Switch L3 → Tầng 3 (vừa switch vừa route)<br>• Firewall NGFW (Fortinet) → Tầng 7 (deep packet inspection)<br>Câu hỏi về thiết bị và tầng OSI xuất hiện rất thường xuyên trong đề thi CCNA.',
+},
+{id:5,type:'mc',diff:'easy',topic:'Encapsulation',
+ q:'Trong quá trình encapsulation, khi một host muốn gửi email, tầng nào thêm địa chỉ IP nguồn và đích vào dữ liệu?',
+ opts:['Tầng 2 — Data Link','Tầng 3 — Network','Tầng 4 — Transport','Tầng 7 — Application'],
+ correct:1,
+ exp:'Tầng <strong>3 (Network)</strong> thêm IP header vào dữ liệu, tạo thành Packet. IP header chứa: Source IP Address, Destination IP Address, TTL, Protocol number (TCP=6, UDP=17, ICMP=1).',
+ extra:'Quá trình encapsulation từ trên xuống:<br>1. L7 Application: tạo data (SMTP command cho email)<br>2. L6/L5: mã hóa, session<br>3. <strong>L4 Transport: thêm TCP/UDP header (ports) → Segment</strong><br>4. <strong>L3 Network: thêm IP header (IP addresses) → Packet</strong><br>5. <strong>L2 Data Link: thêm Ethernet header (MACs) + FCS → Frame</strong><br>6. L1 Physical: chuyển thành bit/tín hiệu<br>Nhớ thứ tự: Port (L4) → IP (L3) → MAC (L2).',
+},
+{id:6,type:'mc',diff:'med',topic:'Encapsulation',
+ q:'Một host nhận Ethernet frame. Tầng Data Link (L2) xử lý frame này như thế nào ĐÚNG nhất?',
+ opts:['Đọc dst IP, nếu khớp thì lên L3; nếu không thì bỏ','Kiểm tra FCS, nếu OK và dst MAC khớp thì lột Ethernet header và chuyển lên L3','Gửi ARP request để tìm MAC nguồn','Kiểm tra TTL, nếu TTL=0 thì gửi ICMP Time Exceeded'],
+ correct:1,
+ exp:'Tầng 2 thực hiện 2 bước quan trọng: (1) <strong>Kiểm tra FCS</strong> (Frame Check Sequence — CRC-32) ở cuối frame: nếu frame bị lỗi trong quá trình truyền thì FCS sẽ sai → bỏ frame ngay. (2) <strong>Đọc Dst MAC</strong>: nếu khớp với MAC của mình (hoặc broadcast FF:FF:FF:FF:FF:FF) thì lột bỏ Ethernet header và FCS, chuyển phần còn lại (IP Packet) lên tầng 3.',
+ extra:'Đây là decapsulation ở L2. Các lỗi hay gặp trong câu này:<br>• Đọc dst IP là việc của <strong>L3</strong>, không phải L2<br>• TTL là field trong IP header — L3 xử lý, không phải L2<br>• ARP là để tìm MAC <em>trước</em> khi gửi — không phải khi nhận<br><strong>Key takeaway:</strong> L2 chỉ biết về MAC và FCS. Nó không "hiểu" gì về IP hay TCP.',
+},
+{id:7,type:'mc',diff:'med',topic:'TCP vs UDP',
+ q:'Một ứng dụng cần truyền dữ liệu nhanh, chấp nhận mất một số gói tin, không cần xác nhận ACK. Giao thức tầng Transport nào phù hợp nhất?',
+ opts:['TCP vì có flow control','UDP vì connectionless và không có overhead ACK','ICMP vì dùng để test kết nối','ARP vì resolve địa chỉ nhanh'],
+ correct:1,
+ exp:'<strong>UDP (User Datagram Protocol)</strong> phù hợp nhất. UDP là connectionless (không cần 3-way handshake), không có ACK/retransmit, header chỉ 8 byte (TCP tối thiểu 20 byte). Kết quả: overhead thấp hơn, độ trễ thấp hơn, throughput cao hơn.',
+ extra:'So sánh TCP vs UDP:<br><strong>TCP:</strong> Connection-oriented, 3-way handshake, ACK + retransmit, Seq#, Flow control, Window size. Dùng cho: HTTP/HTTPS, FTP, SSH, email (SMTP/IMAP), database.<br><strong>UDP:</strong> Connectionless, không có ACK, header 8 byte. Dùng cho: DNS (port 53), DHCP (67/68), streaming video/audio, VoIP, SNMP, NTP, online gaming.<br>Câu hỏi thường đi kèm kịch bản: "voice call", "video streaming", "DNS query" → UDP. "File transfer", "web browsing", "email" → TCP.',
+},
+{id:8,type:'mc',diff:'med',topic:'TCP vs UDP',
+ q:'Giao thức nào sau đây dùng UDP thay vì TCP?',
+ opts:['HTTP (HyperText Transfer Protocol)','FTP (File Transfer Protocol)','DNS (Domain Name System)','SSH (Secure Shell)'],
+ correct:2,
+ exp:'<strong>DNS</strong> dùng UDP port 53 cho query thông thường. DNS query nhỏ (thường < 512 byte), cần trả lời nhanh — UDP phù hợp hơn TCP. (DNS cũng có thể dùng TCP port 53 cho zone transfer hoặc khi response > 512 byte.)',
+ extra:'Bảng giao thức và port quan trọng cho CCNA:<br>• HTTP: TCP 80 | HTTPS: TCP 443 | FTP data: TCP 20 | FTP control: TCP 21<br>• SSH: TCP 22 | Telnet: TCP 23 | SMTP: TCP 25 | DNS: <strong>UDP/TCP 53</strong><br>• DHCP Server: UDP 67 | DHCP Client: UDP 68 | TFTP: UDP 69<br>• SNMP: UDP 161 | NTP: UDP 123 | Syslog: UDP 514<br>Đây là bảng well-known ports quan trọng — CCNA hay hỏi port number.',
+},
+{id:9,type:'mc',diff:'med',topic:'Protocols',
+ q:'Giao thức nào hoạt động ở tầng 3 và được dùng bởi lệnh "ping" để kiểm tra kết nối mạng?',
+ opts:['ARP — Address Resolution Protocol','TCP — Transmission Control Protocol','ICMP — Internet Control Message Protocol','UDP — User Datagram Protocol'],
+ correct:2,
+ exp:'<strong>ICMP (Internet Control Message Protocol)</strong> hoạt động ở tầng 3 (Network), cùng tầng với IP. Lệnh <code>ping</code> gửi ICMP Echo Request và chờ ICMP Echo Reply. Lệnh <code>tracert</code>/<code>traceroute</code> dùng ICMP Time Exceeded message.',
+ extra:'Các ICMP message quan trọng:<br>• Type 0: Echo Reply (ping response)<br>• Type 3: Destination Unreachable (không đến được đích)<br>• Type 8: Echo Request (ping gửi đi)<br>• Type 11: Time Exceeded (TTL=0, dùng bởi traceroute)<br>• Type 13: Redirect (router yêu cầu host dùng đường khác)<br><strong>Lưu ý:</strong> ICMP encapsulated trong IP packet, không phải trong TCP/UDP segment. Một số firewall block ICMP — đó là lý do ping không trả lời dù kết nối vẫn OK.',
+},
+{id:10,type:'mc',diff:'med',topic:'ARP',
+ q:'Host A (IP: 192.168.1.10) muốn gửi packet đến Host B (IP: 192.168.1.20) trong cùng subnet. Host A chưa biết MAC của Host B. Điều gì xảy ra đầu tiên?',
+ opts:['Host A gửi DNS query để tìm MAC của Host B','Host A gửi ARP Request broadcast với Dst MAC = FF:FF:FF:FF:FF:FF','Host A gửi packet thẳng đến IP 192.168.1.20 mà không cần MAC','Router nhận packet và ARP để tìm MAC của Host B'],
+ correct:1,
+ exp:'Host A gửi <strong>ARP Request</strong>: một broadcast frame với Dst MAC = <code>FF:FF:FF:FF:FF:FF</code>, hỏi "Ai có IP 192.168.1.20? Cho tôi biết MAC với". Tất cả thiết bị trong VLAN đều nhận được broadcast này. Host B (IP .1.20) trả ARP Reply unicast cho Host A với MAC của mình.',
+ extra:'Luồng ARP đầy đủ:<br>1. Host A kiểm tra ARP cache (<code>arp -a</code>) — nếu có MAC của .1.20 thì dùng luôn<br>2. Nếu không có → gửi ARP Request broadcast (FF:FF:FF:FF:FF:FF)<br>3. Switch flood ARP broadcast ra tất cả port trong VLAN (trừ port nhận)<br>4. Host B nhận, gửi ARP Reply unicast về Host A<br>5. Host A lưu vào ARP cache (TTL ~2 phút Windows)<br><strong>Quan trọng:</strong> Nếu Dst IP khác subnet → Host A ARP cho <em>Default Gateway</em>, không phải cho Dst IP thật.',
+},
+{id:11,type:'mc',diff:'med',topic:'MAC & IP',
+ q:'Host A gửi packet đến server ở Internet qua router. Điều nào sau đây là ĐÚNG về quá trình này?',
+ opts:['Src IP và Dst IP thay đổi ở mỗi router hop','Src MAC và Dst MAC thay đổi ở mỗi router hop, còn IP giữ nguyên','Src IP thay đổi, Dst IP giữ nguyên ở mỗi hop','Cả MAC và IP đều giữ nguyên từ nguồn đến đích'],
+ correct:1,
+ exp:'Đây là nguyên tắc cốt lõi của TCP/IP: <strong>IP address (tầng 3) giữ nguyên từ nguồn đến đích</strong>. Nhưng <strong>Ethernet frame (tầng 2) được tạo mới ở mỗi hop</strong> — mỗi router bỏ frame cũ, tạo frame mới với MAC nguồn = MAC interface của router, MAC đích = MAC của next hop tiếp theo.',
+ extra:'Ví dụ: PC (192.168.1.10) → Router1 → Router2 → Server (8.8.8.8)<br><strong>Hop 1:</strong> Src MAC=PC_MAC, Dst MAC=Router1_LAN_MAC | Src IP=192.168.1.10, Dst IP=8.8.8.8<br><strong>Hop 2:</strong> Src MAC=Router1_WAN_MAC, Dst MAC=Router2_MAC | Src IP=192.168.1.10, Dst IP=8.8.8.8<br><strong>Hop 3:</strong> Src MAC=Router2_MAC, Dst MAC=Server_MAC | Src IP=192.168.1.10, Dst IP=8.8.8.8<br>IP không đổi! MAC thay đổi! Đây là câu hỏi phổ biến trong CCNA.',
+},
+{id:12,type:'mc',diff:'med',topic:'Encapsulation',
+ q:'Khi một router nhận một Ethernet frame, bước nào xảy ra TRƯỚC TIÊN ở tầng Data Link trước khi router xử lý IP packet?',
+ opts:['Router giải mã TLS/SSL bên trong','Router kiểm tra FCS và đọc Dst MAC để xác nhận frame dành cho mình','Router đọc Dst IP để quyết định route','Router gửi ACK về nguồn xác nhận đã nhận frame'],
+ correct:1,
+ exp:'Ngay khi nhận frame, router (hoặc bất kỳ thiết bị nào) <strong>kiểm tra FCS</strong> để xác nhận frame không bị lỗi trong quá trình truyền vật lý. Sau đó đọc <strong>Dst MAC</strong>: nếu khớp với MAC của interface nhận thì tiếp tục xử lý, nếu không thì bỏ. Đây là quá trình decapsulation tầng 2.',
+ extra:'Thứ tự xử lý khi thiết bị nhận frame:<br>L1: NIC nhận tín hiệu → bit<br>L2: (1) Kiểm tra FCS → lỗi thì DROP ngay; (2) Đọc Dst MAC → không phải của mình thì DROP<br>L3: Lột Ethernet header → đọc Dst IP → tra routing table<br>L4: Đọc port number → forward đến process<br><strong>FCS check là bước đầu tiên quan trọng</strong> — frame lỗi được bỏ ngay ở L2, không "leo" lên L3/L4 gây lãng phí.',
+},
+{id:13,type:'mc',diff:'hard',topic:'Troubleshoot',
+ q:'Một kỹ thuật viên đang troubleshoot kết nối mạng. Lệnh "ping 127.0.0.1" thành công nhưng "ping 192.168.1.1" (default gateway) thất bại. Điều này gợi ý vấn đề nằm ở đâu?',
+ opts:['Tầng 7 — ứng dụng không hoạt động','Tầng 1 hoặc 2 — cáp hoặc NIC vật lý','Tầng 3 — IP stack hoạt động nhưng kết nối đến gateway thất bại','Tầng 4 — TCP port bị block'],
+ correct:2,
+ exp:'Ping 127.0.0.1 (loopback) thành công → TCP/IP stack trên máy hoạt động OK (tầng 3 local). Ping gateway thất bại → có vấn đề kết nối đến mạng ngoài. Vấn đề có thể ở: <strong>tầng 1</strong> (cáp hỏng, switch port bị disable), <strong>tầng 2</strong> (sai VLAN, MAC table lỗi), hoặc <strong>tầng 3</strong> (IP sai subnet, gateway IP sai).',
+ extra:'Quy trình troubleshoot bottom-up chuẩn CCNA:<br>1. <code>ping 127.0.0.1</code> → OK: NIC hoạt động, TCP/IP stack OK<br>2. <code>ping [own IP]</code> → OK: IP được gán đúng<br>3. <code>ping [default gateway]</code> → FAIL: vấn đề ở tầng 1/2/3 trong cùng subnet<br>4. <code>ping [remote IP]</code> → FAIL: có thể routing, firewall<br>5. <code>ping [domain name]</code> → FAIL: DNS issue (tầng 7)<br><strong>Key:</strong> Bottom-up = kiểm tra Physical trước, lên dần đến Application. Đây là kỹ năng troubleshoot cốt lõi của CCNA.',
+},
+{id:14,type:'mc',diff:'hard',topic:'Troubleshoot',
+ q:'User báo cáo không vào được website nhưng ping đến IP của web server thành công. Vấn đề có khả năng cao nhất ở tầng nào?',
+ opts:['Tầng 1 Physical — cáp bị hỏng','Tầng 2 Data Link — MAC address conflict','Tầng 3 Network — routing sai','Tầng 7 Application hoặc DNS — HTTP/HTTPS hoặc tên miền lỗi'],
+ correct:3,
+ exp:'Ping IP thành công → tầng 1, 2, 3 đều OK. Nhưng không vào được website → vấn đề ở tầng cao hơn: có thể là <strong>DNS</strong> (không phân giải được tên miền → tầng 7), <strong>HTTP/HTTPS lỗi</strong> (server trả 500, certificate lỗi → tầng 7), hoặc <strong>firewall block port 80/443</strong> (tầng 4).',
+ extra:'Phân tích kỹ hơn:<br>• Ping IP OK → L1/L2/L3 thông<br>• Không vào web → kiểm tra theo thứ tự:<br>  1. <code>nslookup [domain]</code> → DNS có phân giải được không?<br>  2. Thử <code>ping [domain name]</code> xem ping theo tên được không<br>  3. Thử <code>telnet [IP] 80</code> hoặc <code>telnet [IP] 443</code> → port có mở không?<br>  4. Xem thông báo lỗi trình duyệt: "ERR_NAME_NOT_RESOLVED" (DNS) vs "ERR_CONNECTION_REFUSED" (port) vs "SSL_ERROR" (certificate)<br>Đây là kịch bản troubleshoot thực tế hay gặp nhất.',
+},
+{id:15,type:'mc',diff:'hard',topic:'Protocols',
+ q:'TTL (Time to Live) trong IPv4 header có mục đích gì và giá trị TTL thay đổi như thế nào khi packet đi qua mạng?',
+ opts:['TTL xác định thời gian packet được cache — không thay đổi khi đi qua router','TTL ngăn routing loop: mỗi router giảm TTL đi 1; nếu TTL=0, router bỏ packet và gửi ICMP "Time Exceeded"','TTL xác định priority của packet — router ưu tiên packet TTL cao hơn','TTL chỉ được router đọc ở điểm đầu và điểm cuối, không thay đổi giữa đường'],
+ correct:1,
+ exp:'TTL (Time to Live) là cơ chế phòng chống <strong>routing loop vô tận</strong>. Mỗi router giảm TTL đi 1 khi forward packet. Nếu TTL giảm xuống 0: router bỏ packet và gửi ICMP Type 11 "Time Exceeded" về địa chỉ nguồn. Giá trị TTL mặc định: Windows = 128, Linux = 64, Cisco IOS = 255.',
+ extra:'TTL trong thực tế:<br>• Lệnh <code>tracert</code> (Windows) / <code>traceroute</code> (Linux) dựa vào TTL: gửi packet với TTL=1,2,3... Mỗi router trả ICMP Time Exceeded khi TTL=0, qua đó tracert biết địa chỉ của từng hop.<br>• Từ output <code>ping</code>, bạn có thể đoán số hop: nếu nhận reply với TTL=55 mà biết nguồn dùng TTL=64 → đã đi qua 9 hop (64-55=9).<br>• Một số thiết bị cố tình set TTL=1 để không cho forward ra ngoài subnet (ví dụ mDNS multicast).',
+},
+{id:16,type:'mc',diff:'hard',topic:'OSI Layers',
+ q:'Trong mô hình OSI, tầng nào chịu trách nhiệm thiết lập, duy trì, và kết thúc phiên giao tiếp (session) giữa hai ứng dụng?',
+ opts:['Tầng 4 — Transport','Tầng 5 — Session','Tầng 6 — Presentation','Tầng 7 — Application'],
+ correct:1,
+ exp:'Tầng <strong>5 (Session)</strong> chịu trách nhiệm quản lý phiên giao tiếp (session) giữa hai ứng dụng. Chức năng: thiết lập session (session establishment), duy trì kết nối, đặt checkpoint (synchronization points) cho data lớn, và đóng session khi xong.',
+ extra:'Chức năng cụ thể của tầng 5 Session:<br>• <strong>Session establishment:</strong> thiết lập kênh giao tiếp giữa 2 ứng dụng<br>• <strong>Session maintenance:</strong> duy trì session, xử lý timeout<br>• <strong>Checkpointing:</strong> với file lớn, đặt checkpoint để resume nếu bị ngắt giữa chừng<br>• <strong>Dialog control:</strong> quản lý half-duplex vs full-duplex<br>Ví dụ giao thức: NetBIOS, RPC, SQL session, NFS. Trong thực tế TCP/IP, tầng 5, 6, 7 thường được coi là một (Application layer), nhưng CCNA vẫn test theo OSI.',
+},
+{id:17,type:'mc',diff:'hard',topic:'Protocols',
+ q:'Một host gửi frame Ethernet với Dst MAC = FF:FF:FF:FF:FF:FF. Loại traffic nào thường dùng địa chỉ broadcast này?',
+ opts:['HTTPS — mã hóa dữ liệu web','ARP Request và DHCP Discover','Unicast TCP connection','SSH remote management'],
+ correct:1,
+ exp:'<code>FF:FF:FF:FF:FF:FF</code> là địa chỉ <strong>Ethernet broadcast</strong>. Frame với Dst MAC này được switch gửi đến <em>tất cả</em> port trong cùng VLAN. Hai traffic phổ biến nhất dùng Ethernet broadcast: <strong>ARP Request</strong> (hỏi MAC của IP) và <strong>DHCP Discover</strong> (tìm DHCP server).',
+ extra:'Các loại địa chỉ MAC:<br>• <strong>Unicast:</strong> bit cuối của octet đầu = 0 (ví dụ: 00:AA:BB:CC:DD:EE) — gửi đến 1 thiết bị<br>• <strong>Broadcast:</strong> FF:FF:FF:FF:FF:FF — gửi đến tất cả thiết bị trong VLAN<br>• <strong>Multicast:</strong> bit cuối của octet đầu = 1 (ví dụ: 01:00:5E:xx:xx:xx) — gửi đến nhóm thiết bị. OSPF dùng 01:00:5E:00:00:05<br>Switch tạo ra <strong>broadcast domain</strong> — tất cả port trong cùng VLAN thuộc cùng broadcast domain. Router ngăn broadcast không lan sang subnet khác.',
+},
+{id:18,type:'mc',diff:'hard',topic:'TCP vs UDP',
+ q:'TCP sử dụng cơ chế gì để đảm bảo dữ liệu không bị mất và đến đúng thứ tự?',
+ opts:['Checksum duy nhất — kiểm tra mỗi byte','Sequence numbers, Acknowledgments (ACK), và Retransmission','Broadcast liên tục đến khi nhận được phản hồi','TTL trên mỗi segment để tránh vòng lặp'],
+ correct:1,
+ exp:'TCP dùng 3 cơ chế phối hợp: <strong>(1) Sequence Numbers</strong> — mỗi byte được đánh số, bên nhận biết thứ tự đúng; <strong>(2) Acknowledgments (ACK)</strong> — bên nhận gửi ACK xác nhận đã nhận đến byte nào; <strong>(3) Retransmission</strong> — nếu ACK không đến trong RTO (Retransmission Timeout), bên gửi gửi lại segment đó.',
+ extra:'Cơ chế TCP chi tiết hơn:<br>• <strong>Sequence Number:</strong> số thứ tự của byte đầu tiên trong segment. ISN (Initial Sequence Number) được chọn ngẫu nhiên khi kết nối.<br>• <strong>ACK Number:</strong> = Seq của segment kế tiếp bên kia cần gửi (Cumulative ACK)<br>• <strong>Sliding Window:</strong> Window Size cho phép gửi nhiều segment trước khi đợi ACK — tăng throughput<br>• <strong>Flow Control:</strong> Window Size = 0 → bên gửi dừng lại cho bên nhận xử lý bớt<br>• <strong>Congestion Control:</strong> Slow Start, AIMD — giảm tốc khi mạng tắc nghẽn',
+},
+
+/* ── KÉO-THẢ / MATCH ── */
+{id:19,type:'dnd',diff:'easy',topic:'PDU Matching',
+ q:'Ghép mỗi tầng OSI với tên PDU tương ứng. Kéo PDU vào ô bên phải.',
+ leftItems:['Tầng 1 — Physical','Tầng 2 — Data Link','Tầng 3 — Network','Tầng 4 — Transport (TCP)','Tầng 5-7 — Upper layers'],
+ rightChips:['Bit','Frame','Packet','Segment','Data'],
+ correctMap:{0:'Bit',1:'Frame',2:'Packet',3:'Segment',4:'Data'},
+ exp:'Mỗi tầng có tên PDU riêng: Physical=Bit (tín hiệu), Data Link=Frame (có MAC+FCS), Network=Packet (có IP), Transport=Segment (có TCP/UDP port), Upper layers=Data (chưa có header mạng).',
+ extra:'Mẹo nhớ: <strong>"Bạn Phải Theo Giao Dịch Phát Sinh"</strong> — Bit, Frame, Packet, Segment, Data (ngược từ L1 lên L5+). Hoặc từ L7 xuống: Data → Segment → Packet → Frame → Bit = <strong>"Do Sexy People Feel Bad?"</strong>',
+},
+{id:20,type:'dnd',diff:'med',topic:'Devices & Layers',
+ q:'Ghép mỗi thiết bị mạng với tầng OSI cao nhất mà nó hoạt động.',
+ leftItems:['Hub','Switch Layer 2 (Cisco 2960)','Router','Firewall NGFW (Fortinet FortiGate)','Switch Layer 3'],
+ rightChips:['Tầng 1','Tầng 2','Tầng 3 (IP)','Tầng 3 (IP+routing)','Tầng 7'],
+ correctMap:{0:'Tầng 1',1:'Tầng 2',2:'Tầng 3 (IP+routing)',3:'Tầng 7',4:'Tầng 3 (IP)'},
+ exp:'Hub (L1): chỉ khuếch đại tín hiệu. Switch L2 (L2): đọc MAC, forward frame. Router (L3): đọc IP, route packet. Fortinet NGFW (L7): deep packet inspection, SSL decryption. Switch L3 (L3): có thêm routing nhưng chủ yếu là switching.',
+ extra:'Sự khác biệt Switch L2 vs L3: Switch L2 forward dựa trên MAC, không biết gì về IP. Switch L3 vừa forward theo MAC trong cùng VLAN, vừa route giữa các VLAN (ip routing command). Fortinet FortiGate là NGFW — có thể hiểu được HTTPS, detect malware trong PDF đính kèm email.',
+},
+{id:21,type:'dnd',diff:'med',topic:'Protocols',
+ q:'Ghép mỗi giao thức với tầng OSI tương ứng.',
+ leftItems:['HTTP / HTTPS','TCP / UDP','IPv4 / IPv6','Ethernet 802.3','TLS / SSL'],
+ rightChips:['Tầng 1 Physical','Tầng 2 Data Link','Tầng 3 Network','Tầng 4 Transport','Tầng 6 Presentation','Tầng 7 Application'],
+ correctMap:{0:'Tầng 7 Application',1:'Tầng 4 Transport',2:'Tầng 3 Network',3:'Tầng 2 Data Link',4:'Tầng 6 Presentation'},
+ exp:'HTTP/HTTPS là giao thức ứng dụng (L7). TCP/UDP là giao thức transport (L4). IPv4/IPv6 là giao thức network (L3). Ethernet là giao thức data link (L2). TLS/SSL mã hóa dữ liệu là chức năng của tầng Presentation (L6).',
+ extra:'Lưu ý: HTTPS không phải là một giao thức riêng biệt. HTTPS = HTTP (L7) + TLS (L6). Địa chỉ IP (IPv4/v6) thuộc L3, không phải L4. Ethernet 802.3 và WiFi 802.11 đều là L2 — chỉ khác về môi trường truyền vật lý.',
+},
+{id:22,type:'dnd',diff:'hard',topic:'TCP Ports',
+ q:'Ghép mỗi giao thức với số port và giao thức transport tương ứng.',
+ leftItems:['HTTP','HTTPS','DNS','SSH','DHCP Server'],
+ rightChips:['TCP 22','TCP 80','TCP 443','UDP 53','UDP 67'],
+ correctMap:{0:'TCP 80',1:'TCP 443',2:'UDP 53',3:'TCP 22',4:'UDP 67'},
+ exp:'HTTP=TCP 80, HTTPS=TCP 443, DNS=UDP 53 (TCP 53 cho zone transfer), SSH=TCP 22, DHCP Server=UDP 67 (Client lắng nghe UDP 68).',
+ extra:'Well-known ports đầy đủ cần nhớ cho CCNA:<br>FTP Data=TCP 20, FTP Control=TCP 21, SSH=TCP 22, Telnet=TCP 23, SMTP=TCP 25, DNS=UDP/TCP 53, DHCP Server=UDP 67, DHCP Client=UDP 68, TFTP=UDP 69, HTTP=TCP 80, POP3=TCP 110, NTP=UDP 123, IMAP=TCP 143, SNMP=UDP 161, HTTPS=TCP 443, Syslog=UDP 514, RDP=TCP 3389.',
+},
+
+/* ── SẮP XẾP ── */
+{id:23,type:'order',diff:'easy',topic:'Encapsulation',
+ q:'Sắp xếp các bước encapsulation theo thứ tự ĐÚNG khi host gửi dữ liệu (từ bước xảy ra ĐẦU TIÊN đến cuối cùng). Kéo để thay đổi thứ tự.',
+ items:['L1: Chuyển bit thành tín hiệu điện qua cáp','L4: Thêm TCP header (port src, dst, seq#) → tạo Segment','L7: Ứng dụng tạo dữ liệu (HTTP request)','L2: Thêm Ethernet header (MAC) + FCS → tạo Frame','L3: Thêm IP header (src/dst IP) → tạo Packet'],
+ correctOrder:[2,1,4,3,0],
+ exp:'Encapsulation đi từ tầng 7 xuống tầng 1: L7 tạo data → L4 thêm TCP header (Segment) → L3 thêm IP header (Packet) → L2 thêm Ethernet header+FCS (Frame) → L1 truyền qua môi trường.',
+ extra:'Câu nhớ thứ tự: <strong>"Data Seems Particularly Fragile Beware"</strong> — Data (L7) → Segment (L4) → Packet (L3) → Frame (L2) → Bit (L1). Decapsulation đi ngược lại: Bit → Frame → Packet → Segment → Data.',
+},
+{id:24,type:'order',diff:'med',topic:'Troubleshoot',
+ q:'Sắp xếp quy trình troubleshoot mạng bottom-up theo thứ tự ĐÚNG (bước đầu tiên cần làm trước).',
+ items:['Kiểm tra DNS: nslookup google.com','Ping Default Gateway: ping 192.168.1.1','Kiểm tra cáp và đèn link trên NIC/switch','Ping loopback: ping 127.0.0.1','Ping một IP trên Internet: ping 8.8.8.8'],
+ correctOrder:[2,3,1,4,0],
+ exp:'Bottom-up troubleshoot: (1) Vật lý trước — cáp, đèn link (L1); (2) ping 127.0.0.1 — kiểm tra TCP/IP stack (L3 local); (3) ping gateway — kiểm tra kết nối LAN (L1/L2/L3); (4) ping 8.8.8.8 — kiểm tra kết nối Internet (routing); (5) nslookup — kiểm tra DNS (L7).',
+ extra:'Tại sao bottom-up? Vì nếu tầng dưới bị hỏng, tầng trên chắc chắn không hoạt động. Xác định tầng thấp nhất bị lỗi trước → khoanh vùng vấn đề. Ví dụ: nếu ping 127.0.0.1 thất bại → reinstall TCP/IP stack, không cần test DNS hay gateway nữa.',
+},
+{id:25,type:'order',diff:'hard',topic:'TCP Handshake',
+ q:'Sắp xếp các bước TCP 3-way handshake theo thứ tự ĐÚNG.',
+ items:['Server gửi SYN-ACK (Seq=Y, Ack=X+1, Flags: SYN+ACK)','Client gửi ACK (Ack=Y+1) — kết nối TCP đã mở','Client bắt đầu gửi dữ liệu ứng dụng qua TCP','Client gửi SYN (Seq=X, Flags: SYN) đến server'],
+ correctOrder:[3,0,1,2],
+ exp:'TCP 3-way handshake: (1) Client gửi SYN; (2) Server gửi SYN-ACK; (3) Client gửi ACK → kết nối mở; (4) Bắt đầu truyền data. Đây gọi là "3-way" vì có 3 message: SYN → SYN-ACK → ACK.',
+ extra:'Chi tiết TCP 3-way handshake:<br>• <strong>SYN:</strong> Client chọn ISN (Initial Sequence Number) ngẫu nhiên X. Gửi SYN flag, Seq=X.<br>• <strong>SYN-ACK:</strong> Server chọn ISN ngẫu nhiên Y. Gửi SYN+ACK flags, Seq=Y, Ack=X+1 (xác nhận nhận được X).<br>• <strong>ACK:</strong> Client gửi ACK, Ack=Y+1. Không có data trong ACK này.<br>Sau 3 bước này, cả 2 đều biết Seq# của đối phương — có thể theo dõi thứ tự gói tin. Đóng kết nối cần 4-way: FIN → ACK → FIN → ACK.',
+},
+];
+
+/* ════════════════════════════════════════════
+   STATE
+════════════════════════════════════════════ */
+var state={correct:0,wrong:0,answered:new Set(),wrongIds:new Set(),diffFilter:new Set(['easy','med','hard']),mode:'all'};
+
+/* ════════════════════════════════════════════
+   BUILD UI
+════════════════════════════════════════════ */
+function buildAll(){
+  var container=document.getElementById('questions-container');
+  container.innerHTML='';
+  var toShow=qdata.filter(function(q){
+    if(!state.diffFilter.has(q.diff))return false;
+    if(state.mode==='mc')return q.type==='mc';
+    if(state.mode==='dnd')return q.type==='dnd'||q.type==='order';
+    if(state.mode==='wrong')return state.wrongIds.has(q.id);
+    return true;
+  });
+  if(toShow.length===0){
+    container.innerHTML='<div style="text-align:center;padding:3rem;color:var(--text3);font-size:13px">Không có câu hỏi phù hợp với bộ lọc hiện tại.</div>';
+    return;
+  }
+  var mcQ=toShow.filter(function(q){return q.type==='mc';});
+  var dndQ=toShow.filter(function(q){return q.type==='dnd';});
+  var orderQ=toShow.filter(function(q){return q.type==='order';});
+  if(mcQ.length){
+    var div=document.createElement('div');div.className='section-divider';div.innerHTML='Trắc nghiệm — chọn đáp án đúng<span></span>';
+    container.appendChild(div);
+    mcQ.forEach(function(q,i){container.appendChild(buildMC(q,i+1));});
+  }
+  if(dndQ.length){
+    var div2=document.createElement('div');div2.className='section-divider';div2.innerHTML='Kéo-thả — ghép cặp<span></span>';
+    container.appendChild(div2);
+    dndQ.forEach(function(q,i){container.appendChild(buildDND(q,mcQ.length+i+1));});
+  }
+  if(orderQ.length){
+    var div3=document.createElement('div');div3.className='section-divider';div3.innerHTML='Sắp xếp thứ tự<span></span>';
+    container.appendChild(div3);
+    orderQ.forEach(function(q,i){container.appendChild(buildOrder(q,mcQ.length+dndQ.length+i+1));});
+  }
+}
+
+/* ── MC ── */
+function buildMC(q,num){
+  var card=document.createElement('div');
+  card.className='q-card';card.id='qcard-'+q.id;
+  var diffLabel={easy:'Dễ',med:'Trung bình',hard:'Khó'};
+  var diffClass={easy:'diff-easy',med:'diff-med',hard:'diff-hard'};
+  card.innerHTML='<div class="q-meta">'
+    +'<span class="q-badge '+diffClass[q.diff]+'">'+diffLabel[q.diff]+'</span>'
+    +'<span class="topic-badge">'+q.topic+'</span>'
+    +'<span class="exam-badge">CCNA 200-301</span>'
+    +'</div>'
+    +'<div class="q-top"><div class="q-num">'+num+'.</div><div class="q-text">'+q.q+'</div></div>'
+    +'<div class="opts" id="opts-'+q.id+'"></div>'
+    +'<div class="explanation" id="exp-'+q.id+'"></div>';
+  var optsDiv=card.querySelector('#opts-'+q.id);
+  var letters=['A','B','C','D','E'];
+  q.opts.forEach(function(o,i){
+    var btn=document.createElement('button');
+    btn.className='opt';
+    btn.innerHTML='<span class="opt-letter">'+letters[i]+'.</span><span style="flex:1">'+o+'</span><span class="opt-icon" id="oi-'+q.id+'-'+i+'"></span>';
+    btn.addEventListener('click',function(){answerMC(q,i,card);});
+    optsDiv.appendChild(btn);
+  });
+  return card;
+}
+function answerMC(q,chosen,card){
+  if(state.answered.has(q.id))return;
+  state.answered.add(q.id);
+  var opts=card.querySelectorAll('.opt');
+  opts.forEach(function(b){b.disabled=true;});
+  var correct=(chosen===q.correct);
+  if(correct){
+    opts[chosen].classList.add('correct');
+    document.getElementById('oi-'+q.id+'-'+chosen).textContent='✓';
+    card.classList.add('answered-correct');
+    state.correct++;state.wrongIds.delete(q.id);
+  } else {
+    opts[chosen].classList.add('wrong');
+    document.getElementById('oi-'+q.id+'-'+chosen).textContent='✗';
+    opts[q.correct].classList.add('correct');
+    document.getElementById('oi-'+q.id+'-'+q.correct).textContent='✓';
+    card.classList.add('answered-wrong');
+    state.wrong++;state.wrongIds.add(q.id);
+  }
+  showExp(q,correct);updateStats();
+}
+function showExp(q,correct){
+  var el=document.getElementById('exp-'+q.id);
+  var letters=['A','B','C','D','E'];
+  el.className='explanation show';
+  el.innerHTML='<div class="exp-header '+(correct?'ok':'err')+'">'
+    +(correct?'✓ Đúng! ':'✗ Chưa đúng — ')
+    +(correct?'Giải thích tại sao A'+letters[q.correct]+' đúng:':'Đáp án đúng là '+letters[q.correct]+':')
+    +'</div>'
+    +'<div class="exp-body">'+q.exp
+    +(q.extra?'<div class="exp-extra"><strong>Bổ sung kiến thức:</strong><br>'+q.extra+'</div>':'')
+    +'</div>';
+}
+
+/* ── DND ── */
+function buildDND(q,num){
+  var card=document.createElement('div');card.className='q-card';card.id='qcard-'+q.id;
+  var diffClass={easy:'diff-easy',med:'diff-med',hard:'diff-hard'};
+  var diffLabel={easy:'Dễ',med:'Trung bình',hard:'Khó'};
+  var shuffled=q.rightChips.slice().sort(function(){return Math.random()-.5;});
+  card.innerHTML='<div class="q-meta">'
+    +'<span class="q-badge '+diffClass[q.diff]+'">'+diffLabel[q.diff]+'</span>'
+    +'<span class="topic-badge">'+q.topic+'</span>'
+    +'<span class="exam-badge">CCNA 200-301</span>'
+    +'</div>'
+    +'<div class="q-top"><div class="q-num">'+num+'.</div><div class="q-text">'+q.q+'</div></div>'
+    +'<div class="q-note">Kéo các nhãn từ ô bên dưới vào cột bên phải. Bấm nhãn đã đặt để gỡ ra.</div>'
+    +'<div class="dnd-wrap">'
+      +'<div class="dnd-source-area" id="dnd-src-'+q.id+'"></div>'
+      +'<table class="dnd-table"><thead><tr><th style="width:55%">Mục</th><th>Ghép với</th></tr></thead><tbody id="dnd-tbody-'+q.id+'"></tbody></table>'
+      +'<button class="dnd-check-btn" onclick="checkDND('+q.id+')">Kiểm tra đáp án</button>'
+      +'<div class="dnd-result" id="dnd-res-'+q.id+'"></div>'
+    +'</div>'
+    +'<div class="explanation" id="exp-'+q.id+'"></div>';
+  var src=card.querySelector('#dnd-src-'+q.id);
+  shuffled.forEach(function(chip){
+    var el=document.createElement('div');
+    el.className='dnd-chip';el.textContent=chip;el.setAttribute('data-chip',chip);
+    el.setAttribute('draggable','true');
+    el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text',chip);el.classList.add('dragging');});
+    el.addEventListener('dragend',function(){el.classList.remove('dragging');});
+    src.appendChild(el);
+  });
+  var tbody=card.querySelector('#dnd-tbody-'+q.id);
+  q.leftItems.forEach(function(item,i){
+    var tr=document.createElement('tr');
+    tr.innerHTML='<td style="font-size:13px;padding:8px 10px">'+item+'</td><td><div class="dnd-drop-zone" id="dz-'+q.id+'-'+i+'"></div></td>';
+    tbody.appendChild(tr);
+    var dz=tr.querySelector('.dnd-drop-zone');
+    dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag-over');});
+    dz.addEventListener('dragleave',function(){dz.classList.remove('drag-over');});
+    dz.addEventListener('drop',function(e){
+      e.preventDefault();dz.classList.remove('drag-over');
+      var chip=e.dataTransfer.getData('text');
+      dropChip(q.id,i,chip,card);
+    });
+  });
+  return card;
+}
+var dndState={};
+function dropChip(qid,zoneIdx,chip,card){
+  if(!dndState[qid])dndState[qid]={};
+  var src=card.querySelector('#dnd-src-'+qid);
+  var dz=card.querySelector('#dz-'+qid+'-'+zoneIdx);
+  // Remove existing chip in this zone
+  var existing=dz.querySelector('.dnd-chip');
+  if(existing){
+    existing.remove();
+    var oldChip=existing.getAttribute('data-chip');
+    returnToSource(qid,oldChip,src);
+  }
+  // Remove from another zone if placed
+  card.querySelectorAll('.dnd-drop-zone .dnd-chip').forEach(function(c){
+    if(c.getAttribute('data-chip')===chip){c.remove();}
+  });
+  // Mark source chip as placed
+  src.querySelectorAll('.dnd-chip').forEach(function(c){
+    if(c.getAttribute('data-chip')===chip)c.classList.add('placed');
+  });
+  // Place in zone
+  var placed=document.createElement('div');
+  placed.className='dnd-chip';placed.textContent=chip;placed.setAttribute('data-chip',chip);
+  placed.addEventListener('click',function(){
+    placed.remove();returnToSource(qid,chip,src);
+  });
+  dz.appendChild(placed);
+  dndState[qid][zoneIdx]=chip;
+}
+function returnToSource(qid,chip,src){
+  if(!src)src=document.querySelector('#dnd-src-'+qid);
+  src.querySelectorAll('.dnd-chip').forEach(function(c){
+    if(c.getAttribute('data-chip')===chip)c.classList.remove('placed');
+  });
+}
+function checkDND(qid){
+  if(state.answered.has(qid))return;
+  var q=qdata.find(function(x){return x.id===qid;});
+  var card=document.getElementById('qcard-'+qid);
+  var res=document.getElementById('dnd-res-'+qid);
+  var correct=true;
+  q.leftItems.forEach(function(item,i){
+    var dz=card.querySelector('#dz-'+qid+'-'+i);
+    var placed=dz.querySelector('.dnd-chip');
+    var val=placed?placed.getAttribute('data-chip'):'';
+    var exp=q.correctMap[i];
+    if(val===exp){
+      if(placed)placed.style.cssText='background:var(--success-bg);color:var(--success-text);border-color:var(--success-border)';
+    } else {
+      correct=false;
+      if(placed)placed.style.cssText='background:var(--danger-bg);color:var(--danger-text);border-color:var(--danger-border)';
+      dz.innerHTML+='<span style="font-size:10px;color:var(--success-text);background:var(--success-bg);padding:2px 7px;border-radius:10px;border:0.5px solid var(--success-border)">✓ '+exp+'</span>';
+    }
+  });
+  state.answered.add(qid);
+  res.className='dnd-result show';
+  res.style.cssText=correct?'background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border)':'background:var(--danger-bg);color:var(--danger-text);border:0.5px solid var(--danger-border)';
+  res.textContent=correct?'Hoàn toàn đúng! Tất cả ghép cặp chính xác.':'Có một số sai. Ô màu xanh = đúng, màu đỏ = sai. Đáp án đúng hiện ngay bên dưới chỗ sai.';
+  if(correct){state.correct++;card.classList.add('answered-correct');}
+  else{state.wrong++;state.wrongIds.add(qid);card.classList.add('answered-wrong');}
+  showExp(q,correct);updateStats();
+}
+
+/* ── ORDER ── */
+function buildOrder(q,num){
+  var card=document.createElement('div');card.className='q-card';card.id='qcard-'+q.id;
+  var diffClass={easy:'diff-easy',med:'diff-med',hard:'diff-hard'};
+  var diffLabel={easy:'Dễ',med:'Trung bình',hard:'Khó'};
+  var shuffledItems=q.items.slice().map(function(item,i){return{text:item,origIdx:i};});
+  shuffledItems.sort(function(){return Math.random()-.5;});
+  card.innerHTML='<div class="q-meta">'
+    +'<span class="q-badge '+diffClass[q.diff]+'">'+diffLabel[q.diff]+'</span>'
+    +'<span class="topic-badge">'+q.topic+'</span>'
+    +'<span class="exam-badge">CCNA 200-301</span>'
+    +'</div>'
+    +'<div class="q-top"><div class="q-num">'+num+'.</div><div class="q-text">'+q.q+'</div></div>'
+    +'<div class="q-note">Kéo để thay đổi thứ tự. Mục ở trên = xảy ra trước.</div>'
+    +'<div class="order-list" id="ol-'+q.id+'"></div>'
+    +'<button class="order-check-btn" onclick="checkOrder('+q.id+')">Kiểm tra thứ tự</button>'
+    +'<div class="dnd-result" id="ord-res-'+q.id+'"></div>'
+    +'<div class="explanation" id="exp-'+q.id+'"></div>';
+  var list=card.querySelector('#ol-'+q.id);
+  shuffledItems.forEach(function(item){
+    var el=document.createElement('div');
+    el.className='order-item';
+    el.setAttribute('draggable','true');
+    el.setAttribute('data-orig',item.origIdx);
+    el.innerHTML='<span class="order-handle">⠿</span><span style="flex:1;font-size:13px">'+item.text+'</span>';
+    setupOrderDrag(el,list);
+    list.appendChild(el);
+  });
+  return card;
+}
+function setupOrderDrag(el,list){
+  el.addEventListener('dragstart',function(e){
+    e.dataTransfer.setData('text',el.getAttribute('data-orig'));
+    el.classList.add('dragging-order');
+  });
+  el.addEventListener('dragend',function(){el.classList.remove('dragging-order');});
+  el.addEventListener('dragover',function(e){
+    e.preventDefault();
+    var dragging=list.querySelector('.dragging-order');
+    if(dragging&&dragging!==el){
+      var rect=el.getBoundingClientRect();
+      var mid=rect.top+rect.height/2;
+      if(e.clientY<mid)list.insertBefore(dragging,el);
+      else list.insertBefore(dragging,el.nextSibling);
+    }
+  });
+}
+function checkOrder(qid){
+  if(state.answered.has(qid))return;
+  var q=qdata.find(function(x){return x.id===qid;});
+  var card=document.getElementById('qcard-'+qid);
+  var list=card.querySelector('#ol-'+qid);
+  var items=list.querySelectorAll('.order-item');
+  var userOrder=[];
+  items.forEach(function(el){userOrder.push(parseInt(el.getAttribute('data-orig')));});
+  var correct=userOrder.every(function(v,i){return v===q.correctOrder[i];});
+  items.forEach(function(el,i){
+    var origIdx=parseInt(el.getAttribute('data-orig'));
+    var isCorrect=(origIdx===q.correctOrder[i]);
+    el.style.cssText=isCorrect
+      ?'background:var(--success-bg);border-color:var(--success-border);color:var(--success-text)'
+      :'background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger-text)';
+  });
+  if(!correct){
+    var correctList=document.createElement('div');
+    correctList.style.cssText='margin-top:10px;background:var(--bg3);border-radius:var(--radius);padding:8px 12px';
+    correctList.innerHTML='<div style="font-size:11px;font-weight:600;color:var(--text3);margin-bottom:6px">Thứ tự đúng:</div>';
+    q.correctOrder.forEach(function(idx,i){
+      var d=document.createElement('div');
+      d.style.cssText='font-size:12px;color:var(--text2);padding:3px 0;display:flex;gap:8px';
+      d.innerHTML='<span style="color:var(--text3);min-width:20px">'+(i+1)+'.</span>'+q.items[idx];
+      correctList.appendChild(d);
+    });
+    list.parentNode.insertBefore(correctList,card.querySelector('.order-check-btn').nextSibling);
+  }
+  state.answered.add(qid);
+  var res=document.getElementById('ord-res-'+qid);
+  res.className='dnd-result show';
+  res.style.cssText=correct?'background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border)':'background:var(--danger-bg);color:var(--danger-text);border:0.5px solid var(--danger-border)';
+  res.textContent=correct?'Hoàn toàn đúng! Thứ tự chính xác.':'Thứ tự chưa đúng. Mục màu xanh = đúng vị trí, màu đỏ = sai. Xem thứ tự đúng ở dưới.';
+  if(correct){state.correct++;card.classList.add('answered-correct');}
+  else{state.wrong++;state.wrongIds.add(qid);card.classList.add('answered-wrong');}
+  showExp(q,correct);updateStats();
+}
+
+/* ── STATS ── */
+function updateStats(){
+  var total=qdata.length;
+  var done=state.answered.size;
+  document.getElementById('st-correct').textContent=state.correct;
+  document.getElementById('st-wrong').textContent=state.wrong;
+  document.getElementById('st-remain').textContent=total-done;
+  if(done>0){
+    var pct=Math.round((state.correct/done)*100);
+    document.getElementById('st-pct').textContent=pct+'%';
+    document.getElementById('st-pct-pill').style.color=pct>=70?'var(--success-text)':'var(--danger-text)';
+  }
+  var wrongBtn=document.querySelector('[data-mode="wrong"]');
+  if(wrongBtn)wrongBtn.textContent='Câu sai ('+state.wrongIds.size+')';
+}
+
+/* ── FILTERS ── */
+document.querySelectorAll('.mode-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.mode-btn').forEach(function(b){b.classList.remove('on');});
+    btn.classList.add('on');state.mode=btn.getAttribute('data-mode');buildAll();
+  });
+});
+document.querySelectorAll('.filter-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var d=btn.getAttribute('data-diff');
+    if(state.diffFilter.has(d)){
+      if(state.diffFilter.size>1){state.diffFilter.delete(d);btn.classList.remove('on');}
+    } else {state.diffFilter.add(d);btn.classList.add('on');}
+    buildAll();
+  });
+});
+
+/* ── SCROLL TOP ── */
+window.addEventListener('scroll',function(){
+  document.getElementById('scroll-top').classList.toggle('visible',window.scrollY>400);
+});
+
+buildAll();
+</script>
+</body>
+</html>

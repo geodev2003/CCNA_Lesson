@@ -1,0 +1,469 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+#app{padding:1rem 0}
+.prog-wrap{background:var(--color-border-tertiary);border-radius:999px;height:6px;margin:10px 0 4px;overflow:hidden}
+.prog-fill{height:100%;background:#2563eb;border-radius:999px;transition:width .4s}
+.stat-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;margin:14px 0}
+.stat-card{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
+.stat-val{font-size:20px;font-weight:500;color:var(--color-text-primary)}
+.stat-lbl{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
+.filters{display:flex;gap:6px;flex-wrap:wrap;margin:14px 0 10px}
+.fbtn{font-size:12px;padding:4px 10px;border-radius:999px;border:0.5px solid var(--color-border-secondary);background:transparent;color:var(--color-text-secondary);cursor:pointer}
+.fbtn.on{background:#2563eb;color:#fff;border-color:#2563eb}
+.phase-hdr{display:flex;align-items:center;gap:10px;padding:8px 12px;border-radius:var(--border-radius-md);background:var(--color-background-secondary);margin-bottom:8px;cursor:pointer;border:0.5px solid var(--color-border-tertiary)}
+.phase-title{font-size:13px;font-weight:500;flex:1}
+.pbadge{font-size:11px;padding:2px 8px;border-radius:999px;font-weight:500}
+.pct-bar{width:80px;height:4px;background:var(--color-border-tertiary);border-radius:999px;overflow:hidden}
+.pct-fill{height:100%;border-radius:999px}
+.week-card{border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);margin-bottom:8px;overflow:hidden;background:var(--color-background-primary)}
+.week-hdr{display:flex;align-items:center;gap:10px;padding:10px 14px;cursor:pointer}
+.wnum{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;flex-shrink:0}
+.wmeta{flex:1;min-width:0}
+.wtopic{font-size:13px;font-weight:500;color:var(--color-text-primary)}
+.wsub{font-size:11px;color:var(--color-text-secondary);margin-top:1px}
+.wstatus{font-size:11px;padding:2px 8px;border-radius:999px;border:0.5px solid;flex-shrink:0}
+.wchev{font-size:11px;color:var(--color-text-tertiary);transition:transform .2s;flex-shrink:0}
+.wbody{display:none;padding:0 14px 14px;border-top:0.5px solid var(--color-border-tertiary)}
+.wbody.open{display:block}
+.section-tabs{display:flex;gap:6px;margin:12px 0 10px;flex-wrap:wrap}
+.stab{font-size:11px;padding:3px 10px;border-radius:999px;border:0.5px solid var(--color-border-tertiary);background:transparent;color:var(--color-text-secondary);cursor:pointer}
+.stab.on{border-color:currentColor}
+.lesson-item{display:flex;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
+.lesson-item:last-child{border-bottom:none}
+.lcheck{width:18px;height:18px;border-radius:4px;border:0.5px solid var(--color-border-secondary);flex-shrink:0;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.lcheck.done{background:#16a34a;border-color:#16a34a;color:#fff;font-size:11px}
+.linfo{flex:1;min-width:0}
+.ltitle{font-size:13px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.ldesc{font-size:12px;color:var(--color-text-secondary);line-height:1.55;margin-bottom:6px}
+.lexpand{font-size:12px;color:#2563eb;cursor:pointer;display:inline-flex;align-items:center;gap:3px}
+.ldetail{display:none;margin-top:8px;background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
+.ldetail.open{display:block}
+.ldetail h4{font-size:12px;font-weight:500;color:var(--color-text-primary);margin-bottom:6px}
+.ldetail p,.ldetail li{font-size:12px;color:var(--color-text-secondary);line-height:1.6}
+.ldetail ul{padding-left:16px;margin:4px 0}
+.ldetail li{margin-bottom:3px}
+.ldetail .cmd{font-family:var(--font-mono);font-size:11px;background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);padding:6px 10px;border-radius:6px;margin:6px 0;display:block;color:var(--color-text-primary);line-height:1.7;white-space:pre-wrap}
+.ldetail .tip{background:var(--color-background-info);border-left:2px solid #2563eb;border-radius:0 6px 6px 0;padding:7px 10px;margin:6px 0;font-size:12px;color:var(--color-text-info)}
+.ldetail .warn{background:var(--color-background-warning);border-left:2px solid #d97706;border-radius:0 6px 6px 0;padding:7px 10px;margin:6px 0;font-size:12px;color:var(--color-text-warning)}
+.tag{font-size:10px;padding:1px 6px;border-radius:999px;border:0.5px solid;white-space:nowrap}
+.t-theory{color:#1d4ed8;border-color:#93c5fd;background:#eff6ff}
+.t-lab{color:#15803d;border-color:#86efac;background:#f0fdf4}
+.t-apply{color:#b45309;border-color:#fcd34d;background:#fffbeb}
+.t-extra{color:#7c3aed;border-color:#c4b5fd;background:#f5f3ff}
+.askbtn{font-size:11px;padding:3px 8px;border-radius:999px;border:0.5px solid var(--color-border-secondary);background:transparent;color:#2563eb;cursor:pointer;margin-top:6px}
+</style>
+
+<div id="app">
+<div style="margin-bottom:14px">
+  <div style="font-size:18px;font-weight:500;color:var(--color-text-primary);margin-bottom:3px">Lịch học CCNA 200-301 — 20 tuần</div>
+  <div style="font-size:12px;color:var(--color-text-secondary)">Mỗi bài có nội dung mở rộng, lệnh thực hành và tips thi. Click vào bài học để xem chi tiết.</div>
+  <div class="prog-wrap"><div class="prog-fill" id="pf" style="width:0%"></div></div>
+  <div style="font-size:11px;color:var(--color-text-secondary)" id="pt">0 / 0 bài hoàn thành</div>
+</div>
+<div class="stat-grid">
+  <div class="stat-card"><div class="stat-val" id="s-done">0</div><div class="stat-lbl">Bài đã xong</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-week">0</div><div class="stat-lbl">Tuần hoàn thành</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-pct">0%</div><div class="stat-lbl">Tiến độ tổng</div></div>
+  <div class="stat-card"><div class="stat-val" id="s-left">20</div><div class="stat-lbl">Tuần còn lại</div></div>
+</div>
+<div class="filters" id="flt"></div>
+<div id="phases"></div>
+</div>
+
+<script>
+const WEEKS = [
+{ph:0,w:1,topic:"Mô hình OSI & TCP/IP",sub:"7 tầng, PDU, Encapsulation",lessons:[
+{type:"theory",title:"7 tầng OSI — chức năng và thiết bị",desc:"Nắm chắc vai trò từng tầng, thiết bị và giao thức đại diện.",
+detail:{summary:"7 tầng OSI là nền tảng để troubleshoot mọi sự cố mạng. Khi gặp lỗi, bạn tư duy từ tầng 1 lên tầng 7 để xác định nguyên nhân.",
+points:["L1 Physical: bit, cáp, Hub, Repeater, NIC — lỗi: cáp đứt, connector lỏng","L2 Data Link: frame, MAC, Switch, Bridge — lỗi: MAC conflict, loop","L3 Network: packet, IP, Router — lỗi: IP sai, route thiếu","L4 Transport: segment, TCP/UDP, port — lỗi: firewall block port","L5 Session: quản lý phiên kết nối (NetBIOS, RPC)","L6 Presentation: mã hóa, nén, SSL/TLS, JPEG","L7 Application: HTTP, FTP, DNS, SMTP, SNMP"],
+tip:"Mnemonic nhớ 7 tầng từ dưới lên: 'Please Do Not Throw Sausage Pizza Away' (Physical, Data Link, Network, Transport, Session, Presentation, Application)",
+cmds:""}},
+{type:"theory",title:"Encapsulation & PDU từng tầng",desc:"Hiểu cách dữ liệu được đóng gói và mở ra khi đi qua các tầng.",
+detail:{summary:"Encapsulation: mỗi tầng thêm header (và trailer) của riêng mình. Decapsulation: quá trình ngược lại ở phía nhận.",
+points:["Application → Data","Transport → Segment (thêm TCP/UDP header: src port, dst port, seq, ack)","Network → Packet (thêm IP header: src IP, dst IP, TTL, protocol)","Data Link → Frame (thêm MAC header + FCS trailer)","Physical → Bits (chuyển thành tín hiệu điện/quang/sóng vô tuyến)"],
+tip:"Thi CCNA hay hỏi PDU tên gì ở từng tầng — học thuộc: Data/Segment/Packet/Frame/Bit",
+cmds:""}},
+{type:"lab",title:"Lab: Packet Tracer Simulation Mode",desc:"Quan sát PDU đi qua từng tầng khi ping giữa 2 PC.",
+detail:{summary:"Simulation Mode cho phép xem từng packet di chuyển qua thiết bị, click vào để xem nội dung PDU từng tầng.",
+points:["Tạo topology: PC0 — Switch — PC1","Chuyển sang Simulation Mode (nút đồng hồ góc phải)","Ping từ PC0 đến PC1, click 'Capture/Forward' từng bước","Quan sát PDU Information: xem header L2 (MAC), L3 (IP), L4 (ICMP)","Vẽ tay sơ đồ 7 tầng, ghi ví dụ thực tế từ BV vào từng tầng"],
+tip:"Chú ý ARP request xuất hiện trước ICMP — switch cần biết MAC trước khi forward frame",
+cmds:""}},
+{type:"apply",title:"Áp dụng BV: Troubleshoot theo tầng OSI",desc:"Phân tích sự cố mạng BV theo từng tầng OSI.",
+detail:{summary:"Khi gặp sự cố tại BV, tư duy có hệ thống từ L1→L7 thay vì đoán mò.",
+points:["Máy không vào mạng: check đèn NIC (L1) → ping gateway (L3) → ping DNS (L7)","IP phone không gọi được: VLAN voice đúng chưa (L2) → QoS DSCP (L4) → SIP server (L7)","Camera Vantech offline: cáp PoE (L1) → port security (L2) → IP conflict (L3)"],
+tip:"Luôn bắt đầu từ L1: 'Đèn port switch có sáng không?' trước khi kiểm tra IP hay config",
+cmds:""}}
+]},
+{ph:0,w:2,topic:"IPv4 & Subnetting",sub:"CIDR, chia subnet, binary conversion",lessons:[
+{type:"theory",title:"Địa chỉ IPv4: Class, Public vs Private",desc:"Phân loại địa chỉ IP, nhận biết private range RFC1918.",
+detail:{summary:"Hiểu rõ phân lớp IP là nền tảng để thiết kế địa chỉ hóa mạng và cấu hình ACL, NAT đúng.",
+points:["Class A: 1-126.x.x.x — Private: 10.0.0.0/8","Class B: 128-191.x.x.x — Private: 172.16.0.0/12 (172.16-31.x.x)","Class C: 192-223.x.x.x — Private: 192.168.0.0/16","127.0.0.1: loopback (không dùng trên mạng thật)","169.254.x.x: APIPA — máy không lấy được DHCP tự gán","Multicast: 224-239.x.x.x | Broadcast: 255.255.255.255"],
+tip:"RFC1918 private range phải thuộc lòng vì ACL và NAT luôn dùng để xác định traffic nội bộ vs public",
+cmds:""}},
+{type:"theory",title:"Subnetting: chia /24 thành /26, /27, /28",desc:"Công thức tính nhanh subnet không cần máy tính.",
+detail:{summary:"Subnetting là kỹ năng CCNA bắt buộc — thi không cho dùng máy tính. Luyện đến khi tính được trong 30 giây.",
+points:["Công thức: /24 = 256 địa chỉ. Mỗi bit thêm vào prefix = chia đôi số host","/26 = 64 địa chỉ/subnet, 62 host, 4 subnet từ /24","/27 = 32 địa chỉ/subnet, 30 host, 8 subnet từ /24","/28 = 16 địa chỉ/subnet, 14 host, 16 subnet từ /24","Network: địa chỉ đầu | Broadcast: địa chỉ cuối | Host range: ở giữa","Ví dụ: 192.168.1.64/26 → Network: .64, Broadcast: .127, Host: .65-.126"],
+tip:"Học thuộc bảng: /25=128, /26=64, /27=32, /28=16, /29=8, /30=4. Thi thường hỏi /26-/30",
+cmds:""}},
+{type:"lab",title:"Lab: Gán IP tĩnh, ping, bài tập chia subnet",desc:"Tạo topology 3 PC – Switch – Router, cấu hình IP, kiểm tra kết nối.",
+detail:{summary:"Thực hành gán IP tĩnh và kiểm tra kết nối là bước đầu tiên trong mọi lab CCNA.",
+points:["Tạo: PC0(192.168.1.1/26) — PC1(192.168.1.2/26) — Switch — Router(192.168.1.62/26)","PC: Desktop → IP Configuration → gán IP, mask, gateway","Router: int g0/0 / ip address 192.168.1.62 255.255.255.192 / no shutdown","Ping từ PC đến router, từ PC0 đến PC1","Bài tập: chia 10.0.0.0/24 thành 6 subnet dùng /27"],
+tip:"Hay bị quên 'no shutdown' — interface Cisco mặc định ở trạng thái shutdown (administratively down)",
+cmds:"Router(config)# interface g0/0\nRouter(config-if)# ip address 192.168.1.62 255.255.255.192\nRouter(config-if)# no shutdown\nRouter(config-if)# description LAN_GATEWAY"}},
+{type:"apply",title:"Áp dụng BV: Đọc ipconfig, xác định subnet BV",desc:"Chạy ipconfig /all trên máy trạm BV, phân tích địa chỉ mạng.",
+detail:{summary:"Từ kết quả ipconfig, bạn có thể suy ra thiết kế địa chỉ hóa mạng của BV và phát hiện bất thường.",
+points:["ipconfig /all → xem IP, Subnet Mask, Default Gateway, DNS, DHCP Server","169.254.x.x → máy không lấy được DHCP — báo sự cố DHCP ngay","Nhiều máy cùng /24 → xác nhận chúng cùng broadcast domain","So sánh IP gateway với topology để biết gateway là router hay L3 switch","Ghi lại VLAN mapping: VLAN 10 = 192.168.10.x (Clinical), VLAN 20 = 192.168.20.x (Admin)?"],
+tip:"Lưu kết quả ipconfig /all vào file txt cho từng VLAN để có bản đồ địa chỉ BV",
+cmds:"ipconfig /all\nping 192.168.1.1 (gateway)\ntracert 8.8.8.8 (trace đường ra Internet)"}}
+]},
+{ph:0,w:3,topic:"Thiết bị mạng & Cáp",sub:"Hub/Switch/Router, Ethernet frame, cáp",lessons:[
+{type:"theory",title:"Hub vs Switch vs Router — domain phân tách",desc:"Hiểu sâu collision domain và broadcast domain giúp thiết kế mạng đúng.",
+detail:{summary:"Đây là kiến thức nền để hiểu tại sao cần VLAN (phân tách broadcast domain) và tại sao switch tốt hơn hub.",
+points:["Hub: 1 collision domain, 1 broadcast domain — tất cả share bandwidth","Switch: N collision domain (mỗi port 1), 1 broadcast domain — full-duplex mỗi port","Router: N collision domain, N broadcast domain — tách hoàn toàn các mạng","CAM table (MAC address table): switch học MAC từ src address của frame đến","Unknown unicast: switch flood ra tất cả port ngoại trừ port nhận — giống broadcast"],
+tip:"Câu hỏi thi: 'Có 3 switch nối nhau, 2 PC trên mỗi switch — bao nhiêu collision domain?' → 6 (mỗi PC-switch link là 1)",
+cmds:""}},
+{type:"theory",title:"Ethernet frame structure & cáp đúng loại",desc:"Cấu trúc frame và cách chọn loại cáp phù hợp.",
+detail:{summary:"Ethernet frame là đơn vị truyền dữ liệu ở L2. Hiểu cấu trúc giúp phân tích traffic bằng Wireshark.",
+points:["Frame: Preamble(7B) | SFD(1B) | Dst MAC(6B) | Src MAC(6B) | Type/Len(2B) | Data(46-1500B) | FCS(4B)","Straight-through: PC→Switch, Router→Switch (khác loại thiết bị)","Crossover: Switch→Switch, PC→PC, Router→Router (cùng loại)","Auto-MDIX: switch/router hiện đại tự detect, không cần lo cáp loại nào","Console/Rollover: cấu hình thiết bị Cisco — RJ-45 xanh đến COM port laptop"],
+tip:"Modern Cisco switch có Auto-MDIX — trong lab thực tế ít khi sai cáp, nhưng CCNA exam vẫn hỏi",
+cmds:""}},
+{type:"lab",title:"Lab: Console vào switch Cisco bằng PuTTY",desc:"Kết nối thực tế vào switch Cisco tại BV bằng cáp console.",
+detail:{summary:"Biết cách console vào thiết bị là kỹ năng thực tế bắt buộc — dùng khi không có IP hoặc SSH chưa cấu hình.",
+points:["Cáp rollover (console): DB9/USB-Serial → RJ-45 console port switch","PuTTY: Connection Type = Serial, Speed = 9600, Data bits = 8, Stop bits = 1, Parity = None","Nhấn Enter để vào User EXEC mode (>)","Nếu thấy: 'Password required, but none set' → chưa set console password"],
+tip:"Một số laptop không có COM port — dùng USB-to-Serial adapter (check Device Manager để biết COM số mấy)",
+cmds:"PuTTY settings:\nConnection type: Serial\nSerial line: COM3 (xem Device Manager)\nSpeed: 9600\n\nTrong switch:\nswitch> enable\nswitch# show version"}}
+]},
+{ph:0,w:4,topic:"Cisco IOS CLI cơ bản",sub:"Modes, lệnh cơ bản, bảo mật, save config",lessons:[
+{type:"theory",title:"Các mode CLI và điều hướng",desc:"Nắm vững hierarchy của Cisco IOS: User → Privileged → Global → Interface.",
+detail:{summary:"CLI Cisco có cấu trúc phân cấp nghiêm ngặt. Nhầm mode là lý do hay gây lỗi cho người mới.",
+points:["switch> : User EXEC — chỉ show cơ bản, ping","switch# : Privileged EXEC — show all, debug, copy, reload","switch(config)# : Global Config — thay đổi cấu hình toàn thiết bị","switch(config-if)# : Interface Config — cấu hình từng cổng","switch(config-line)# : Line Config — console, vty","Điều hướng: enable | configure terminal | exit | end (Ctrl+Z) | do [cmd]"],
+tip:"'do show' là bạn thân: khi đang ở config mode muốn show, dùng 'do show run' thay vì exit ra",
+cmds:"switch> enable\nswitch# configure terminal\nswitch(config)# hostname CORE-SW-01\nswitch(config)# end\nswitch# show running-config"}},
+{type:"theory",title:"Bảo mật thiết bị và lưu cấu hình",desc:"Enable secret, console/VTY password, SSH, save config đúng cách.",
+detail:{summary:"Thiết bị Cisco không có bảo mật mặc định — phải cấu hình thủ công. Bỏ qua bước này là rủi ro bảo mật nghiêm trọng.",
+points:["enable secret [pass]: mã hóa MD5, ưu tiên hơn 'enable password'","service password-encryption: mã hóa type 7 (yếu, nhưng hơn plaintext)","line console 0 / password / login: bảo vệ cổng console","line vty 0 4 / transport input ssh / login local: chỉ cho SSH, không Telnet","copy running-config startup-config (hoặc 'write memory'): lưu vào NVRAM"],
+tip:"Thi CCNA: 'enable secret' KHÔNG hiện trong show run dạng plaintext — đây là điểm phân biệt với 'enable password'",
+cmds:"switch(config)# enable secret Str0ngP@ss\nswitch(config)# service password-encryption\nswitch(config)# banner motd # Authorized Access Only #\nswitch(config)# line vty 0 4\nswitch(config-line)# transport input ssh\nswitch(config-line)# login local\nswitch(config)# username admin secret Adm1n@BV\nswitch# copy running-config startup-config"}},
+{type:"lab",title:"Lab: Cấu hình đầy đủ switch mới từ đầu",desc:"Từ switch factory default, cấu hình hostname, IP mgmt, bảo mật, SSH, save.",
+detail:{summary:"Đây là quy trình onboarding switch mới tại BV — làm thành checklist để không bỏ sót bước nào.",
+points:["1. Hostname: hostname ACCESS-SW-ICU-01","2. IP management: interface vlan 1 / ip address 192.168.99.10 255.255.255.0 / no shutdown","3. Default gateway: ip default-gateway 192.168.99.1","4. Enable secret + console password","5. SSH: crypto key generate rsa modulus 2048 / ip ssh version 2","6. Save: copy run start"],
+tip:"Đặt hostname theo convention: ROLE-LOCATION-NUMBER (vd: ACCESS-SW-ICU-01). Dễ identify khi troubleshoot",
+cmds:"switch(config)# hostname ACCESS-SW-ICU-01\nswitch(config)# interface vlan 1\nswitch(config-if)# ip address 192.168.99.10 255.255.255.0\nswitch(config-if)# no shutdown\nswitch(config)# ip default-gateway 192.168.99.1\nswitch(config)# crypto key generate rsa modulus 2048\nswitch(config)# ip ssh version 2"}},
+{type:"apply",title:"Áp dụng BV: Audit switch hiện tại",desc:"Kiểm tra cấu hình bảo mật của switch đang chạy tại BV.",
+detail:{summary:"Nhiều switch BV được cài từ lâu, có thể đang dùng Telnet thay SSH, hoặc không có enable secret.",
+points:["show version → OS version, uptime (thiết bị chạy bao lâu chưa reload)","show running-config → check có enable secret chưa, Telnet hay SSH?","show users → ai đang kết nối vào thiết bị","show logging → xem log gần đây có anomaly không","Ghi chép vào bảng audit: Switch / IP / IOS / SSH? / Secret? / Last backup?"],
+tip:"Nếu thấy 'transport input telnet' → báo IT lead ngay. Telnet truyền password plaintext qua mạng",
+cmds:"switch# show version\nswitch# show running-config\nswitch# show users\nswitch# show logging\nswitch# show ip ssh"}}
+]},
+{ph:1,w:5,topic:"VLAN & Access Port",sub:"Tạo VLAN, access port, Voice VLAN",lessons:[
+{type:"theory",title:"VLAN — khái niệm và lý do dùng",desc:"Tại sao VLAN là công cụ quan trọng nhất trong mạng doanh nghiệp.",
+detail:{summary:"VLAN phân tách broadcast domain trên cùng phần cứng switch vật lý, giúp tổ chức mạng logic theo chức năng thay vì vị trí địa lý.",
+points:["Không có VLAN: 100 máy cùng switch → mỗi broadcast đến tất cả 100 máy","Có VLAN: máy Clinical và Guest cách ly nhau dù cùng switch vật lý","VLAN ID: 1-4094. VLAN 1 là default (không nên dùng để truyền data)","Lợi ích: bảo mật (Guest không thấy Clinical), performance (giảm broadcast), quản lý","Cấu hình VLAN lưu trong vlan.dat (flash) — không bị xóa khi erase startup-config"],
+tip:"VLAN 1 là native VLAN mặc định và là mục tiêu tấn công VLAN hopping — nên đổi native VLAN sang ID khác",
+cmds:"switch(config)# vlan 10\nswitch(config-vlan)# name CLINICAL\nswitch(config)# vlan 20\nswitch(config-vlan)# name ADMIN\nswitch(config)# vlan 30\nswitch(config-vlan)# name GUEST\nswitch# show vlan brief"}},
+{type:"theory",title:"Access port và Voice VLAN cho IP phone",desc:"Cấu hình cổng access và VLAN riêng cho hệ thống IP phone BV.",
+detail:{summary:"Access port gán một VLAN duy nhất cho thiết bị end-user. Voice VLAN cho phép IP phone và PC chạy song song trên 1 cổng.",
+points:["switchport mode access: cổng chỉ nhận untagged frame, gán vào 1 VLAN","switchport access vlan 10: gán cổng vào VLAN 10","Voice VLAN: IP phone kết nối switch, PC kết nối vào phone qua built-in switch","switchport voice vlan 30: phone dùng VLAN 30 (tagged), PC dùng VLAN 10 (untagged)","CDP giữa switch và phone để tự negotiate tốc độ và VLAN","show vlan brief: xem VLAN nào assign port nào"],
+tip:"Voice VLAN phải có QoS CoS 5 (priority) để đảm bảo chất lượng thoại — cấu hình thêm: mls qos trust cos",
+cmds:"switch(config)# interface f0/1\nswitch(config-if)# switchport mode access\nswitch(config-if)# switchport access vlan 10\nswitch(config-if)# switchport voice vlan 30\nswitch(config-if)# spanning-tree portfast\nswitch(config-if)# description PC_ICU_BED01\nswitch# show vlan brief\nswitch# show interfaces f0/1 switchport"}},
+{type:"lab",title:"Lab: Tạo 3 VLAN, cấu hình access port, kiểm tra ping",desc:"Topology 6 PC với 3 VLAN — verify ping trong cùng VLAN được, khác VLAN không.",
+detail:{summary:"Lab này xây dựng nền tảng cho tất cả lab VLAN phức tạp hơn. Phải thuần thục trước khi sang trunk và inter-VLAN routing.",
+points:["Tạo: VLAN 10 (Clinical), VLAN 20 (Admin), VLAN 30 (Guest)","PC0,PC1 → VLAN 10 | PC2,PC3 → VLAN 20 | PC4,PC5 → VLAN 30","Gán IP cùng subnet cho máy cùng VLAN: 10.10.10.x/24, 10.20.20.x/24, 10.30.30.x/24","Ping PC0 → PC1: thành công | Ping PC0 → PC2: thất bại (khác VLAN)","Verify: show vlan brief, show interfaces Fx/x switchport"],
+tip:"Nếu ping cùng VLAN vẫn fail: check IP có đúng subnet không, check port có đúng VLAN không",
+cmds:"switch# show vlan brief\nswitch# show interfaces f0/1 switchport\nswitch# show mac address-table\nswitch# show interfaces status"}},
+{type:"apply",title:"Áp dụng BV: Xây dựng VLAN plan cho BV",desc:"Đề xuất thiết kế VLAN phù hợp với hạ tầng và nhu cầu BV.",
+detail:{summary:"Thiết kế VLAN tốt là nền tảng bảo mật mạng BV — cách ly thiết bị y tế khỏi mạng khách và hành chính.",
+points:["VLAN 10 – CLINICAL: máy tính bàn, HIS/LIS client","VLAN 20 – MEDICAL-DEVICE: X-quang, MRI, siêu âm (cách ly hoàn toàn)","VLAN 30 – IPCAM: camera Vantech (stream video tốn bandwidth)","VLAN 40 – VOIP: IP phone (cần QoS riêng)","VLAN 50 – ADMIN: máy tính phòng hành chính, kế toán","VLAN 99 – MGMT: quản lý thiết bị mạng (switch, AP)","VLAN 100 – GUEST: Wi-Fi khách, chỉ ra Internet"],
+tip:"Không để máy y tế và máy hành chính cùng VLAN — vi phạm HIPAA và dễ bị lateral movement nếu máy hành chính bị hack",
+cmds:""}}
+]},
+{ph:1,w:6,topic:"Trunk & 802.1Q & VTP",sub:"Trunk port, tagging, VTP risks",lessons:[
+{type:"theory",title:"Trunk port và 802.1Q tagging",desc:"Trunk mang nhiều VLAN qua 1 link vật lý giữa switch-switch hoặc switch-router.",
+detail:{summary:"802.1Q là chuẩn IEEE cho VLAN tagging — chèn 4-byte tag vào frame Ethernet để xác định VLAN khi đi qua trunk.",
+points:["Trunk = link mang nhiều VLAN (tagged). Access = link 1 VLAN (untagged)","802.1Q tag: 4 byte chèn vào frame sau Src MAC: TPID(0x8100) | PCP(CoS) | DEI | VLAN ID","Native VLAN: VLAN không bị tag trên trunk (default: VLAN 1) — nguy hiểm nếu không đổi","switchport trunk allowed vlan: chỉ cho phép VLAN cụ thể qua trunk — best practice","show interfaces trunk: xem trunk mode, native VLAN, allowed VLANs, active VLANs"],
+tip:"Best practice: tắt DTP (switchport nonegotiate) và cấu hình trunk tường minh. DTP có thể bị exploit bằng tấn công switch spoofing",
+cmds:"switch(config)# interface g0/1\nswitch(config-if)# switchport mode trunk\nswitch(config-if)# switchport trunk native vlan 999\nswitch(config-if)# switchport trunk allowed vlan 10,20,30,40,99\nswitch(config-if)# switchport nonegotiate\nswitch# show interfaces trunk\nswitch# show interfaces g0/1 switchport"}},
+{type:"theory",title:"VTP — lợi ích và cạm bẫy revision number",desc:"VTP đồng bộ VLAN database nhưng có thể phá hủy toàn bộ VLAN nếu không cẩn thận.",
+detail:{summary:"VTP (VLAN Trunking Protocol) là tính năng Cisco-proprietary giúp đồng bộ VLAN database. Tuy nhiên, rủi ro VTP revision number đã gây ra nhiều sự cố nghiêm trọng trong thực tế.",
+points:["VTP Server: tạo/xóa/sửa VLAN, quảng bá qua trunk","VTP Client: nhận và apply VLAN database từ server","VTP Transparent: không tham gia VTP, chỉ forward, giữ VLAN local","Revision number: mỗi lần thay đổi VLAN tăng lên 1 — switch client LUÔN apply bản có revision cao nhất","CẠM BẪY: thêm switch cũ (revision cao hơn server hiện tại) → VLAN database bị ghi đè → toàn bộ trunk down"],
+warn:"Recommendation: dùng VTP Transparent hoặc tắt VTP hoàn toàn trong môi trường production. Rủi ro quá cao so với lợi ích.",
+cmds:"switch(config)# vtp mode transparent\nswitch(config)# vtp domain BenhVienA\nswitch# show vtp status\nswitch# show vtp counters"}},
+{type:"lab",title:"Lab: Trunk 2 switch + mô phỏng VTP revision attack",desc:"Cấu hình trunk, verify VLAN đi đúng, thực nghiệm VTP revision để hiểu rủi ro.",
+detail:{summary:"Lab quan trọng: thực nghiệm VTP revision attack giúp bạn hiểu tại sao nhiều engineer khuyến nghị tắt VTP.",
+points:["Tạo 2 switch, nối trunk giữa 2 switch","Switch1: tạo VLAN 10,20,30 (VTP Server) | Switch2: VTP Client","Verify: show vlan brief trên Switch2 — đã nhận VLAN từ Switch1","Mô phỏng attack: reset Switch2 sang VTP Server với revision cao hơn → xem VLAN bị xóa trên Switch1","Lesson: khi thêm switch mới vào production, LUÔN kiểm tra 'show vtp status' và reset revision trước"],
+tip:"Reset VTP revision: đổi VTP domain tạm (bất kỳ tên nào), rồi đổi lại — revision về 0",
+cmds:"switch# show vtp status\nswitch# show interfaces trunk\nswitch# show vlan brief\n\nReset revision:\nswitch(config)# vtp domain TEMP\nswitch(config)# vtp domain BenhVienA"}},
+{type:"extra",title:"Mở rộng: VLAN Hopping Attack",desc:"Hiểu cách attacker bypass VLAN isolation và cách phòng chống.",
+detail:{summary:"VLAN hopping là kỹ thuật tấn công bypass VLAN segmentation. Hiểu để phòng chống đúng cách.",
+points:["Switch Spoofing: attacker giả vờ là switch, negotiate trunk với switch thật → truy cập mọi VLAN","Double Tagging: gửi frame với 2 VLAN tag. Switch bỏ tag ngoài (native VLAN), tag trong đi vào VLAN đích","Phòng chống: switchport nonegotiate (tắt DTP), đổi native VLAN khỏi VLAN 1, port không dùng → shutdown + gán vào VLAN đen"],
+tip:"Tất cả port không dùng: shutdown + access vlan 999 (VLAN không có thiết bị nào). Đây là hardening cơ bản.",
+cmds:"switch(config)# interface range f0/10-24\nswitch(config-if-range)# switchport mode access\nswitch(config-if-range)# switchport access vlan 999\nswitch(config-if-range)# shutdown\nswitch(config-if-range)# description UNUSED_PORT"}}
+]},
+{ph:1,w:7,topic:"STP / RSTP",sub:"Root Bridge, Port roles, PortFast, BPDU Guard",lessons:[
+{type:"theory",title:"STP: Tại sao cần và cách hoạt động",desc:"Layer 2 loop gây broadcast storm làm sập toàn mạng — STP ngăn chặn điều này.",
+detail:{summary:"Switching loop khiến frame đi vòng vô tận, nhân lên theo cấp số nhân, gây broadcast storm trong vài giây. STP là cơ chế duy nhất ngăn điều này ở L2.",
+points:["Broadcast storm: frame broadcast nhân lên mỗi vòng lặp → switch CPU 100% → mạng down hoàn toàn","Bridge Protocol Data Unit (BPDU): switch gửi nhau để bầu Root Bridge và chọn port trạng thái","Root Bridge election: Bridge ID = Priority(16bit) + MAC(48bit). BID nhỏ nhất = Root Bridge","Default priority: 32768. Ép Root Bridge: set priority 4096 hoặc thấp hơn (bội số của 4096)","Port roles: Root Port (tốt nhất về Root), Designated Port (forward), Blocked/Alternate (dự phòng)"],
+tip:"Root Bridge PHẢI là switch tốt nhất (core switch) để traffic đi hiệu quả. Root Bridge mặc định theo MAC thấp nhất — không đáng tin cậy",
+cmds:"switch(config)# spanning-tree vlan 10 priority 4096\nswitch# show spanning-tree vlan 10\nswitch# show spanning-tree detail"}},
+{type:"theory",title:"RSTP (802.1w), PortFast và BPDU Guard",desc:"RSTP hội tụ nhanh hơn 50x so với STP. PortFast và BPDU Guard bảo vệ access port.",
+detail:{summary:"RSTP thay thế STP trong hầu hết mạng hiện đại vì tốc độ hội tụ cực nhanh (<1 giây). PortFast và BPDU Guard là cặp đôi quan trọng cho access port.",
+points:["RSTP port roles: Root, Designated, Alternate (thay Blocked), Backup","RSTP hội tụ: dùng handshake proposal/agreement thay vì đợi timer","PortFast: bỏ qua Listening/Learning → ngay lập tức Forwarding. Chỉ dùng trên access port nối PC/server","BPDU Guard: nếu port PortFast nhận BPDU (→ switch lạ cắm vào) → lập tức err-disable port","BPDU Filter: không gửi/nhận BPDU trên port (dùng cẩn thận — có thể tạo loop)"],
+tip:"Luôn dùng PortFast + BPDU Guard song đôi trên access port. BPDU Guard bảo vệ khỏi nhân viên vô tình cắm switch vào port",
+cmds:"switch(config)# spanning-tree mode rapid-pvst\nswitch(config)# interface f0/1\nswitch(config-if)# spanning-tree portfast\nswitch(config-if)# spanning-tree bpduguard enable\n\nGlobal:\nswitch(config)# spanning-tree portfast default\nswitch(config)# spanning-tree portfast bpduguard default\n\nVerify:\nswitch# show spanning-tree\nswitch# show spanning-tree inconsistentports"}},
+{type:"extra",title:"Mở rộng: STP Tuning và bảo mật",desc:"Root Guard, Loop Guard và các kỹ thuật STP tuning nâng cao.",
+detail:{summary:"Các tính năng này quan trọng trong mạng production nhưng ít được dạy ở cấp CCNA — biết thêm giúp troubleshoot hiệu quả hơn.",
+points:["Root Guard: đặt trên Designated port — nếu nhận BPDU superior hơn, port vào inconsistent (block). Bảo vệ Root Bridge hiện tại","Loop Guard: bảo vệ khỏi unidirectional link failure — nếu port ngừng nhận BPDU, chuyển sang loop-inconsistent thay vì Designated","PVST+: mỗi VLAN có STP instance riêng → load balancing trên các trunk link","Uplink Fast / Backbone Fast: tính năng Cisco proprietary để hội tụ nhanh hơn (đã lỗi thời với RSTP)"],
+tip:"Root Guard đặt trên port nối xuống access layer. Loop Guard đặt trên uplink/trunk port. Hai tính năng này bổ sung nhau.",
+cmds:"switch(config-if)# spanning-tree guard root\nswitch(config-if)# spanning-tree guard loop\nswitch# show spanning-tree inconsistentports\nswitch# show spanning-tree detail | include BPDUs"}}
+]},
+{ph:1,w:8,topic:"Inter-VLAN Routing & DHCP",sub:"Router-on-a-stick, L3 Switch, DHCP helper",lessons:[
+{type:"theory",title:"Router-on-a-stick vs Layer 3 Switch SVI",desc:"Hai phương pháp routing giữa các VLAN — hiểu ưu nhược để chọn đúng cho từng tình huống.",
+detail:{summary:"Inter-VLAN routing cần thiết bị L3 (router hoặc L3 switch). Mỗi phương pháp có trade-off về hiệu suất và chi phí.",
+points:["Router-on-a-stick: 1 physical interface + sub-interface. Dễ cấu hình nhưng bottleneck tại router","Sub-interface: int g0/0.10 / encapsulation dot1q 10 / ip address 192.168.10.1 255.255.255.0","L3 Switch SVI: interface vlan 10 / ip address → routing trong switch, hiệu suất cao hơn","L3 Switch: cần enable 'ip routing' global, thêm 'no switchport' cho routed port","Khi nào dùng gì: BV nhỏ (1 router): Router-on-a-stick. BV lớn (có L3 switch): SVI — performance tốt hơn"],
+tip:"Thi CCNA: đề hay cho cả 2 phương pháp và hỏi tại sao L3 switch tốt hơn — trả lời: hardware-based routing, không qua WAN link",
+cmds:"Router-on-a-stick:\nR(config)# interface g0/0.10\nR(config-subif)# encapsulation dot1q 10\nR(config-subif)# ip address 192.168.10.1 255.255.255.0\n\nL3 Switch SVI:\nSW(config)# ip routing\nSW(config)# interface vlan 10\nSW(config-if)# ip address 192.168.10.1 255.255.255.0\nSW(config-if)# no shutdown"}},
+{type:"theory",title:"DHCP server và ip helper-address",desc:"Cấu hình DHCP tập trung và forward DHCP request qua subnet.",
+detail:{summary:"DHCP relay (ip helper-address) là kỹ năng thiết yếu vì hầu hết mạng doanh nghiệp có DHCP server tập trung ở subnet khác với client.",
+points:["DHCP pool: network, default-router (gateway), dns-server, lease time, excluded-address","DHCP Discover là broadcast — không qua router. ip helper-address chuyển broadcast thành unicast gửi đến DHCP server","Đặt ip helper-address trên interface gateway của subnet cần DHCP (router hoặc SVI)","show ip dhcp binding: xem IP nào đã cấp cho MAC nào","show ip dhcp pool: xem pool, số IP đã dùng, còn lại","debug ip dhcp server events: troubleshoot khi client không lấy được IP"],
+tip:"ip helper-address cũng forward các broadcast khác (TFTP, NBNS, etc.) — kiểm soát bằng cách chỉ định service cụ thể nếu cần",
+cmds:"R(config)# ip dhcp excluded-address 192.168.10.1 192.168.10.10\nR(config)# ip dhcp pool VLAN10-CLINICAL\nR(dhcp-config)# network 192.168.10.0 255.255.255.0\nR(dhcp-config)# default-router 192.168.10.1\nR(dhcp-config)# dns-server 8.8.8.8 8.8.4.4\nR(dhcp-config)# lease 7\n\nHelper-address:\nR(config)# interface g0/0.20\nR(config-subif)# ip helper-address 192.168.10.5\n\nVerify:\nR# show ip dhcp binding\nR# show ip dhcp pool"}}
+]},
+{ph:1,w:9,topic:"Static Route & OSPF",sub:"ip route, OSPF single-area, troubleshoot",lessons:[
+{type:"theory",title:"Static Route và Default Route",desc:"Cấu hình và troubleshoot static routing — nền tảng trước khi học dynamic routing.",
+detail:{summary:"Static route là định tuyến thủ công — đơn giản, dự đoán được nhưng không tự động thích nghi khi topology thay đổi.",
+points:["ip route [dst network] [mask] [next-hop IP hoặc exit interface]","Default route: ip route 0.0.0.0 0.0.0.0 [next-hop] — dùng khi không match route nào","Administrative Distance (AD): ưu tiên route. Static=1, OSPF=110, RIP=120 — AD nhỏ hơn = ưu tiên cao hơn","Floating static route: static route với AD cao hơn OSPF — dự phòng khi OSPF fail","show ip route: R=RIP, O=OSPF, S=Static, C=Connected, L=Local"],
+tip:"Dấu * trong 'S*' là default route. 'Gateway of last resort' chỉ ra default route đang dùng — nếu thấy 'not set' là chưa có default route",
+cmds:"R(config)# ip route 10.20.0.0 255.255.255.0 192.168.1.2\nR(config)# ip route 0.0.0.0 0.0.0.0 203.0.113.1\n\nFloating static (backup):\nR(config)# ip route 10.20.0.0 255.255.255.0 192.168.2.2 150\n\nVerify:\nR# show ip route\nR# show ip route 10.20.0.0"}},
+{type:"theory",title:"OSPF: cấu hình, neighbor, troubleshoot",desc:"OSPF là giao thức định tuyến chính trong mạng doanh nghiệp — hiểu neighbor relationship là chìa khóa.",
+detail:{summary:"OSPF tự động trao đổi route và hội tụ khi topology thay đổi. Neighbor relationship là nền tảng — nếu không lên neighbor thì không có route.",
+points:["OSPF neighbor requirement: cùng area, cùng subnet, cùng MTU, cùng hello/dead timer, cùng authentication","router ospf 1: Process ID chỉ có ý nghĩa local — khác process ID vẫn có thể làm neighbor","network [subnet] [wildcard] area 0: wildcard = đảo ngược subnet mask","Router-ID: ưu tiên: manual > loopback cao nhất > physical interface cao nhất","show ip ospf neighbor: xem trạng thái FULL (tốt) hay stuck ở EXSTART/EXCHANGE (lỗi MTU/auth)"],
+tip:"OSPF stuck ở EXSTART thường do MTU mismatch — kiểm tra 'ip ospf mtu-ignore' hoặc đồng nhất MTU trên cả 2 router",
+cmds:"R(config)# router ospf 1\nR(config-router)# router-id 1.1.1.1\nR(config-router)# network 192.168.10.0 0.0.0.255 area 0\nR(config-router)# passive-interface g0/0\nR(config-router)# default-information originate\n\nVerify:\nR# show ip ospf neighbor\nR# show ip ospf interface\nR# show ip route ospf"}}
+]},
+{ph:1,w:10,topic:"EtherChannel & Port Security",sub:"LACP, PAgP, port-security, violation",lessons:[
+{type:"theory",title:"EtherChannel: LACP và PAgP",desc:"Gộp nhiều link vật lý thành 1 logical để tăng băng thông và redundancy.",
+detail:{summary:"EtherChannel giải quyết bottleneck giữa 2 switch bằng cách gộp 2-8 link vật lý. STP xem EtherChannel như 1 link duy nhất nên không block.",
+points:["LACP (802.3ad, chuẩn IEEE): active/active hoặc active/passive. Nên dùng trong production","PAgP (Cisco proprietary): desirable/desirable hoặc desirable/auto","Channel-group: interface vật lý gán vào nhóm → tạo port-channel interface logic","Load balancing: theo src-mac, dst-mac, src-dst-mac, src-ip, dst-ip (cấu hình global)","EtherChannel fail: nếu một link down, traffic tự chuyển sang link còn lại — không bị ngắt kết nối"],
+tip:"Các port trong EtherChannel PHẢI có cùng speed, duplex, VLAN mode, trunk allowed VLAN — không match sẽ bị suspend",
+cmds:"switch(config)# interface range g0/1-2\nswitch(config-if-range)# channel-group 1 mode active\nswitch(config-if-range)# exit\nswitch(config)# interface port-channel 1\nswitch(config-if)# switchport mode trunk\nswitch(config-if)# switchport trunk allowed vlan 10,20,30\n\nVerify:\nswitch# show etherchannel summary\nswitch# show etherchannel port-channel"}},
+{type:"theory",title:"Port Security: bảo vệ khỏi thiết bị trái phép",desc:"Giới hạn số MAC và loại MAC được phép trên một cổng switch.",
+detail:{summary:"Port Security ngăn nhân viên cắm switch giả vào mạng hoặc thiết bị không được phép vào hạ tầng BV.",
+points:["switchport port-security: bật tính năng (yêu cầu port phải là access mode)","maximum [n]: số MAC tối đa được phép (default: 1)","violation shutdown: port vào err-disabled nếu vi phạm (mạnh nhất, thường dùng)","violation restrict: drop frame vi phạm, tăng counter, gửi syslog","violation protect: chỉ drop frame vi phạm, không log (yếu nhất)","mac-address sticky: tự học và lưu MAC vào running-config — tiện lợi cho môi trường stable"],
+tip:"Sau khi port err-disabled: shutdown rồi no shutdown để recover. Hoặc: errdisable recovery cause psecure-violation auto-recover",
+cmds:"switch(config-if)# switchport mode access\nswitch(config-if)# switchport port-security\nswitch(config-if)# switchport port-security maximum 2\nswitch(config-if)# switchport port-security violation shutdown\nswitch(config-if)# switchport port-security mac-address sticky\n\nVerify:\nswitch# show port-security\nswitch# show port-security interface f0/1\nswitch# show port-security address"}}
+]},
+{ph:2,w:11,topic:"ACL — Standard & Extended",sub:"Lọc traffic, wildcard, ip access-group",lessons:[
+{type:"theory",title:"Standard ACL và Extended ACL",desc:"Hai loại ACL với mức độ chi tiết khác nhau khi lọc traffic.",
+detail:{summary:"ACL là danh sách quy tắc xử lý packet theo thứ tự từ trên xuống. Mỗi ACL kết thúc bằng implicit deny all.",
+points:["Standard ACL (1-99): chỉ lọc src IP — đặt gần destination để tránh block traffic không cần thiết","Extended ACL (100-199): lọc src IP, dst IP, protocol, port — đặt gần source","Wildcard mask: 0 = must match, 1 = don't care. /24 mask 255.255.255.0 → wildcard 0.0.0.255","host 10.1.1.1 = 10.1.1.1 0.0.0.0 | any = 0.0.0.0 255.255.255.255","Thứ tự xử lý: top-down, match đầu tiên thì dừng. Implicit deny all ở cuối"],
+tip:"Hay quên: ACL không có sẵn — phải tạo rồi apply vào interface với 'ip access-group'. ACL chưa apply thì chưa có tác dụng",
+cmds:"Standard ACL:\nR(config)# access-list 10 deny 192.168.30.0 0.0.0.255\nR(config)# access-list 10 permit any\nR(config)# int g0/1\nR(config-if)# ip access-group 10 out\n\nExtended Named ACL:\nR(config)# ip access-list extended BLOCK-GUEST\nR(config-ext-nacl)# deny tcp 192.168.30.0 0.0.0.255 192.168.10.0 0.0.0.255 eq 23\nR(config-ext-nacl)# permit ip any any\nR# show access-lists"}},
+{type:"extra",title:"Mở rộng: ACL troubleshoot và best practices",desc:"Kỹ thuật debug ACL và các lỗi thường gặp.",
+detail:{summary:"ACL sai là một trong những lỗi phổ biến nhất trong thực tế. Biết cách debug và tránh các bẫy thường gặp.",
+points:["show access-lists: xem match count — nếu counter không tăng khi traffic đi qua → ACL chưa apply đúng hướng","ip access-list resequence: đánh lại số thứ tự để có chỗ chèn rule mới vào giữa","log keyword: thêm vào cuối permit/deny để ghi log — hữu ích debug nhưng tốn CPU","Inbound vs Outbound: inbound filter traffic vào interface, outbound filter traffic ra khỏi interface","Bẫy phổ biến: permit any quá rộng cuối list nhưng quên rằng implicit deny đã block trước đó"],
+tip:"Khi debug: show ip access-lists → xem match count. Nếu không có match → traffic không đến interface đó, hoặc ACL apply sai hướng",
+cmds:"R# show ip access-lists\nR# show running-config | include access\nR# show interfaces g0/1 | include access list\n\nResequence:\nR(config)# ip access-list resequence BLOCK-GUEST 10 10\n\nLog:\nR(config-ext-nacl)# deny tcp any any eq 23 log"}}
+]},
+{ph:2,w:12,topic:"NAT / PAT & WAN",sub:"NAT static, dynamic, PAT overload",lessons:[
+{type:"theory",title:"NAT static, dynamic và PAT",desc:"Ba dạng NAT từ đơn giản đến phức tạp nhất.",
+detail:{summary:"NAT cho phép nhiều thiết bị dùng IP private ra Internet qua 1 hoặc vài IP public. PAT (NAT overload) là dạng phổ biến nhất.",
+points:["NAT Static: 1 IP private ↔ 1 IP public cố định. Dùng cho server nội bộ cần truy cập từ ngoài","NAT Dynamic: pool IP public, mapping ngẫu nhiên. Ít dùng vì cần nhiều IP public","PAT (overload): nhiều IP private → 1 IP public, phân biệt bằng port. Tiết kiệm IP public nhất","ip nat inside: đặt trên interface LAN (private side)","ip nat outside: đặt trên interface WAN (public side)","show ip nat translations: xem mapping hiện tại (Proto | Inside local | Inside global | Outside global)"],
+tip:"debug ip nat: xem real-time translation — hữu ích troubleshoot nhưng chỉ dùng trên thiết bị ít traffic",
+cmds:"PAT configuration:\nR(config)# access-list 1 permit 192.168.0.0 0.0.255.255\nR(config)# ip nat inside source list 1 interface g0/0 overload\nR(config)# interface g0/0\nR(config-if)# ip nat outside\nR(config)# interface g0/1\nR(config-if)# ip nat inside\n\nNAT Static:\nR(config)# ip nat inside source static 192.168.10.100 203.0.113.10\n\nVerify:\nR# show ip nat translations\nR# show ip nat statistics"}}
+]},
+{ph:2,w:13,topic:"Wireless — 802.11 & Ruckus",sub:"Wi-Fi standards, WPA2/3, Controller AP",lessons:[
+{type:"theory",title:"802.11 standards và RF fundamentals",desc:"Nền tảng kỹ thuật để thiết kế và troubleshoot mạng Wi-Fi BV.",
+detail:{summary:"Hiểu RF fundamentals giúp giải thích tại sao Wi-Fi BV kém chất lượng và đề xuất cải thiện đúng hướng.",
+points:["802.11b/g: 2.4GHz, 3 channel không overlap (1,6,11), tầm xa nhưng chậm và nhiễu","802.11n (Wi-Fi 4): dual-band, MIMO, channel bonding 40MHz","802.11ac (Wi-Fi 5): 5GHz only, MU-MIMO, channel 80-160MHz — nhanh nhưng tầm ngắn hơn","802.11ax (Wi-Fi 6/6E): OFDMA, BSS Coloring, Target Wake Time — tối ưu cho môi trường đông client như BV","RSSI: chỉ số tín hiệu (dBm). -50dBm rất tốt, -70dBm ổn, dưới -80dBm kém","Co-channel interference: 2 AP cùng channel phủ nhau → giảm throughput nghiêm trọng"],
+tip:"Môi trường BV đặc biệt: tường gạch dày, thiết bị y tế phát nhiễu 2.4GHz (màn hình tim, máy thở). Ưu tiên 5GHz cho thiết bị quan trọng",
+cmds:""}},
+{type:"extra",title:"Mở rộng: Thiết kế Wi-Fi cho BV",desc:"Nguyên tắc thiết kế WLAN trong môi trường y tế đặc biệt.",
+detail:{summary:"Mạng Wi-Fi BV phức tạp hơn văn phòng thông thường: thiết bị di động quan trọng, roaming liên tục, thiết bị y tế nhạy cảm.",
+points:["Density-based design: BV có nhiều thiết bị/m² → cần nhiều AP hơn, giảm transmit power tránh co-channel interference","Roaming 802.11r (Fast BSS Transition): thiết bị di động y tế (máy tính bảng của bác sĩ) cần roaming <50ms","SSID segmentation: không dùng 1 SSID cho tất cả. SSID CLINICAL (VLAN 10, WPA2-Enterprise), SSID GUEST (VLAN 100, isolated)","Band steering: đẩy client có khả năng 5GHz sang 5GHz band tự động","Ruckus ChannelFly: tự động chọn channel tốt nhất theo real-time measurement — không cần manual planning"],
+tip:"Thiết bị IoT y tế (nhiệt kế thông minh, máy đo SpO2 wireless) thường chỉ hỗ trợ 2.4GHz — cần giữ 2.4GHz ổn định nhưng quản lý nhiễu",
+cmds:""}}
+]},
+{ph:2,w:14,topic:"Security: AAA, 802.1X, DHCP Snooping",sub:"RADIUS, TACACS+, DAI, Rogue DHCP",lessons:[
+{type:"theory",title:"DHCP Snooping và Dynamic ARP Inspection",desc:"Hai tính năng bảo mật switch bắt buộc trong môi trường BV.",
+detail:{summary:"DHCP Snooping và DAI là Layer 2 security features ngăn các cuộc tấn công phổ biến trong LAN mà BV thường bỏ qua.",
+points:["DHCP Snooping: switch xây dựng binding table (MAC, IP, Port, VLAN) từ DHCP exchange hợp lệ","Trust port: uplink/port nối DHCP server thật. Untrust: access port nối client — reject DHCP Offer từ đây","ip dhcp snooping vlan 10,20: enable per-VLAN","DAI (Dynamic ARP Inspection): validate ARP packet dựa trên DHCP Snooping binding table","ARP Spoofing: attacker gửi ARP reply giả, claim IP của gateway → MITM attack. DAI chặn điều này"],
+tip:"Bật ip dhcp snooping information option (DHCP option 82) có thể break một số DHCP server — nếu client không lấy được IP sau khi bật snooping, thử: no ip dhcp snooping information option",
+cmds:"switch(config)# ip dhcp snooping\nswitch(config)# ip dhcp snooping vlan 10,20,30\nswitch(config)# no ip dhcp snooping information option\nswitch(config)# interface g0/1\nswitch(config-if)# ip dhcp snooping trust\n\nDAI:\nswitch(config)# ip arp inspection vlan 10,20,30\nswitch(config-if)# ip arp inspection trust\n\nVerify:\nswitch# show ip dhcp snooping binding\nswitch# show ip arp inspection"}}
+]},
+{ph:2,w:15,topic:"QoS & IP Services",sub:"DSCP, LLQ, NTP, SNMP, Syslog",lessons:[
+{type:"theory",title:"QoS: Phân loại và ưu tiên traffic",desc:"Đảm bảo chất lượng thoại và video trong khi chia sẻ băng thông với data traffic.",
+detail:{summary:"Không có QoS, traffic HIS database và IP phone cạnh tranh cùng băng thông — gây delay, jitter làm cuộc gọi bị rè, ngắt.",
+points:["DSCP EF (46/0x2E): Expedited Forwarding — IP phone, real-time voice. Delay <150ms","DSCP AF41 (34): Video conference, camera surveillance","DSCP AF21 (18): HIS/LIS critical data. AF11: bulk data thấp hơn","DSCP CS6/CS7 (48/56): routing protocol, network control","LLQ (Low Latency Queuing): kết hợp Priority Queue (voice) + CBWFQ (data) — best practice cho voice","Shaping: smooth traffic, buffer excess. Policing: drop excess, phản ứng nhanh hơn"],
+tip:"Ruckus AP hỗ trợ WMM (Wi-Fi Multimedia) — map DSCP sang CoS để ưu tiên voice trên wireless. Bật WMM trên SSID có IP phone",
+cmds:"R(config)# class-map match-all VOIP\nR(config-cmap)# match dscp ef\nR(config)# policy-map QOS-POLICY\nR(config-pmap)# class VOIP\nR(config-pmap-c)# priority 512\nR(config-pmap)# class class-default\nR(config-pmap-c)# fair-queue\nR(config)# interface g0/0\nR(config-if)# service-policy output QOS-POLICY\n\nVerify:\nR# show policy-map interface g0/0"}}
+]},
+{ph:3,w:16,topic:"IPv6 & Network Automation",sub:"IPv6 dual-stack, Python netmiko",lessons:[
+{type:"theory",title:"IPv6 cơ bản và dual-stack",desc:"Nền tảng IPv6 cho mạng hiện đại — BV nên chuẩn bị lộ trình migration.",
+detail:{summary:"IPv6 với không gian địa chỉ 128-bit giải quyết cạn kiệt IPv4. Dual-stack chạy song song IPv4 và IPv6 trong giai đoạn transition.",
+points:["Format: 8 nhóm 4 hex, phân cách bằng ':'. Rút gọn: :: thay nhiều nhóm 0000 liên tiếp","Global Unicast: 2000::/3 (tương đương IP public). Link-local: FE80::/10 (tự sinh, không route)","SLAAC: thiết bị tự cấu hình IPv6 từ Router Advertisement (không cần DHCP)","EUI-64: tính IPv6 từ MAC address — chia MAC làm 2, chèn FFFE ở giữa, flip bit 7","OSPFv3: chạy OSPF cho IPv6 — cú pháp khác OSPFv2 nhưng nguyên lý tương tự"],
+tip:"Link-local FE80:: tự sinh trên mọi interface có IPv6 — không cần cấu hình thủ công. Dùng làm next-hop trong static route IPv6",
+cmds:"R(config)# ipv6 unicast-routing\nR(config)# interface g0/0\nR(config-if)# ipv6 address 2001:db8:1::1/64\nR(config-if)# ipv6 address fe80::1 link-local\nR(config-if)# no shutdown\n\nVerify:\nR# show ipv6 interface brief\nR# show ipv6 route"}},
+{type:"extra",title:"Mở rộng: Python automation với netmiko",desc:"Script backup config tự động cho tất cả switch BV.",
+detail:{summary:"Network automation giúp tiết kiệm hàng giờ công việc thủ công. Script đơn giản dưới đây backup config từ nhiều switch cùng lúc.",
+points:["Netmiko: thư viện Python SSH vào thiết bị network (Cisco, Juniper, Arista, ...)","Cài đặt: pip install netmiko","Đọc danh sách switch từ file CSV — dễ maintain và scale","Lưu output vào file với timestamp — tạo lịch sử backup có thể so sánh","Lập lịch với cron (Linux) hoặc Task Scheduler (Windows) để chạy hàng đêm"],
+tip:"Bắt đầu đơn giản: script chạy show running-config và lưu file. Sau đó nâng cấp: parse output, so sánh diff, alert khi thay đổi",
+cmds:"from netmiko import ConnectHandler\nimport datetime\n\ndevices = [\n  {'device_type':'cisco_ios','host':'192.168.99.10',\n   'username':'admin','password':'Admin@BV'},\n  {'device_type':'cisco_ios','host':'192.168.99.11',\n   'username':'admin','password':'Admin@BV'},\n]\n\nfor device in devices:\n  conn = ConnectHandler(**device)\n  output = conn.send_command('show running-config')\n  ts = datetime.datetime.now().strftime('%Y%m%d_%H%M')\n  filename = f\"backup_{device['host']}_{ts}.txt\"\n  with open(filename, 'w') as f:\n    f.write(output)\n  conn.disconnect()\n  print(f\"Backed up {device['host']} -> {filename}\")"}}
+]},
+{ph:3,w:17,topic:"Mock Exam — Chẩn đoán điểm yếu",sub:"60 câu/ngày, phân tích sai, drill",lessons:[
+{type:"theory",title:"Chiến lược làm mock exam hiệu quả",desc:"Phương pháp học từ sai lầm — không phải số câu đúng mà là chất lượng review.",
+detail:{summary:"Mock exam không phải để test mà để discover điểm yếu. Chất lượng review câu sai quan trọng hơn điểm số.",
+points:["Làm 60 câu không tra Google — simulate điều kiện thi thật","Sau mỗi câu sai: đọc explanation, ghi vào note tại sao sai (không biết / nhầm khái niệm / đọc đề sai)","Phân loại câu sai: OSPF / STP / Subnetting / ACL / Wireless / Security","Chủ đề sai >30%: quay lại học lại từ đầu, không chỉ ôn qua","Chủ đề sai <10%: review nhẹ, tập trung vào chủ đề yếu hơn"],
+tip:"Boson ExSim cho phép xem explanation chi tiết từng câu — đây là công cụ học tốt nhất, không chỉ để test. Đọc kỹ explanation dù câu đúng",
+cmds:""}},
+{type:"lab",title:"Lab troubleshoot: Tìm lỗi trong topology có sẵn",desc:"Luyện tư duy troubleshoot có hệ thống từ L1 đến L7.",
+detail:{summary:"Troubleshoot là kỹ năng thi CCNA (simulation question) và quan trọng nhất trong thực tế. Phải có phương pháp rõ ràng.",
+points:["Bước 1: Define problem (mô tả chính xác: ai không ping được ai, từ khi nào)","Bước 2: Gather facts (show commands, không đoán)","Bước 3: Consider possibilities (L1 → L7)","Bước 4: Create action plan (sửa 1 thứ, test ngay, đừng sửa nhiều thứ cùng lúc)","Bước 5: Implement & verify (test sau mỗi thay đổi)","Bước 6: Document (ghi lại nguyên nhân và cách fix)"],
+tip:"Lab troubleshoot tốt nhất: nhờ bạn học hoặc dùng PT Activity với lỗi cài sẵn. Tự tạo lab lỗi cho nhau để luyện",
+cmds:"Checklist troubleshoot cơ bản:\nshow interfaces status → port up/down?\nshow ip interface brief → IP đúng không?\nshow vlan brief → port đúng VLAN?\nshow spanning-tree → port có bị block?\nshow ip route → có route đến đích?\nshow access-lists → ACL block không?\nping / traceroute → xác nhận kết nối"}}
+]},
+{ph:3,w:18,topic:"Mock Exam — Drill điểm yếu",sub:"Subnetting không máy tính, debug",lessons:[
+{type:"theory",title:"Drill Subnetting không dùng máy tính",desc:"Luyện tính subnet trong 30 giây — kỹ năng bắt buộc cho kỳ thi.",
+detail:{summary:"Thi CCNA không cho dùng máy tính. Subnetting xuất hiện trong nhiều câu hỏi — phải tính nhanh và chính xác.",
+points:["Học thuộc: /24=256, /25=128, /26=64, /27=32, /28=16, /29=8, /30=4","Trick: network address = làm tròn xuống theo block size. Block size = 256 - subnet mask octet","Ví dụ: 192.168.1.200/27. Block = 256-224=32. Networks: 0,32,64,...,192,224. → Network: .192, Broadcast: .223","Luyện: subnettingpractice.com, 200 bài cho đến khi đạt <30 giây/bài","Câu hỏi hay: 'IP nào thuộc cùng subnet với 10.1.1.100/28?' → Block=16, dải: 96-111 → .100 trong dải 96-111"],
+tip:"Thi CCNA có 2-3 câu subnetting thuần + nhiều câu ghép (ACL, OSPF, NAT có chứa subnet). Tốn 2 phút/câu subnet là bình thường",
+cmds:""}}
+]},
+{ph:3,w:19,topic:"Final Review & Lab tổng hợp",sub:"Mind map, flashcard, mega lab",lessons:[
+{type:"theory",title:"Ôn toàn bộ theo mind map + 200 commands",desc:"Review có hệ thống toàn bộ kiến thức trước ngày thi.",
+detail:{summary:"Tuần cuối không học kiến thức mới — chỉ consolidate và kiểm tra lại những điểm còn mơ hồ.",
+points:["Mind map theo flow: Physical → Ethernet → VLAN → STP → Inter-VLAN → OSPF → ACL → NAT → Wireless → Security → QoS","Flash card 200 commands: mặt trước = tình huống, mặt sau = lệnh. Không học lệnh rời — học trong context","Đọc Cisco CCNA exam topics chính thức: cisco.com/go/ccna — verify không bỏ chủ đề nào","Tuần này: 3 mock exam toàn bộ, review câu sai từ tuần 17-18, đọc lại note câu sai"],
+tip:"Nếu còn chủ đề nào score dưới 70%: dành 2 giờ drill chủ đề đó, không cố học toàn bộ lại",
+cmds:""}},
+{type:"lab",title:"Mega Lab: Topology tích hợp 20 tuần",desc:"Lab cuối cùng tích hợp mọi kiến thức: VLAN, OSPF, ACL, NAT, DHCP, QoS.",
+detail:{summary:"Mega lab là bài kiểm tra cuối trước thi — nếu complete được lab này, bạn đã sẵn sàng.",
+points:["Router1(ISP) — Router2(Core) — L3Switch(Distribution) — 2xSwitch(Access)","L3Switch: OSPF với Router2, VLAN 10/20/30, SVI routing, DHCP pools","Access Switch: VLAN access port, Voice VLAN, Port Security, DHCP Snooping, PortFast+BPDU Guard","Router2: OSPF, NAT PAT ra ISP, ACL block Guest vào Clinical, QoS policy","WLC + 2 AP: SSID Clinical (VLAN 10) + SSID Guest (VLAN 100), WPA2","Verify: PC VLAN 10 ping PC VLAN 20 qua L3, ping 8.8.8.8 qua NAT, Guest không vào Clinical"],
+tip:"Dùng Packet Tracer để build và save file. Review lại file này tối trước thi để refresh toàn bộ kiến thức",
+cmds:""}}
+]},
+{ph:3,w:20,topic:"Ngày thi CCNA 200-301",sub:"Pearson VUE, 120 phút, 825/1000 điểm đậu",lessons:[
+{type:"theory",title:"Thông tin thi và chiến lược làm bài",desc:"Chuẩn bị logistics và chiến lược để đạt điểm tối đa trong 120 phút.",
+detail:{summary:"Thi CCNA không chỉ về kiến thức mà còn về time management. Hiểu cấu trúc đề để phân bổ thời gian đúng.",
+points:["Đăng ký: pearsonvue.com/cisco. Chọn trung tâm thi hoặc OnVUE (online). Mang CMND/hộ chiếu","Thời gian: 120 phút, ~100-120 câu. Điểm đậu: 825/1000 (~75%)","Câu multiple choice: trả lời và flag nếu không chắc — skip để quay lại","Simulation question (drag-drop, PT activity): đọc kỹ yêu cầu, làm từng bước","Time management: ~60-70 giây/câu. Câu subnet: không quá 2 phút","Không thể quay lại câu simulation — làm cẩn thận ngay lần đầu"],
+tip:"Đến trung tâm thi trước 30 phút. Để điện thoại ở xe. Lockers thường có ở trung tâm thi. Mang nước (nếu được phép)",
+cmds:""}},
+{type:"extra",title:"Sau khi đậu: Lộ trình tiếp theo",desc:"Từ CCNA, xây dựng lộ trình chuyên môn phù hợp với môi trường BV.",
+detail:{summary:"CCNA là bước khởi đầu. Với background BV và Fortinet, có nhiều hướng phát triển chuyên sâu giá trị cao.",
+points:["CCNP Enterprise (300-401 ENCOR + 300-410 ENARSI): chuyên sâu routing, SD-WAN, wireless","Fortinet NSE 4 (FortiGate): firewall security chuyên sâu — áp dụng ngay tại BV","CompTIA Security+ hoặc Fortinet NSE 5-7: nếu muốn theo hướng cybersecurity","HCISPP (HealthCare Information Security and Privacy): chứng chỉ security chuyên cho y tế","Cập nhật LinkedIn và CV ngay sau khi đậu — nhiều nhà tuyển dụng filter theo CCNA"],
+tip:"Với kinh nghiệm thực tế tại BV + CCNA + Fortinet NSE: profile rất mạnh cho vị trí Network/Security Engineer tại hospital system hoặc healthcare IT vendor",
+cmds:""}}
+]}
+];
+
+const PHASES=[{name:"GĐ1 — Nền tảng",color:"#2563eb"},{name:"GĐ2 — VLAN & Routing",color:"#7c3aed"},{name:"GĐ3 — Security & Services",color:"#dc2626"},{name:"GĐ4 — Ôn thi & Chứng chỉ",color:"#16a34a"}];
+const TLABEL={theory:"Lý thuyết",lab:"Lab",apply:"Áp dụng BV",extra:"Mở rộng"};
+const TCLASS={theory:"t-theory",lab:"t-lab",apply:"t-apply",extra:"t-extra"};
+let done=new Set(),openWeeks=new Set(),openLessons=new Set(),filt="all",collPhase=new Set();
+
+function lid(w,i){return`w${w}l${i}`}
+function save(){try{localStorage.setItem('ccna2-done',JSON.stringify([...done]))}catch(e){}}
+function load(){try{const d=JSON.parse(localStorage.getItem('ccna2-done')||'[]');done=new Set(d)}catch(e){}}
+load();
+
+function stats(){
+  let tot=0,dn=0,wkDone=0;
+  WEEKS.forEach(wk=>{wk.lessons.forEach((_,i)=>{tot++;if(done.has(lid(wk.w,i)))dn++;});const allD=wk.lessons.every((_,i)=>done.has(lid(wk.w,i)));if(allD)wkDone++;});
+  const pct=tot?Math.round(dn/tot*100):0;
+  document.getElementById('pf').style.width=pct+'%';
+  document.getElementById('pt').textContent=`${dn} / ${tot} bài hoàn thành`;
+  document.getElementById('s-done').textContent=dn;
+  document.getElementById('s-week').textContent=wkDone;
+  document.getElementById('s-pct').textContent=pct+'%';
+  document.getElementById('s-left').textContent=WEEKS.filter(wk=>!wk.lessons.every((_,i)=>done.has(lid(wk.w,i)))).length;
+}
+
+function renderFilters(){
+  const opts=[{k:'all',l:'Tất cả'},{k:'theory',l:'Lý thuyết'},{k:'lab',l:'Lab'},{k:'apply',l:'Áp dụng BV'},{k:'extra',l:'Mở rộng'},{k:'todo',l:'Chưa học'}];
+  document.getElementById('flt').innerHTML=opts.map(o=>`<button class="fbtn${filt===o.k?' on':''}" onclick="setFilt('${o.k}')">${o.l}</button>`).join('');
+}
+
+function renderPhases(){
+  const el=document.getElementById('phases');
+  el.innerHTML=PHASES.map((ph,pi)=>{
+    const weeks=WEEKS.filter(wk=>wk.ph===pi);
+    const visWeeks=weeks.filter(wk=>{
+      if(filt==='all')return true;
+      if(filt==='todo')return !wk.lessons.every((_,i)=>done.has(lid(wk.w,i)));
+      return wk.lessons.some(ls=>ls.type===filt);
+    });
+    if(!visWeeks.length)return'';
+    const tot=weeks.reduce((a,wk)=>a+wk.lessons.length,0);
+    const dn=weeks.reduce((a,wk)=>a+wk.lessons.filter((_,i)=>done.has(lid(wk.w,i))).length,0);
+    const pct=tot?Math.round(dn/tot*100):0;
+    const isC=collPhase.has(pi);
+    return`<div>
+<div class="phase-hdr" onclick="togglePhase(${pi})">
+<span class="phase-title" style="color:${ph.color}">${ph.name}</span>
+<div class="pct-bar"><div class="pct-fill" style="width:${pct}%;background:${ph.color}"></div></div>
+<span class="pbadge" style="background:${ph.color}18;color:${ph.color}">${pct}%</span>
+<span style="font-size:11px;color:var(--color-text-tertiary);transition:transform .2s;display:inline-block;transform:rotate(${isC?-90:0}deg)">▾</span>
+</div>
+<div style="display:${isC?'none':'block'}">${visWeeks.map(wk=>renderWeek(wk,ph.color)).join('')}</div>
+</div>`;
+  }).join('');
+}
+
+function renderWeek(wk,color){
+  const lessons=filt==='all'?wk.lessons:filt==='todo'?wk.lessons.filter((_,i)=>!done.has(lid(wk.w,i))):wk.lessons.filter(ls=>ls.type===filt);
+  if(!lessons.length)return'';
+  const dn=wk.lessons.filter((_,i)=>done.has(lid(wk.w,i))).length;
+  const tot=wk.lessons.length;
+  const allD=dn===tot;
+  const isO=openWeeks.has(wk.w);
+  const sc=allD?'#16a34a':dn>0?'#d97706':'#888780';
+  const sb=allD?'#dcfce7':dn>0?'#fef3c7':'var(--color-background-secondary)';
+  const st=allD?'✓ Xong':dn>0?`${dn}/${tot}`:'Chưa học';
+  return`<div class="week-card">
+<div class="week-hdr" onclick="toggleWeek(${wk.w})">
+<div class="wnum" style="background:${color}18;color:${color}">T${wk.w}</div>
+<div class="wmeta"><div class="wtopic">${wk.topic}</div><div class="wsub">${wk.sub}</div></div>
+<span class="wstatus" style="color:${sc};background:${sb};border-color:${sc}40" onclick="event.stopPropagation();markWeek(${wk.w})">${st}</span>
+<span class="wchev" style="transform:rotate(${isO?180:0}deg)">▾</span>
+</div>
+<div class="wbody${isO?' open':''}">
+${lessons.map((ls,ii)=>{
+  const origIdx=wk.lessons.indexOf(ls);
+  const id=lid(wk.w,origIdx);
+  const isDone=done.has(id);
+  const isLO=openLessons.has(id);
+  const d=ls.detail||{};
+  return`<div class="lesson-item">
+<div class="lcheck${isDone?' done':''}" onclick="toggleLesson('${id}')">${isDone?'✓':''}</div>
+<div class="linfo">
+<div class="ltitle">${ls.title}<span class="tag ${TCLASS[ls.type]}">${TLABEL[ls.type]}</span></div>
+<div class="ldesc">${ls.desc}</div>
+${d.summary?`<span class="lexpand" onclick="toggleDetail('${id}')"><span style="display:inline-block;transition:transform .2s;transform:rotate(${isLO?90:0}deg)">▶</span> ${isLO?'Thu gọn':'Xem chi tiết & lệnh'}</span>
+<div class="ldetail${isLO?' open':''}">
+${d.summary?`<p style="margin-bottom:8px">${d.summary}</p>`:''}
+${d.points&&d.points.length?`<h4>Nội dung chi tiết</h4><ul>${d.points.map(p=>`<li>${p}</li>`).join('')}</ul>`:''}
+${d.tip?`<div class="tip">Tip thi: ${d.tip}</div>`:''}
+${d.warn?`<div class="warn">Cảnh báo: ${d.warn}</div>`:''}
+${d.cmds?`<h4 style="margin-top:8px">Lệnh thực hành</h4><code class="cmd">${d.cmds}</code>`:''}
+${d.summary?`<button class="askbtn" onclick="sendPrompt('Giải thích thêm về: ${ls.title}')">Hỏi Claude về chủ đề này ↗</button>`:''}
+</div>`:''}
+</div>
+</div>`;
+}).join('')}
+</div>
+</div>`;
+}
+
+function render(){renderFilters();renderPhases();stats();}
+window.setFilt=function(f){filt=f;render();}
+window.togglePhase=function(pi){collPhase.has(pi)?collPhase.delete(pi):collPhase.add(pi);render();}
+window.toggleWeek=function(w){openWeeks.has(w)?openWeeks.delete(w):openWeeks.add(w);render();}
+window.toggleLesson=function(id){done.has(id)?done.delete(id):done.add(id);save();render();}
+window.toggleDetail=function(id){openLessons.has(id)?openLessons.delete(id):openLessons.add(id);render();}
+window.markWeek=function(w){
+  const wk=WEEKS.find(x=>x.w===w);if(!wk)return;
+  const allD=wk.lessons.every((_,i)=>done.has(lid(w,i)));
+  wk.lessons.forEach((_,i)=>{const id=lid(w,i);allD?done.delete(id):done.add(id);});
+  save();render();
+}
+render();
+</script>

@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="vi" data-lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CCNA Study Hub</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=DM+Mono:wght@400;500&family=Inter:wght@300;400;500;600&family=Source+Sans+3:wght@300;400;500;600&family=IBM+Plex+Sans:wght@300;400;500;600&family=Nunito:wght@300;400;500;600&family=Lexend:wght@300;400;500;600&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#efefec;
+  --text:#1a1a18;--text2:#5a5a56;--text3:#9a9a94;
+  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);
+  --info-bg:#e6f1fb;--info-text:#0c447c;--info-border:rgba(55,138,221,0.25);
+  --success-bg:#eaf3de;--success-text:#27500a;--success-border:rgba(99,153,34,0.25);
+  --warn-bg:#faeeda;--warn-text:#633806;
+  --danger-bg:#fcebeb;--danger-text:#791f1f;
+  --sidebar-w:264px;--nav-h:52px;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono','Courier New',monospace;
+  --radius:8px;--radius-lg:12px;
+  --accent:#185fa5;--accent-light:#e6f1fb;
+  --base-size:14px;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;
+  --text:#e8e8e2;--text2:#9a9a94;--text3:#5a5a56;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --info-bg:#0c2a4a;--info-text:#85b7eb;--info-border:rgba(55,138,221,0.2);
+  --success-bg:#172204;--success-text:#97c459;--success-border:rgba(99,153,34,0.2);
+  --warn-bg:#251600;--warn-text:#ef9f27;
+  --danger-bg:#2a0808;--danger-text:#f09595;
+  --accent:#378ADD;--accent-light:#0c2a4a;
+}}
+html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--text);font-size:var(--base-size);line-height:1.6}
+.navbar{position:fixed;top:0;left:0;right:0;height:var(--nav-h);background:var(--bg);border-bottom:0.5px solid var(--border2);display:flex;align-items:center;padding:0 .85rem;gap:8px;z-index:300}
+.nav-brand{display:flex;align-items:center;gap:8px;text-decoration:none;flex-shrink:0}
+.nav-logo{width:28px;height:28px;border-radius:7px;background:var(--accent);display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:700;flex-shrink:0}
+.nav-t1{font-size:14px;font-weight:600;color:var(--text)}
+.nav-t2{font-size:10px;color:var(--text3);display:block;margin-top:-2px}
+.nav-div{width:0.5px;height:20px;background:var(--border2);margin:0 2px;flex-shrink:0}
+.nav-search{flex:1;max-width:280px;position:relative}
+.nav-search input{width:100%;padding:5px 10px 5px 28px;border-radius:16px;border:0.5px solid var(--border2);background:var(--bg2);color:var(--text);font-family:var(--font);font-size:12px;outline:none;transition:all .15s}
+.nav-search input:focus{border-color:var(--accent);background:var(--bg)}
+.nav-si{position:absolute;left:9px;top:50%;transform:translateY(-50%);font-size:12px;color:var(--text3);pointer-events:none}
+.nsr{position:absolute;top:calc(100% + 4px);left:0;right:0;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--radius);box-shadow:0 4px 16px rgba(0,0,0,.08);z-index:400;display:none}
+.nsr.open{display:block}
+.nsr-item{padding:7px 12px;font-size:12px;cursor:pointer;display:flex;align-items:flex-start;gap:8px;color:var(--text)}
+.nsr-item:hover{background:var(--bg2)}
+.nsr-icon{font-size:13px;flex-shrink:0;margin-top:1px}
+.nsr-sub{font-size:10px;color:var(--text3)}
+.nav-right{margin-left:auto;display:flex;align-items:center;gap:6px}
+.nav-prog{display:flex;align-items:center;gap:5px}
+.npb{width:54px;height:3px;background:var(--bg3);border-radius:2px;overflow:hidden}
+.npbf{height:100%;background:var(--success-text);border-radius:2px;transition:width .4s}
+.npt{font-size:10px;color:var(--text3)}
+.lang-tog{display:flex;background:var(--bg2);border:0.5px solid var(--border2);border-radius:16px;overflow:hidden;flex-shrink:0}
+.lang-btn{padding:4px 11px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);background:transparent;color:var(--text2);border:none;transition:all .15s;letter-spacing:.03em}
+.lang-btn.on{background:var(--accent);color:#fff}
+.font-btn{width:30px;height:30px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;color:var(--text2);flex-shrink:0;transition:all .12s;font-family:serif;font-style:normal}
+.font-btn:hover{background:var(--bg3)}
+.font-btn.active{background:var(--accent-light);border-color:var(--accent);color:var(--accent)}
+.menu-tog{width:30px;height:30px;border-radius:var(--radius);border:0.5px solid var(--border2);background:var(--bg2);cursor:pointer;display:none;align-items:center;justify-content:center;font-size:14px;color:var(--text2);flex-shrink:0}
+/* Font Panel */
+.fp{position:fixed;top:var(--nav-h);right:0;width:300px;background:var(--bg);border-left:0.5px solid var(--border2);border-bottom:0.5px solid var(--border2);border-radius:0 0 0 var(--radius-lg);z-index:250;transform:translateY(-10px);opacity:0;pointer-events:none;transition:all .2s ease;box-shadow:-4px 4px 20px rgba(0,0,0,.07)}
+.fp.open{transform:translateY(0);opacity:1;pointer-events:all}
+.fp-hdr{padding:.75rem 1rem .55rem;border-bottom:0.5px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.fp-ttl{font-size:13px;font-weight:600}
+.fp-rst{font-size:11px;color:var(--info-text);cursor:pointer;border:none;background:none;font-family:var(--font)}
+.fp-rst:hover{text-decoration:underline}
+.fp-bdy{padding:.75rem 1rem}
+.fp-row{margin-bottom:.75rem}
+.fp-lbl{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:.4rem;display:block}
+.fp-fonts{display:grid;grid-template-columns:repeat(3,1fr);gap:4px}
+.fp-fo{padding:5px 7px;border-radius:var(--radius);border:0.5px solid var(--border2);cursor:pointer;font-size:11.5px;text-align:center;background:var(--bg2);color:var(--text2);transition:all .12s;line-height:1.3}
+.fp-fo:hover{background:var(--bg3)}
+.fp-fo.on{background:var(--accent-light);border-color:var(--info-border);color:var(--info-text);font-weight:500}
+.fp-fo .fos{font-size:10px;color:var(--text3);display:block;margin-top:1px}
+.fp-sw{display:flex;align-items:center;gap:10px}
+.fp-slider{flex:1;-webkit-appearance:none;height:4px;border-radius:2px;background:var(--bg3);outline:none}
+.fp-slider::-webkit-slider-thumb{-webkit-appearance:none;width:16px;height:16px;border-radius:50%;background:var(--accent);cursor:pointer;border:2px solid var(--bg)}
+.fp-val{font-size:12px;font-weight:500;min-width:28px;text-align:right;color:var(--text)}
+.fp-btns{display:flex;gap:4px;flex-wrap:wrap}
+.fp-btn{flex:1;min-width:0;padding:5px 4px;border-radius:var(--radius);border:0.5px solid var(--border2);cursor:pointer;font-size:11px;text-align:center;background:var(--bg2);color:var(--text2);transition:all .12s;font-family:var(--font);white-space:nowrap;overflow:hidden}
+.fp-btn:hover{background:var(--bg3)}
+.fp-btn.on{background:var(--accent-light);border-color:var(--info-border);color:var(--info-text)}
+.fp-prev{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);padding:8px 10px;font-size:13px;line-height:1.6;color:var(--text2);margin-top:.5rem}
+/* Shell */
+.shell{display:flex;padding-top:var(--nav-h);height:100vh}
+.sidebar{width:var(--sidebar-w);flex-shrink:0;height:calc(100vh - var(--nav-h));overflow-y:auto;overflow-x:hidden;background:var(--bg2);border-right:0.5px solid var(--border2);position:sticky;top:var(--nav-h);transition:transform .25s ease}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px}
+.sb-sec{padding:.6rem 0 .2rem}
+.sb-stitle{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--text3);padding:0 .85rem .35rem}
+.sb-item{display:flex;align-items:center;gap:8px;padding:6px .85rem;cursor:pointer;font-size:12.5px;color:var(--text2);transition:background .1s;position:relative;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font)}
+.sb-item:hover{background:var(--bg3);color:var(--text)}
+.sb-item.active{background:var(--accent-light);color:var(--info-text);font-weight:500}
+.sb-item.active::before{content:'';position:absolute;left:0;top:4px;bottom:4px;width:2.5px;background:var(--accent);border-radius:0 2px 2px 0}
+.sb-icon{font-size:13px;flex-shrink:0;width:17px;text-align:center}
+.sb-badge{margin-left:auto;font-size:9.5px;padding:1px 6px;border-radius:8px;font-weight:600;flex-shrink:0;white-space:nowrap}
+.sb-badge.new{background:var(--info-bg);color:var(--info-text)}
+.sb-badge.lock{background:var(--bg3);color:var(--text3)}
+.sb-sub{display:none}
+.sb-sub.open{display:block}
+.sb-si{display:flex;align-items:center;gap:7px;padding:5px .85rem 5px 2.4rem;cursor:pointer;font-size:12px;color:var(--text2);transition:background .1s;border:none;background:transparent;width:100%;text-align:left;font-family:var(--font)}
+.sb-si:hover{background:var(--bg3);color:var(--text)}
+.sb-si.active{color:var(--info-text);font-weight:500;background:var(--accent-light)}
+.sb-exp{margin-left:auto;font-size:9px;color:var(--text3);transition:transform .2s;flex-shrink:0}
+.sb-item.expanded .sb-exp{transform:rotate(180deg)}
+.sb-div{height:0.5px;background:var(--border);margin:.2rem .6rem}
+.pp{margin:.45rem .75rem .2rem;padding:4px 9px;background:var(--bg3);border-radius:var(--radius);display:flex;align-items:center;justify-content:space-between}
+.pp-n{font-size:11px;font-weight:600;color:var(--text)}
+.pp-w{font-size:10px;color:var(--text3)}
+/* Content */
+.content{flex:1;overflow:hidden;display:flex;flex-direction:column;min-width:0}
+.content iframe{flex:1;border:none;width:100%;height:100%;display:block}
+/* Home */
+.home-page{flex:1;overflow-y:auto;padding:2rem 1.5rem;display:flex;flex-direction:column;align-items:center}
+.home-inner{max-width:720px;width:100%}
+.home-hero{text-align:center;margin-bottom:2rem}
+.home-logo{width:54px;height:54px;border-radius:14px;background:var(--accent);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:22px;font-weight:700;margin-bottom:.75rem}
+.h-title{font-size:22px;font-weight:600;margin-bottom:.4rem}
+.h-sub{font-size:13px;color:var(--text2);line-height:1.7;max-width:440px;margin:0 auto}
+.qa-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:1.5rem}
+.qa-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:.85rem 1rem;cursor:pointer;transition:all .15s;text-align:left;border:0.5px solid var(--border);font-family:var(--font);width:100%}
+.qa-card:hover{background:var(--bg3)}
+.qa-icon{font-size:18px;margin-bottom:.35rem;display:block}
+.qa-label{font-size:13px;font-weight:500;color:var(--text);display:block}
+.qa-desc{font-size:11px;color:var(--text2);margin-top:2px;display:block}
+.rlbl{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--text3);margin-bottom:.6rem}
+.ri{display:flex;align-items:center;gap:10px;padding:9px 12px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:5px;cursor:pointer;transition:border-color .12s}
+.ri:hover{border-color:var(--border2)}
+.ri-ico{font-size:15px;width:30px;height:30px;border-radius:var(--radius);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.ri-tx{flex:1;min-width:0}
+.ri-t{font-size:13px;font-weight:500}
+.ri-s{font-size:11px;color:var(--text2);margin-top:1px}
+.ri-arr{font-size:14px;color:var(--text3);flex-shrink:0}
+.rmap-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.rmap-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:.85rem 1rem;cursor:pointer;transition:border-color .15s}
+.rmap-card:hover{border-color:var(--border2)}
+.rmap-num{font-size:10px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--text3);margin-bottom:.25rem}
+.rmap-title{font-size:13px;font-weight:500;margin-bottom:.2rem}
+.rmap-sub{font-size:11px;color:var(--text2);line-height:1.5}
+/* Inner pages */
+.inner-page{flex:1;overflow-y:auto;padding:2rem 1.5rem}
+.inn{max-width:760px;margin:0 auto}
+.ip-title{font-size:20px;font-weight:600;margin-bottom:.25rem}
+.ip-sub{font-size:13px;color:var(--text2);margin-bottom:1.5rem}
+.res-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:9px;margin-bottom:1.5rem}
+.res-card{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:.9rem 1rem}
+.res-card h3{font-size:13px;font-weight:500;margin-bottom:.2rem}
+.res-card p{font-size:12px;color:var(--text2);line-height:1.55;margin-bottom:.6rem}
+.res-link{font-size:12px;color:var(--info-text);text-decoration:none}
+.res-link:hover{text-decoration:underline}
+.tip-card{display:flex;gap:11px;padding:.9rem 1.1rem;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);margin-bottom:.65rem}
+.tip-ico{font-size:18px;flex-shrink:0;margin-top:1px}
+.tip-t{font-size:13px;font-weight:500;margin-bottom:.25rem}
+.tip-b{font-size:12px;color:var(--text2);line-height:1.65}
+.notes-ta{width:100%;min-height:320px;padding:11px 13px;border:0.5px solid var(--border2);border-radius:var(--radius);background:var(--bg2);color:var(--text);font-family:var(--mono);font-size:13px;line-height:1.7;resize:vertical;outline:none;transition:border-color .15s}
+.notes-ta:focus{border-color:var(--accent)}
+.notes-saved{font-size:11px;color:var(--success-text);opacity:0;transition:opacity .3s}
+.notes-saved.show{opacity:1}
+.prog-ov{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
+.pb-outer{height:8px;background:var(--bg3);border-radius:4px;overflow:hidden;margin:.5rem 0}
+.pb-fill{height:100%;background:var(--accent);border-radius:4px;transition:width .5s}
+.prog-item{display:flex;align-items:center;gap:10px;padding:8px 11px;background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--radius);margin-bottom:5px}
+.toast{position:fixed;bottom:1.25rem;left:50%;transform:translateX(-50%);background:var(--text);color:var(--bg);padding:7px 16px;border-radius:20px;font-size:12px;font-weight:500;opacity:0;transition:opacity .25s;z-index:999;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.sb-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.35);z-index:180}
+@media(max-width:720px){
+  .sidebar{position:fixed;left:0;top:var(--nav-h);bottom:0;z-index:190;transform:translateX(-100%)}
+  .sidebar.open{transform:translateX(0)}
+  .sb-overlay.open{display:block}
+  .menu-tog{display:flex}
+  .content{width:100%}
+  .nav-search{max-width:160px}
+  .nav-prog{display:none}
+  .rmap-grid,.qa-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:420px){.qa-grid,.rmap-grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<nav class="navbar">
+  <button class="menu-tog" id="menuTog">&#9776;</button>
+  <a class="nav-brand" href="#" onclick="showPage('home');return false">
+    <div class="nav-logo">CN</div>
+    <div><span class="nav-t1">CCNA Study Hub</span><span class="nav-t2" id="nav-sub">L&#7897; tr&#236;nh CCNA 200-301</span></div>
+  </a>
+  <div class="nav-div"></div>
+  <div class="nav-search">
+    <span class="nav-si">&#8981;</span>
+    <input type="text" id="searchInput" placeholder="T&#236;m b&#224;i h&#7885;c..." autocomplete="off" data-vi-ph="T&#236;m b&#224;i h&#7885;c, giao th&#7913;c..." data-en-ph="Search lessons, protocols...">
+    <div class="nsr" id="nsr"></div>
+  </div>
+  <div class="nav-right">
+    <div class="nav-prog" id="navProg">
+      <div class="npb"><div class="npbf" id="npbf" style="width:10%"></div></div>
+      <span class="npt" id="npt">2/20</span>
+    </div>
+    <div class="lang-tog">
+      <button class="lang-btn on" id="btnVI" onclick="setLang('vi')">VI</button>
+      <button class="lang-btn" id="btnEN" onclick="setLang('en')">EN</button>
+    </div>
+    <button class="font-btn" id="fontBtn" onclick="toggleFP()" title="Font">Aa</button>
+  </div>
+</nav>
+
+<div class="fp" id="fp">
+  <div class="fp-hdr">
+    <span class="fp-ttl" id="fp-ttl">Tu&#7923; ch&#7881;nh font ch&#7919;</span>
+    <button class="fp-rst" onclick="resetFont()" id="fp-rst">&#272;&#7863;t l&#7841;i</button>
+  </div>
+  <div class="fp-bdy">
+    <div class="fp-row">
+      <span class="fp-lbl" id="fpl-fam">Ki&#7875;u ch&#7919;</span>
+      <div class="fp-fonts">
+        <div class="fp-fo on" data-font="'DM Sans',system-ui,sans-serif" onclick="pickFont(this)">DM Sans<span class="fos" style="font-family:'DM Sans',sans-serif">Abc 123</span></div>
+        <div class="fp-fo" data-font="'Inter',system-ui,sans-serif" onclick="pickFont(this)">Inter<span class="fos" style="font-family:'Inter',sans-serif">Abc 123</span></div>
+        <div class="fp-fo" data-font="'Source Sans 3',system-ui,sans-serif" onclick="pickFont(this)">Source Sans<span class="fos" style="font-family:'Source Sans 3',sans-serif">Abc 123</span></div>
+        <div class="fp-fo" data-font="'IBM Plex Sans',system-ui,sans-serif" onclick="pickFont(this)">IBM Plex<span class="fos" style="font-family:'IBM Plex Sans',sans-serif">Abc 123</span></div>
+        <div class="fp-fo" data-font="'Nunito',system-ui,sans-serif" onclick="pickFont(this)">Nunito<span class="fos" style="font-family:'Nunito',sans-serif">Abc 123</span></div>
+        <div class="fp-fo" data-font="'Lexend',system-ui,sans-serif" onclick="pickFont(this)">Lexend<span class="fos" style="font-family:'Lexend',sans-serif">Abc 123</span></div>
+      </div>
+    </div>
+    <div class="fp-row">
+      <span class="fp-lbl" id="fpl-sz">C&#7905; ch&#7919;</span>
+      <div class="fp-sw">
+        <span style="font-size:10px;color:var(--text3)">A</span>
+        <input type="range" class="fp-slider" id="fpSz" min="12" max="20" step="1" value="14" oninput="changeSz(this.value)">
+        <span style="font-size:15px;color:var(--text3)">A</span>
+        <span class="fp-val" id="fpSzV">14px</span>
+      </div>
+    </div>
+    <div class="fp-row">
+      <span class="fp-lbl" id="fpl-wt">&#272;&#7897; &#273;&#7853;m</span>
+      <div class="fp-btns" id="wt-btns">
+        <button class="fp-btn" data-w="300" style="font-weight:300" onclick="pickW(this)">M&#7887;ng</button>
+        <button class="fp-btn on" data-w="400" style="font-weight:400" onclick="pickW(this)">Th&#432;&#7901;ng</button>
+        <button class="fp-btn" data-w="500" style="font-weight:500" onclick="pickW(this)">V&#7915;a</button>
+        <button class="fp-btn" data-w="600" style="font-weight:600" onclick="pickW(this)">&#272;&#7853;m</button>
+      </div>
+    </div>
+    <div class="fp-row">
+      <span class="fp-lbl" id="fpl-lh">D&#242;ng</span>
+      <div class="fp-btns">
+        <button class="fp-btn" data-lh="1.4" onclick="pickLH(this)">Ch&#7853;t</button>
+        <button class="fp-btn on" data-lh="1.6" onclick="pickLH(this)">V&#7915;a</button>
+        <button class="fp-btn" data-lh="1.8" onclick="pickLH(this)">Tho&#225;ng</button>
+        <button class="fp-btn" data-lh="2.0" onclick="pickLH(this)">R&#7897;ng</button>
+      </div>
+    </div>
+    <div class="fp-row">
+      <span class="fp-lbl" id="fpl-ls">Ch&#7919;</span>
+      <div class="fp-btns">
+        <button class="fp-btn" data-ls="-0.02" onclick="pickLS(this)">Ch&#7853;t</button>
+        <button class="fp-btn on" data-ls="0" onclick="pickLS(this)">Th&#432;&#7901;ng</button>
+        <button class="fp-btn" data-ls="0.03" onclick="pickLS(this)">Tho&#225;ng</button>
+        <button class="fp-btn" data-ls="0.06" onclick="pickLS(this)">R&#7897;ng</button>
+      </div>
+    </div>
+    <div class="fp-prev" id="fp-prev">&#272;&#226;y l&#224; &#273;o&#7841;n v&#259;n m&#7851;u. CCNA 200-301 Network Fundamentals.</div>
+  </div>
+</div>
+
+<div class="sb-overlay" id="sbOv" onclick="closeSB()"></div>
+
+<div class="shell">
+<aside class="sidebar" id="sidebar">
+  <div class="sb-sec">
+    <div class="pp"><span class="pp-n" id="pp1n">Giai &#273;o&#7841;n 1</span><span class="pp-w">Tu&#7847;n 1&#8211;4</span></div>
+    <div class="sb-stitle" id="sbt-w1">Tu&#7847;n 1 &#8211; N&#7873;n t&#7843;ng</div>
+    <button class="sb-item" id="sb-l1" onclick="toggleSub('ss1','sb-l1','sbe1')">
+      <span class="sb-icon">&#128214;</span><span id="sbt-l1">B&#224;i 1: M&#244; h&#236;nh OSI</span><span class="sb-exp" id="sbe1">&#9660;</span>
+    </button>
+    <div class="sb-sub" id="ss1">
+      <button class="sb-si" id="ssi-b1d" onclick="openL('b1d','Gd1/B1_OSI_Detail.html')"><span>&#128221;</span><span id="sbt-b1d">B&#224;i h&#7885;c chi ti&#7871;t</span></button>
+      <button class="sb-si" id="ssi-b1p" onclick="openL('b1p','Gd1/B1.html')"><span>&#9999;</span><span id="sbt-b1p">Luy&#7879;n t&#7853;p &amp; Thi th&#7917;</span><span class="sb-badge new">25</span></button>
+    </div>
+    <button class="sb-item" id="sb-l2" onclick="toggleSub('ss2','sb-l2','sbe2')">
+      <span class="sb-icon">&#127760;</span><span id="sbt-l2">B&#224;i 2: IPv4 &amp; Subnetting</span><span class="sb-exp" id="sbe2">&#9660;</span>
+    </button>
+    <div class="sb-sub" id="ss2">
+      <button class="sb-si" id="ssi-b2d" onclick="openL('b2d','B2.html')"><span>&#128221;</span><span id="sbt-b2d">B&#224;i h&#7885;c + Calculator</span></button>
+      <button class="sb-si" id="ssi-b2p" onclick="comingSoon()"><span>&#9999;</span><span id="sbt-b2p">Luy&#7879;n t&#7853;p</span><span class="sb-badge lock" id="sbt-soon">S&#7855;p c&#243;</span></button>
+    </div>
+    <div class="sb-stitle" style="margin-top:.4rem" id="sbt-w2">Tu&#7847;n 2 &#8211; Thi&#7871;t b&#7883; &amp; CLI</div>
+    <button class="sb-item" onclick="comingSoon()"><span class="sb-icon">&#128274;</span><span id="sbt-l3">B&#224;i 3: Cisco IOS CLI</span><span class="sb-badge lock">&#128274;</span></button>
+    <button class="sb-item" onclick="comingSoon()"><span class="sb-icon">&#128274;</span><span id="sbt-l4">B&#224;i 4: C&#225;p &amp; k&#7871;t n&#7889;i</span><span class="sb-badge lock">&#128274;</span></button>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-sec">
+    <div class="pp"><span class="pp-n" id="pp2n">Giai &#273;o&#7841;n 2</span><span class="pp-w">Tu&#7847;n 5&#8211;10</span></div>
+    <div class="sb-stitle" id="sbt-p2">VLAN &amp; Routing</div>
+    <button class="sb-item" onclick="comingSoon()"><span class="sb-icon">&#128274;</span><span id="sbt-vlan">Tu&#7847;n 5: VLAN, Trunk, STP</span><span class="sb-badge lock">&#128274;</span></button>
+    <button class="sb-item" onclick="comingSoon()"><span class="sb-icon">&#128274;</span><span id="sbt-ospf">Tu&#7847;n 7: OSPF &amp; Routing</span><span class="sb-badge lock">&#128274;</span></button>
+  </div>
+  <div class="sb-div"></div>
+  <div class="sb-sec">
+    <div class="sb-stitle" id="sbt-tools">C&#244;ng c&#7909; &amp; T&#224;i li&#7879;u</div>
+    <button class="sb-item" id="sb-res" onclick="showPage('res')"><span class="sb-icon">&#128218;</span><span id="sbt-res">T&#224;i li&#7879;u tham kh&#7843;o</span></button>
+    <button class="sb-item" id="sb-notes" onclick="showPage('notes')"><span class="sb-icon">&#128211;</span><span id="sbt-notes">Ghi ch&#250; c&#7911;a t&#244;i</span></button>
+    <button class="sb-item" id="sb-prog" onclick="showPage('prog')"><span class="sb-icon">&#128202;</span><span id="sbt-prog">Ti&#7871;n &#273;&#7897; h&#7885;c t&#7853;p</span></button>
+    <button class="sb-item" id="sb-tips" onclick="showPage('tips')"><span class="sb-icon">&#127919;</span><span id="sbt-tips">M&#7865;o thi CCNA</span><span class="sb-badge new" id="sbt-new">M&#7899;i</span></button>
+  </div>
+</aside>
+
+<main class="content" id="mainContent">
+  <div class="home-page" id="page-home">
+    <div class="home-inner">
+      <div class="home-hero">
+        <div class="home-logo">CN</div>
+        <h1 class="h-title" id="h-title">Ch&#224;o m&#7915;ng &#273;&#7871;n CCNA Study Hub</h1>
+        <p class="h-sub" id="h-sub">L&#7897; tr&#236;nh h&#7885;c CCNA 200-301 cho IT Support b&#7879;nh vi&#7879;n. Song ng&#7919; VI/EN.</p>
+      </div>
+      <div style="margin-bottom:1.25rem">
+        <div class="rlbl" id="h-cont">Ti&#7871;p t&#7909;c h&#7885;c</div>
+        <div class="ri" onclick="openL('b1d','Gd1/B1_OSI_Detail.html')">
+          <div class="ri-ico" style="background:#e1f5ee">&#128214;</div>
+          <div class="ri-tx"><div class="ri-t" id="ri1t">B&#224;i 1 N&#226;ng cao: OSI Chi ti&#7871;t &amp; Encapsulation</div><div class="ri-s" id="ri1s">Tu&#7847;n 1 &middot; 5 tab n&#7897;i dung</div></div>
+          <div class="ri-arr">&#8594;</div>
+        </div>
+        <div class="ri" onclick="openL('b1p','Gd1/B1.html')">
+          <div class="ri-ico" style="background:var(--info-bg)">&#9999;</div>
+          <div class="ri-tx"><div class="ri-t" id="ri2t">Luy&#7879;n thi CCNA &#8211; M&#244; h&#236;nh OSI (25 c&#226;u)</div><div class="ri-s" id="ri2s">Tr&#7855;c nghi&#7879;m &middot; K&#233;o-th&#7843; &middot; S&#7855;p x&#7871;p</div></div>
+          <div class="ri-arr">&#8594;</div>
+        </div>
+        <div class="ri" onclick="openL('b2d','Gd1/B2.html')">
+          <div class="ri-ico" style="background:var(--warn-bg)">&#127760;</div>
+          <div class="ri-tx"><div class="ri-t" id="ri3t">B&#224;i 2: IPv4 &amp; Subnetting &#8212; M&#225;y t&#237;nh Subnet</div><div class="ri-s" id="ri3s">Calculator t&#432;&#417;ng t&#225;c &middot; B&#224;i t&#7853;p t&#7915;ng b&#432;&#7899;c</div></div>
+          <div class="ri-arr">&#8594;</div>
+        </div>
+      </div>
+      <div class="qa-grid" style="margin-bottom:1.5rem">
+        <button class="qa-card" onclick="openL('b1d','Gd1/B1_OSI_Detail.html')"><span class="qa-icon">&#128214;</span><span class="qa-label" id="qa1">B&#224;i h&#7885;c</span><span class="qa-desc" id="qa1s">L&#253; thuy&#7871;t chi ti&#7871;t</span></button>
+        <button class="qa-card" onclick="openL('b1p','Gd1/B1.html')"><span class="qa-icon">&#9999;</span><span class="qa-label" id="qa2">Luy&#7879;n t&#7853;p</span><span class="qa-desc" id="qa2s">C&#226;u h&#7887;i CCNA th&#7853;t</span></button>
+        <button class="qa-card" onclick="showPage('res')"><span class="qa-icon">&#128218;</span><span class="qa-label" id="qa3">T&#224;i li&#7879;u</span><span class="qa-desc" id="qa3s">S&#225;ch, video, tool</span></button>
+      </div>
+      <div style="margin-bottom:1rem">
+        <div class="rlbl" id="h-road">L&#7897; tr&#236;nh 4 giai &#273;o&#7841;n (20 tu&#7847;n)</div>
+        <div class="rmap-grid">
+          <div class="rmap-card" onclick="comingSoon()"><div class="rmap-num" id="rm1n">Giai &#273;o&#7841;n 1 &middot; Tu&#7847;n 1&#8211;4</div><div class="rmap-title" id="rm1t">N&#7873;n t&#7843;ng m&#7841;ng</div><div class="rmap-sub" id="rm1s">OSI, TCP/IP, IPv4, Subnetting, IOS CLI</div></div>
+          <div class="rmap-card" onclick="comingSoon()"><div class="rmap-num" id="rm2n">Giai &#273;o&#7841;n 2 &middot; Tu&#7847;n 5&#8211;10</div><div class="rmap-title" id="rm2t">VLAN &amp; Routing</div><div class="rmap-sub" id="rm2s">VLAN, STP, EtherChannel, OSPF</div></div>
+          <div class="rmap-card" onclick="comingSoon()"><div class="rmap-num" id="rm3n">Giai &#273;o&#7841;n 3 &middot; Tu&#7847;n 11&#8211;16</div><div class="rmap-title" id="rm3t">WAN, Security &amp; Wireless</div><div class="rmap-sub" id="rm3s">ACL, NAT, Wireless, AAA, QoS, IPv6</div></div>
+          <div class="rmap-card" onclick="comingSoon()"><div class="rmap-num" id="rm4n">Giai &#273;o&#7841;n 4 &middot; Tu&#7847;n 17&#8211;20</div><div class="rmap-title" id="rm4t">&#212;n thi &amp; Thi th&#7853;t</div><div class="rmap-sub" id="rm4s">Mock exam h&#7857;ng ng&#224;y, CCNA 200-301</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <iframe id="lessonFrame" src="" style="display:none" allowfullscreen></iframe>
+  <div class="inner-page" id="page-res" style="display:none"><div class="inn"><h2 class="ip-title" id="res-title">T&#224;i li&#7879;u tham kh&#7843;o</h2><p class="ip-sub" id="res-sub">S&#225;ch, video, c&#244;ng c&#7909; lab v&#224; c&#7897;ng &#273;&#7891;ng h&#7885;c CCNA.</p><div class="res-grid" id="res-grid"></div></div></div>
+  <div class="inner-page" id="page-notes" style="display:none"><div class="inn"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem"><div><h2 class="ip-title" id="notes-title">Ghi ch&#250; c&#7911;a t&#244;i</h2><p class="ip-sub" style="margin-bottom:0" id="notes-sub">T&#7921; &#273;&#7897;ng l&#432;u v&#224;o tr&#236;nh duy&#7879;t.</p></div><span class="notes-saved" id="notesSaved">&#10003; &#272;&#227; l&#432;u</span></div><textarea class="notes-ta" id="notesArea" placeholder="Ghi ch&#250; l&#253; thuy&#7871;t, commands CLI..."></textarea></div></div>
+  <div class="inner-page" id="page-prog" style="display:none"><div class="inn"><h2 class="ip-title" id="prog-title">Ti&#7871;n &#273;&#7897; h&#7885;c t&#7853;p</h2><p class="ip-sub" id="prog-sub">T&#7893;ng quan ti&#7871;n tr&#236;nh CCNA 200-301.</p><div id="prog-content"></div></div></div>
+  <div class="inner-page" id="page-tips" style="display:none"><div class="inn"><h2 class="ip-title" id="tips-title">M&#7865;o thi CCNA 200-301</h2><p class="ip-sub" id="tips-sub">Nh&#7919;ng &#273;i&#7873;u c&#7847;n bi&#7871;t v&#7873; k&#7923; thi th&#7921;c t&#7871;.</p><div id="tips-content"></div></div></div>
+</main>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+var lang=localStorage.getItem('ccna-lang')||'vi';
+var fontCfg={family:"'DM Sans',system-ui,sans-serif",size:14,weight:'400',lh:'1.6',ls:0};
+
+var T={
+vi:{
+  'nav-sub':'L\u1ed9 tr\u00ecnh CCNA 200-301','fp-ttl':'Tu\u1ef3 ch\u1ec9nh font ch\u1eef','fp-rst':'\u0110\u1eb7t l\u1ea1i',
+  'fpl-fam':'Ki\u1ec3u ch\u1eef','fpl-sz':'C\u1ee1 ch\u1eef','fpl-wt':'\u0110\u1ed9 \u0111\u1eadm','fpl-lh':'D\u00f2ng','fpl-ls':'Ch\u1eef',
+  'fp-prev':'\u0110\u00e2y l\u00e0 \u0111o\u1ea1n v\u0103n m\u1eabu. CCNA 200-301 Network Fundamentals.',
+  'pp1n':'Giai \u0111o\u1ea1n 1','sbt-w1':'Tu\u1ea7n 1 \u2013 N\u1ec1n t\u1ea3ng','sbt-l1':'B\u00e0i 1: M\u00f4 h\u00ecnh OSI',
+  'sbt-b1d':'B\u00e0i h\u1ecdc chi ti\u1ebft','sbt-b1p':'Luy\u1ec7n t\u1eadp & Thi th\u1eed',
+  'sbt-l2':'B\u00e0i 2: IPv4 & Subnetting','sbt-b2d':'B\u00e0i h\u1ecdc + Calculator','sbt-b2p':'Luy\u1ec7n t\u1eadp',
+  'sbt-soon':'S\u1eafp c\u00f3','sbt-w2':'Tu\u1ea7n 2 \u2013 Thi\u1ebft b\u1ecb & CLI',
+  'sbt-l3':'B\u00e0i 3: Cisco IOS CLI','sbt-l4':'B\u00e0i 4: C\u00e1p & k\u1ebft n\u1ed1i',
+  'pp2n':'Giai \u0111o\u1ea1n 2','sbt-p2':'VLAN & Routing','sbt-vlan':'Tu\u1ea7n 5: VLAN, Trunk, STP',
+  'sbt-ospf':'Tu\u1ea7n 7: OSPF & Routing','sbt-tools':'C\u00f4ng c\u1ee5 & T\u00e0i li\u1ec7u',
+  'sbt-res':'T\u00e0i li\u1ec7u tham kh\u1ea3o','sbt-notes':'Ghi ch\u00fa c\u1ee7a t\u00f4i',
+  'sbt-prog':'Ti\u1ebfn \u0111\u1ed9 h\u1ecdc t\u1eadp','sbt-tips':'M\u1eb9o thi CCNA','sbt-new':'M\u1edbi',
+  'h-title':'Ch\u00e0o m\u1eebng \u0111\u1ebfn CCNA Study Hub',
+  'h-sub':'L\u1ed9 tr\u00ecnh h\u1ecdc CCNA 200-301 cho IT Support b\u1ec7nh vi\u1ec7n. Song ng\u1eef VI/EN.',
+  'h-cont':'Ti\u1ebfp t\u1ee5c h\u1ecdc',
+  'ri1t':'B\u00e0i 1 N\u00e2ng cao: OSI Chi ti\u1ebft & Encapsulation','ri1s':'Tu\u1ea7n 1 \u00b7 5 tab n\u1ed9i dung',
+  'ri2t':'Luy\u1ec7n thi CCNA \u2013 M\u00f4 h\u00ecnh OSI (25 c\u00e2u)','ri2s':'Tr\u1eafc nghi\u1ec7m \u00b7 K\u00e9o-th\u1ea3 \u00b7 S\u1eafp x\u1ebfp',
+  'ri3t':'B\u00e0i 2: IPv4 & Subnetting \u2014 M\u00e1y t\u00ednh Subnet','ri3s':'Calculator t\u01b0\u01a1ng t\u00e1c \u00b7 B\u00e0i t\u1eadp t\u1eebng b\u01b0\u1edbc',
+  'qa1':'B\u00e0i h\u1ecdc','qa1s':'L\u00fd thuy\u1ebft chi ti\u1ebft','qa2':'Luy\u1ec7n t\u1eadp','qa2s':'C\u00e2u h\u1ecfi CCNA th\u1eadt',
+  'qa3':'T\u00e0i li\u1ec7u','qa3s':'S\u00e1ch, video, tool',
+  'h-road':'L\u1ed9 tr\u00ecnh 4 giai \u0111o\u1ea1n (20 tu\u1ea7n)',
+  'rm1n':'Giai \u0111o\u1ea1n 1 \u00b7 Tu\u1ea7n 1\u20134','rm1t':'N\u1ec1n t\u1ea3ng m\u1ea1ng','rm1s':'OSI, TCP/IP, IPv4, Subnetting, IOS CLI',
+  'rm2n':'Giai \u0111o\u1ea1n 2 \u00b7 Tu\u1ea7n 5\u201310','rm2t':'VLAN & Routing','rm2s':'VLAN, STP, EtherChannel, OSPF',
+  'rm3n':'Giai \u0111o\u1ea1n 3 \u00b7 Tu\u1ea7n 11\u201316','rm3t':'WAN, Security & Wireless','rm3s':'ACL, NAT, Wireless, AAA, QoS, IPv6',
+  'rm4n':'Giai \u0111o\u1ea1n 4 \u00b7 Tu\u1ea7n 17\u201320','rm4t':'\u00d4n thi & Thi th\u1eadt','rm4s':'Mock exam h\u1eb1ng ng\u00e0y, CCNA 200-301',
+  'res-title':'T\u00e0i li\u1ec7u tham kh\u1ea3o','res-sub':'S\u00e1ch, video, c\u00f4ng c\u1ee5 lab v\u00e0 c\u1ed9ng \u0111\u1ed3ng h\u1ecdc CCNA.',
+  'notes-title':'Ghi ch\u00fa c\u1ee7a t\u00f4i','notes-sub':'T\u1ef1 \u0111\u1ed9ng l\u01b0u v\u00e0o tr\u00ecnh duy\u1ec7t.','notesSaved':'\u2713 \u0110\u00e3 l\u01b0u',
+  'prog-title':'Ti\u1ebfn \u0111\u1ed9 h\u1ecdc t\u1eadp','prog-sub':'T\u1ed5ng quan ti\u1ebfn tr\u00ecnh CCNA 200-301 c\u1ee7a b\u1ea1n.',
+  'tips-title':'M\u1eb9o thi CCNA 200-301','tips-sub':'Nh\u1eefng \u0111i\u1ec1u c\u1ea7n bi\u1ebft v\u1ec1 k\u1ef3 thi th\u1ef1c t\u1ebf.',
+  'wt-labels':['M\u1ecfng','Th\u01b0\u1eddng','V\u1eeba','\u0110\u1eadm'],
+  'lh-labels':['Ch\u1eadt','V\u1eeba','Tho\u00e1ng','R\u1ed9ng'],
+  'ls-labels':['Ch\u1eadt','Th\u01b0\u1eddng','Tho\u00e1ng','R\u1ed9ng'],
+  'toast-soon':'N\u1ed9i dung \u0111ang c\u1eadp nh\u1eadt \u2014 s\u1eafp c\u00f3!',
+},
+en:{
+  'nav-sub':'CCNA 200-301 Roadmap','fp-ttl':'Customize Font','fp-rst':'Reset',
+  'fpl-fam':'Font Family','fpl-sz':'Font Size','fpl-wt':'Font Weight','fpl-lh':'Line Height','fpl-ls':'Letter Spacing',
+  'fp-prev':'This is a preview text. CCNA 200-301 Network Fundamentals.',
+  'pp1n':'Phase 1','sbt-w1':'Week 1 \u2013 Fundamentals','sbt-l1':'Lesson 1: OSI Model',
+  'sbt-b1d':'Detailed Lesson','sbt-b1p':'Practice & Mock Exam',
+  'sbt-l2':'Lesson 2: IPv4 & Subnetting','sbt-b2d':'Lesson + Calculator','sbt-b2p':'Practice',
+  'sbt-soon':'Coming soon','sbt-w2':'Week 2 \u2013 Devices & CLI',
+  'sbt-l3':'Lesson 3: Cisco IOS CLI','sbt-l4':'Lesson 4: Cables & Media',
+  'pp2n':'Phase 2','sbt-p2':'VLAN & Routing','sbt-vlan':'Week 5: VLAN, Trunk, STP',
+  'sbt-ospf':'Week 7: OSPF & Routing','sbt-tools':'Tools & Resources',
+  'sbt-res':'Reference Materials','sbt-notes':'My Notes',
+  'sbt-prog':'Study Progress','sbt-tips':'CCNA Exam Tips','sbt-new':'New',
+  'h-title':'Welcome to CCNA Study Hub',
+  'h-sub':'CCNA 200-301 roadmap for Hospital IT Support. Bilingual VI/EN.',
+  'h-cont':'Continue Learning',
+  'ri1t':'Lesson 1 Advanced: OSI Deep Dive & Encapsulation','ri1s':'Week 1 \u00b7 5 content tabs',
+  'ri2t':'CCNA Practice \u2013 OSI Model (25 questions)','ri2s':'Multiple choice \u00b7 Drag-drop \u00b7 Ordering',
+  'ri3t':'Lesson 2: IPv4 & Subnetting \u2014 Subnet Calculator','ri3s':'Interactive calculator \u00b7 Step-by-step exercises',
+  'qa1':'Lessons','qa1s':'Detailed theory','qa2':'Practice','qa2s':'Real CCNA questions',
+  'qa3':'Resources','qa3s':'Books, videos, tools',
+  'h-road':'4-Phase Roadmap (20 weeks)',
+  'rm1n':'Phase 1 \u00b7 Week 1\u20134','rm1t':'Network Fundamentals','rm1s':'OSI, TCP/IP, IPv4, Subnetting, IOS CLI',
+  'rm2n':'Phase 2 \u00b7 Week 5\u201310','rm2t':'VLAN & Routing','rm2s':'VLAN, STP, EtherChannel, OSPF',
+  'rm3n':'Phase 3 \u00b7 Week 11\u201316','rm3t':'WAN, Security & Wireless','rm3s':'ACL, NAT, Wireless, AAA, QoS, IPv6',
+  'rm4n':'Phase 4 \u00b7 Week 17\u201320','rm4t':'Exam Prep & Real Exam','rm4s':'Daily mock exams, CCNA 200-301',
+  'res-title':'Reference Materials','res-sub':'Books, videos, lab tools, and CCNA learning communities.',
+  'notes-title':'My Notes','notes-sub':'Notes auto-saved to your browser.','notesSaved':'\u2713 Saved',
+  'prog-title':'Study Progress','prog-sub':'Overview of your CCNA 200-301 learning progress.',
+  'tips-title':'CCNA 200-301 Exam Tips','tips-sub':'What you need to know about the real exam.',
+  'wt-labels':['Light','Regular','Medium','Bold'],
+  'lh-labels':['Tight','Normal','Relaxed','Wide'],
+  'ls-labels':['Tight','Normal','Relaxed','Wide'],
+  'toast-soon':'Coming soon \u2014 stay tuned!',
+}};
+
+function setLang(l){
+  lang=l; localStorage.setItem('ccna-lang',l);
+  document.getElementById('btnVI').classList.toggle('on',l==='vi');
+  document.getElementById('btnEN').classList.toggle('on',l==='en');
+  document.documentElement.setAttribute('data-lang',l);
+  var m=T[l];
+  // Update shell IDs
+  var ids=['nav-sub','fp-ttl','fp-rst','fpl-fam','fpl-sz','fpl-wt','fpl-lh','fpl-ls','fp-prev',
+    'pp1n','sbt-w1','sbt-l1','sbt-b1d','sbt-b1p','sbt-l2','sbt-b2d','sbt-b2p','sbt-soon','sbt-w2',
+    'sbt-l3','sbt-l4','pp2n','sbt-p2','sbt-vlan','sbt-ospf','sbt-tools','sbt-res','sbt-notes',
+    'sbt-prog','sbt-tips','sbt-new',
+    'h-title','h-sub','h-cont','ri1t','ri1s','ri2t','ri2s','ri3t','ri3s',
+    'qa1','qa1s','qa2','qa2s','qa3','qa3s','h-road',
+    'rm1n','rm1t','rm1s','rm2n','rm2t','rm2s','rm3n','rm3t','rm3s','rm4n','rm4t','rm4s',
+    'res-title','res-sub','notes-title','notes-sub','notesSaved','prog-title','prog-sub','tips-title','tips-sub'];
+  ids.forEach(function(id){var el=document.getElementById(id);if(el&&m[id])el.textContent=m[id];});
+  // Search placeholder
+  document.querySelectorAll('[data-vi-ph]').forEach(function(el){
+    el.placeholder=l==='en'?el.getAttribute('data-en-ph'):el.getAttribute('data-vi-ph');
+  });
+  // Font panel button labels
+  var wls=m['wt-labels']; var wbs=document.querySelectorAll('[data-w]');
+  wls.forEach(function(lbl,i){if(wbs[i])wbs[i].textContent=lbl;});
+  var lhls=m['lh-labels']; var lhbs=document.querySelectorAll('[data-lh]');
+  lhls.forEach(function(lbl,i){if(lhbs[i])lhbs[i].textContent=lbl;});
+  var lsls=m['ls-labels']; var lsbs=document.querySelectorAll('[data-ls]');
+  lsls.forEach(function(lbl,i){if(lsbs[i])lsbs[i].textContent=lbl;});
+  // Tell iframe
+  var fr=document.getElementById('lessonFrame');
+  if(fr.style.display!=='none'&&fr.src&&fr.contentWindow){
+    try{fr.contentWindow.postMessage({type:'setLang',lang:l},'*');}catch(e){}
+  }
+  // Re-render dynamic
+  if(document.getElementById('page-res').style.display!=='none')buildRes();
+  if(document.getElementById('page-prog').style.display!=='none')buildProg();
+  if(document.getElementById('page-tips').style.display!=='none')buildTips();
+}
+
+/* Font */
+function applyFont(cfg,save){
+  Object.assign(fontCfg,cfg);
+  document.documentElement.style.setProperty('--font',fontCfg.family);
+  document.documentElement.style.setProperty('--base-size',fontCfg.size+'px');
+  document.body.style.fontSize=fontCfg.size+'px';
+  document.body.style.fontWeight=fontCfg.weight;
+  document.body.style.lineHeight=fontCfg.lh;
+  document.body.style.letterSpacing=fontCfg.ls+'em';
+  var p=document.getElementById('fp-prev');
+  p.style.fontFamily=fontCfg.family;p.style.fontSize=fontCfg.size+'px';
+  p.style.fontWeight=fontCfg.weight;p.style.lineHeight=fontCfg.lh;p.style.letterSpacing=fontCfg.ls+'em';
+  var fr=document.getElementById('lessonFrame');
+  if(fr.style.display!=='none'&&fr.contentWindow){
+    try{fr.contentWindow.postMessage({type:'setFont',fam:fontCfg.fam||fontCfg.family,sz:fontCfg.sz||fontCfg.size,wt:fontCfg.wt||fontCfg.weight,lh:fontCfg.lh||fontCfg.lineHeight},'*');}catch(e){}
+  }
+  if(save!==false)localStorage.setItem('ccna-font',JSON.stringify(fontCfg));
+}
+function toggleFP(){
+  var p=document.getElementById('fp'),b=document.getElementById('fontBtn');
+  var o=p.classList.contains('open');
+  p.classList.toggle('open',!o);b.classList.toggle('active',!o);
+}
+function pickFont(el){
+  document.querySelectorAll('.fp-fo').forEach(function(e){e.classList.remove('on');});
+  el.classList.add('on');applyFont({family:el.getAttribute('data-font')});
+}
+function changeSz(v){document.getElementById('fpSzV').textContent=v+'px';applyFont({size:parseInt(v)});}
+function pickW(el){document.querySelectorAll('[data-w]').forEach(function(e){e.classList.remove('on');});el.classList.add('on');applyFont({weight:el.getAttribute('data-w')});}
+function pickLH(el){document.querySelectorAll('[data-lh]').forEach(function(e){e.classList.remove('on');});el.classList.add('on');applyFont({lh:el.getAttribute('data-lh')});}
+function pickLS(el){document.querySelectorAll('[data-ls]').forEach(function(e){e.classList.remove('on');});el.classList.add('on');applyFont({ls:parseFloat(el.getAttribute('data-ls'))});}
+function resetFont(){
+  var def={family:"'DM Sans',system-ui,sans-serif",size:14,weight:'400',lh:'1.6',ls:0};
+  applyFont(def);localStorage.removeItem('ccna-font');
+  document.getElementById('fpSz').value=14;document.getElementById('fpSzV').textContent='14px';
+  document.querySelectorAll('.fp-fo').forEach(function(e,i){e.classList.toggle('on',i===0);});
+  document.querySelectorAll('[data-w]').forEach(function(e,i){e.classList.toggle('on',i===1);});
+  document.querySelectorAll('[data-lh]').forEach(function(e,i){e.classList.toggle('on',i===1);});
+  document.querySelectorAll('[data-ls]').forEach(function(e,i){e.classList.toggle('on',i===1);});
+}
+// Load saved font
+(function(){
+  var s=localStorage.getItem('ccna-font');
+  if(!s)return;
+  try{
+    var c=JSON.parse(s);Object.assign(fontCfg,c);applyFont(fontCfg,false);
+    if(c.size){document.getElementById('fpSz').value=c.size;document.getElementById('fpSzV').textContent=c.size+'px';}
+    if(c.family)document.querySelectorAll('.fp-fo').forEach(function(e){e.classList.toggle('on',e.getAttribute('data-font')===c.family);});
+    if(c.weight)document.querySelectorAll('[data-w]').forEach(function(e){e.classList.toggle('on',e.getAttribute('data-w')===c.weight);});
+    if(c.lh)document.querySelectorAll('[data-lh]').forEach(function(e){e.classList.toggle('on',e.getAttribute('data-lh')===c.lh);});
+    if(c.ls!==undefined)document.querySelectorAll('[data-ls]').forEach(function(e){e.classList.toggle('on',parseFloat(e.getAttribute('data-ls'))===c.ls);});
+  }catch(e){}
+})();
+// Close on outside click
+document.addEventListener('click',function(e){
+  var fp=document.getElementById('fp'),fb=document.getElementById('fontBtn');
+  if(fp.classList.contains('open')&&!fp.contains(e.target)&&e.target!==fb){fp.classList.remove('open');fb.classList.remove('active');}
+});
+
+/* Pages */
+var PAGES=['page-home','page-res','page-notes','page-prog','page-tips'];
+function hideAll(){PAGES.forEach(function(id){document.getElementById(id).style.display='none';});document.getElementById('lessonFrame').style.display='none';}
+function clrActive(){document.querySelectorAll('.sb-item,.sb-si').forEach(function(b){b.classList.remove('active');});}
+function showPage(name){
+  hideAll();clrActive();
+  var sbMap={res:'sb-res',notes:'sb-notes',prog:'sb-prog',tips:'sb-tips'};
+  if(name==='home'){document.getElementById('page-home').style.display='flex';}
+  else{
+    document.getElementById('page-'+name).style.display='block';
+    if(sbMap[name])document.getElementById(sbMap[name]).classList.add('active');
+    if(name==='res')buildRes();
+    else if(name==='notes')loadNotes();
+    else if(name==='prog')buildProg();
+    else if(name==='tips')buildTips();
+  }
+  closeSB();
+}
+var sbMap2={'b1d':'ssi-b1d','b1p':'ssi-b1p','b2d':'ssi-b2d'};
+function openL(lid,file){
+  hideAll();clrActive();
+  var fr=document.getElementById('lessonFrame');
+  fr.style.display='block';
+  var need=fr.getAttribute('data-loaded')!==file;
+  if(need){
+    fr.src=file;fr.setAttribute('data-loaded',file);
+    fr.onload=function(){
+      try{fr.contentWindow.postMessage({type:'setLang',lang:lang},'*');}catch(e){}
+      var fc=localStorage.getItem('ccna-font');
+      if(fc)try{fr.contentWindow.postMessage(Object.assign({type:'setFont'},JSON.parse(fc)),'*');}catch(e){}
+    };
+  }else{
+    try{fr.contentWindow.postMessage({type:'setLang',lang:lang},'*');}catch(e){}
+    var fc=localStorage.getItem('ccna-font');
+    if(fc)try{
+      var fcData=JSON.parse(fc);
+      fr.contentWindow.postMessage({type:'setFont',fam:fcData.fam||fcData.family,sz:fcData.sz||fcData.size,wt:fcData.wt||fcData.weight,lh:fcData.lh||fcData.lineHeight},'*');
+    }catch(e){}
+  }
+  if(sbMap2[lid])document.getElementById(sbMap2[lid]).classList.add('active');
+  if(lid==='b1d'||lid==='b1p')openSub('ss1','sb-l1','sbe1');
+  if(lid==='b2d')openSub('ss2','sb-l2','sbe2');
+  closeSB();
+}
+
+/* Sidebar */
+function toggleSub(sid,bid,eid){
+  var s=document.getElementById(sid),b=document.getElementById(bid),e=document.getElementById(eid);
+  var o=s.classList.contains('open');
+  s.classList.toggle('open',!o);b.classList.toggle('expanded',!o);
+}
+function openSub(sid,bid,eid){
+  document.getElementById(sid).classList.add('open');
+  document.getElementById(bid).classList.add('expanded');
+}
+function closeSB(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sbOv').classList.remove('open');}
+document.getElementById('menuTog').addEventListener('click',function(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sbOv').classList.toggle('open');
+});
+
+/* Search */
+var SI=[
+  {vi:'M\u00f4 h\u00ecnh OSI Encapsulation',en:'OSI Model Encapsulation',lid:'b1d',file:'Gd1/B1_OSI_Detail.html',ico:'\ud83d\udcd6'},
+  {vi:'Giao th\u1ee9c TCP UDP ARP DNS',en:'Protocols TCP UDP ARP DNS',lid:'b1d',file:'Gd1/B1_OSI_Detail.html',ico:'\ud83d\udd0c'},
+  {vi:'Luy\u1ec7n thi OSI 25 c\u00e2u',en:'OSI practice 25 questions',lid:'b1p',file:'Gd1/B1.html',ico:'\u270f\ufe0f'},
+  {vi:'IPv4 Subnetting Calculator',en:'IPv4 Subnetting Calculator',lid:'b2d',file:'Gd1/B2.html',ico:'\ud83c\udf10'},
+  {vi:'T\u00e0i li\u1ec7u s\u00e1ch video',en:'Resources books videos',page:'res',ico:'\ud83d\udcda'},
+  {vi:'M\u1eb9o thi CCNA',en:'CCNA exam tips',page:'tips',ico:'\ud83c\udfaf'},
+];
+var si=document.getElementById('searchInput'),nsr=document.getElementById('nsr');
+si.addEventListener('input',function(){
+  var q=this.value.toLowerCase().trim();
+  if(!q){nsr.classList.remove('open');return;}
+  var m=SI.filter(function(x){return (lang==='en'?x.en:x.vi).toLowerCase().indexOf(q)>=0;});
+  if(!m.length){nsr.classList.remove('open');return;}
+  nsr.innerHTML=m.slice(0,5).map(function(x){
+    var t=lang==='en'?x.en:x.vi;
+    return '<div class="nsr-item" onclick="doSearch(\''+(x.lid||'')+'\',\''+(x.file||'')+'\',\''+(x.page||'')+'\')"><span class="nsr-icon">'+x.ico+'</span><div><div>'+t+'</div>'+(x.file?'<div class="nsr-sub">'+x.file+'</div>':'')+'</div></div>';
+  }).join('');
+  nsr.classList.add('open');
+});
+function doSearch(lid,file,page){si.value='';nsr.classList.remove('open');if(lid)openL(lid,file);else if(page)showPage(page);}
+document.addEventListener('click',function(e){if(!nsr.contains(e.target)&&e.target!==si)nsr.classList.remove('open');});
+
+/* Notes */
+var nt;
+function loadNotes(){document.getElementById('notesArea').value=localStorage.getItem('ccna-notes')||'';}
+document.getElementById('notesArea').addEventListener('input',function(){
+  clearTimeout(nt);nt=setTimeout(function(){
+    localStorage.setItem('ccna-notes',document.getElementById('notesArea').value);
+    var s=document.getElementById('notesSaved');s.classList.add('show');setTimeout(function(){s.classList.remove('show');},1800);
+  },500);
+});
+
+/* Progress */
+var TOPICS=[
+  {vi:'M\u00f4 h\u00ecnh OSI',en:'OSI Model',done:true,score:85,ph:'1'},
+  {vi:'IPv4 & Subnetting',en:'IPv4 & Subnetting',done:true,score:72,ph:'1'},
+  {vi:'Cisco IOS CLI',en:'Cisco IOS CLI',done:false,score:null,ph:'1'},
+  {vi:'VLAN & Trunk',en:'VLAN & Trunk',done:false,score:null,ph:'2'},
+  {vi:'STP / RSTP',en:'STP / RSTP',done:false,score:null,ph:'2'},
+  {vi:'OSPF',en:'OSPF',done:false,score:null,ph:'2'},
+  {vi:'ACL & NAT',en:'ACL & NAT',done:false,score:null,ph:'3'},
+  {vi:'Wireless 802.11',en:'Wireless 802.11',done:false,score:null,ph:'3'},
+];
+function buildProg(){
+  var done=TOPICS.filter(function(t){return t.done;}).length,total=TOPICS.length,pct=Math.round(done/total*100);
+  var ov=lang==='en'?'Overall Progress':'T\u1ed5ng ti\u1ebfn \u0111\u1ed9';
+  var comp=lang==='en'?' topics completed':' ch\u1ee7 \u0111\u1ec1 ho\u00e0n th\u00e0nh';
+  var ph=lang==='en'?'Phase ':'G\u0110';
+  var html='<div class="prog-ov"><div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.5rem"><span style="font-size:14px;font-weight:500">'+ov+'</span><span style="font-size:22px;font-weight:600;color:var(--info-text)">'+pct+'%</span></div><div class="pb-outer"><div class="pb-fill" style="width:'+pct+'%"></div></div><div style="font-size:11px;color:var(--text3);margin-top:.3rem">'+done+'/'+total+comp+'</div></div><div style="display:flex;flex-direction:column;gap:5px">';
+  TOPICS.forEach(function(t){
+    var sc=!t.score?'var(--text3)':t.score>=80?'var(--success-text)':t.score>=60?'var(--warn-text)':'var(--danger-text)';
+    html+='<div class="prog-item"><div style="font-size:14px">'+(t.done?'\u2705':'\u2b1c')+'</div><div style="flex:1;font-size:13px;font-weight:'+(t.done?'500':'400')+'">'+(lang==='en'?t.en:t.vi)+'</div><div style="font-size:10px;background:var(--bg3);color:var(--text3);padding:1px 7px;border-radius:8px">'+ph+t.ph+'</div>'+(t.score?'<div style="font-size:12px;font-weight:600;color:'+sc+'">'+t.score+'%</div>':'<div style="font-size:11px;color:var(--text3)">\u2013</div>')+'</div>';
+  });
+  html+='</div>';
+  document.getElementById('prog-content').innerHTML=html;
+}
+
+/* Resources */
+var RES=[
+  {t:'\ud83d\udcd5 Cisco CCNA 200-301 OCG',vi:'Wendell Odom \u2013 b\u1ed9 2 cu\u1ed1n chu\u1ea9n nh\u1ea5t. Vol 1: Switching, Routing, Wireless. Vol 2: Security, Automation, IPv6.',en:'Wendell Odom \u2013 the gold-standard 2-volume set covering all CCNA 200-301 topics.',url:'https://www.ciscopress.com'},
+  {t:"🎬 Jeremy's IT Lab",vi:'K\u00eanh YouTube mi\u1ec5n ph\u00ed, b\u00e1m s\u00e1t CCNA 200-301. C\u00f3 file Packet Tracer k\u00e8m t\u1eebng b\u00e0i.',en:'Free high-quality YouTube channel aligned with CCNA 200-301. Includes Packet Tracer files per lesson.',url:'https://youtube.com/@JeremysITLab'},
+  {t:'\ud83d\udcbb Cisco Packet Tracer',vi:'Lab mi\u1ec5n ph\u00ed c\u1ee7a Cisco. T\u1ea1o t\u00e0i kho\u1ea3n NetAcad \u0111\u1ec3 t\u1ea3i. \u0110\u1ee7 cho 95% b\u00e0i lab CCNA.',en:'Free simulation software. Create a NetAcad account to download. Covers 95% of CCNA labs.',url:'https://netacad.com'},
+  {t:'\ud83d\udcdd Boson ExSim-Max',vi:'Mock exam g\u1ea7n th\u1eadt nh\u1ea5t. Gi\u1ea3i th\u00edch chi ti\u1ebft t\u1eebng c\u00e2u. B\u1eaft bu\u1ed9c mua tr\u01b0\u1edbc khi thi.',en:'Closest mock exam to the real CCNA. Detailed per-question explanations. Essential pre-exam purchase.',url:'https://boson.com'},
+  {t:'\ud83d\udd22 SubnettingPractice.com',vi:'Luy\u1ec7n subnetting nh\u1ea9m mi\u1ec5n ph\u00ed. Kh\u00f4ng c\u00f3 m\u00e1y t\u00ednh trong ph\u00f2ng thi.',en:'Free mental subnetting drill. No calculators allowed in the exam room.',url:'https://subnettingpractice.com'},
+  {t:'\ud83c\udfe5 Fortinet NSE 1\u20133',vi:'Mi\u1ec5n ph\u00ed ho\u00e0n to\u00e0n. Hi\u1ec3u s\u00e2u Fortinet \u0111ang d\u00f9ng t\u1ea1i b\u1ec7nh vi\u1ec7n.',en:'Completely free. Deep understanding of Fortinet used at your hospital.',url:'https://training.fortinet.com'},
+  {t:'\ud83d\udcac Reddit r/ccna',vi:'C\u1ed9ng \u0111\u1ed3ng 400K+ th\u00e0nh vi\u00ean. H\u1ecfi \u0111\u00e1p, kinh nghi\u1ec7m thi, study partner.',en:'400K+ community. Q&A, exam experiences, and finding study partners.',url:'https://reddit.com/r/ccna'},
+  {t:'\ud83c\udfaf Cisco U.',vi:'N\u1ec1n t\u1ea3ng h\u1ecdc ch\u00ednh th\u1ee9c c\u1ee7a Cisco. Practice exam mi\u1ec5n ph\u00ed + kh\u00f3a t\u1ef1 h\u1ecdc.',en:"Cisco's official learning platform. Free practice exams and self-paced paths.",url:'https://u.cisco.com'},
+];
+function buildRes(){
+  var lnk=lang==='en'?'Visit \u2192':'Truy c\u1eadp \u2192';
+  document.getElementById('res-grid').innerHTML=RES.map(function(r){
+    return '<div class="res-card"><h3>'+r.t+'</h3><p>'+(lang==='en'?r.en:r.vi)+'</p><a class="res-link" href="'+r.url+'" target="_blank">'+r.url.replace('https://','').split('/')[0]+' '+lnk+'</a></div>';
+  }).join('');
+}
+
+/* Exam Tips */
+var TIPS=[
+  {ico:'\ud83c\udfaf',vt:'Th\u00f4ng tin k\u1ef3 thi',et:'Exam Information',vb:'CCNA 200-301: 120 ph\u00fat, 100\u2013120 c\u00e2u, \u0111i\u1ec3m \u0111\u1eadu 825/1000. Thi Pearson VUE ho\u1eb7c online. Chi ph\u00ed ~330 USD. Ch\u1ee9ng ch\u1ec9 3 n\u0103m.',eb:'CCNA 200-301: 120 min, 100\u2013120 questions, passing score 825/1000. Pearson VUE or online proctored. ~$330 USD. Valid 3 years.'},
+  {ico:'\ud83d\udcca',vt:'Ph\u00e2n b\u1ed5 tr\u1ecdng s\u1ed1 \u0111\u1ec1 thi',et:'Exam Topic Weights',vb:'Network Fundamentals 20% | Network Access 20% | IP Connectivity 25% | IP Services 10% | Security 15% | Automation 10%',eb:'Network Fundamentals 20% | Network Access 20% | IP Connectivity 25% | IP Services 10% | Security 15% | Automation 10%'},
+  {ico:'\ud83e\uddee',vt:'Subnetting kh\u00f4ng c\u00f3 m\u00e1y t\u00ednh',et:'Subnetting Without a Calculator',vb:'CCNA c\u1ea5m m\u00e1y t\u00ednh c\u1ea7m tay. Ph\u1ea3i t\u00ednh nh\u1ea9m. Luy\u1ec7n t\u1ea1i subnettingpractice.com. N\u1eafm "magic number": 256 \u2013 octet = block size.',eb:'Calculators are prohibited. You must calculate mentally. Practice at subnettingpractice.com. Learn the magic number: 256 \u2013 octet = block size.'},
+  {ico:'\ud83d\udcbb',vt:'D\u1ea1ng c\u00e2u h\u1ecfi trong \u0111\u1ec1',et:'Question Types',vb:'Multiple choice, multiple select, drag-drop, simulation lab (Packet Tracer r\u00fat g\u1ecdn), fill-in-blank. Simulation chi\u1ebfm ~20% \u0111i\u1ec3m.',eb:'Multiple choice, multiple select, drag-drop, simulation labs (abbreviated Packet Tracer), fill-in-blank. Simulations ~20% of score.'},
+  {ico:'\u23f1\ufe0f',vt:'Chi\u1ebfn l\u01b0\u1ee3c l\u00e0m b\u00e0i',et:'Test-Taking Strategy',vb:'Kh\u00f4ng d\u1eebng qu\u00e1 l\u00e2u \u1edf 1 c\u00e2u. \u0110\u00e1nh d\u1ea5u c\u00e2u kh\u00f3 \u0111\u1ec3 review sau. L\u00e0m simulation cu\u1ed1i. D\u00e0nh 10\u201315 ph\u00fat review tr\u01b0\u1edbc n\u1ed9p.',eb:"Don't linger on one question. Flag hard ones for review. Do simulations last. Reserve 10\u201315 min for final review."},
+  {ico:'\ud83d\udcc5',vt:'L\u1ecbch \u00f4n thi tu\u1ea7n cu\u1ed1i',et:'Final Study Schedule',vb:'Tu\u1ea7n 17\u201318: mock exam h\u1eb1ng ng\u00e0y + ph\u00e2n t\u00edch l\u1ed7i. Tu\u1ea7n 19: drill \u0111i\u1ec3m y\u1ebfu. Ng\u00e0y thi: \u00f4n nh\u1eb9, ng\u1ee7 \u0111\u1ee7 gi\u1ea5c, \u0111\u1ebfn s\u1edbm 30 ph\u00fat.',eb:'Weeks 17\u201318: daily mock exams + analysis. Week 19: drill weak spots. Exam day: light review, get good sleep, arrive 30 min early.'},
+];
+function buildTips(){
+  document.getElementById('tips-content').innerHTML=TIPS.map(function(t){
+    return '<div class="tip-card"><div class="tip-ico">'+t.ico+'</div><div><div class="tip-t">'+(lang==='en'?t.et:t.vt)+'</div><div class="tip-b">'+(lang==='en'?t.eb:t.vb)+'</div></div></div>';
+  }).join('');
+}
+
+/* Toast */
+var toastT;
+function showToast(m){clearTimeout(toastT);var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');toastT=setTimeout(function(){t.classList.remove('show');},2200);}
+function comingSoon(){showToast(T[lang]['toast-soon']);}
+
+
+// Listen for langChange from iframe
+window.addEventListener('message',function(e){
+  if(e.data&&e.data.type==='langChange'&&e.data.lang){
+    lang=e.data.lang;
+    localStorage.setItem('ccna-lang',e.data.lang);
+    setLang(e.data.lang);
+  }
+});
+/* Init */
+openSub('ss1','sb-l1','sbe1');
+setLang(lang);
+showPage('home');
+buildRes();
+</script>
+</body>
+</html>

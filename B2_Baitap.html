@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luyện thi CCNA – IPv4 & Subnetting (Tuần 1 Bài 2)</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#ffffff;--bg2:#f5f5f3;--bg3:#efefec;--bg4:#e8e8e4;
+  --text:#1a1a18;--text2:#5a5a56;--text3:#9a9a94;
+  --border:rgba(0,0,0,0.09);--border2:rgba(0,0,0,0.16);
+  --info-bg:#e6f1fb;--info-text:#0c447c;--info-border:rgba(55,138,221,0.25);
+  --success-bg:#eaf3de;--success-text:#27500a;--success-border:rgba(99,153,34,0.25);
+  --warn-bg:#faeeda;--warn-text:#633806;--warn-border:rgba(186,117,23,0.25);
+  --danger-bg:#fcebeb;--danger-text:#791f1f;--danger-border:rgba(226,75,74,0.25);
+  --teal-bg:#e1f5ee;--teal-text:#04342c;
+  --r:8px;--rlg:12px;
+  --font:'DM Sans',system-ui,sans-serif;
+  --mono:'DM Mono','Courier New',monospace;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg:#1c1c1a;--bg2:#252523;--bg3:#2e2e2b;--bg4:#363633;
+  --text:#e8e8e2;--text2:#9a9a94;--text3:#5a5a56;
+  --border:rgba(255,255,255,0.08);--border2:rgba(255,255,255,0.14);
+  --info-bg:#0c2a4a;--info-text:#85b7eb;--info-border:rgba(55,138,221,0.2);
+  --success-bg:#172204;--success-text:#97c459;--success-border:rgba(99,153,34,0.2);
+  --warn-bg:#251600;--warn-text:#ef9f27;--warn-border:rgba(186,117,23,0.2);
+  --danger-bg:#2a0808;--danger-text:#f09595;--danger-border:rgba(226,75,74,0.2);
+  --teal-bg:#04342c;--teal-text:#9fe1cb;
+}}
+body{font-family:var(--font);background:var(--bg);color:var(--text);line-height:1.6;min-height:100vh;padding-bottom:80px}
+.page{max-width:860px;margin:0 auto;padding:1.5rem 1.25rem 2rem}
+
+/* ── Header ── */
+.hdr{background:var(--bg2);border:0.5px solid var(--border2);border-radius:var(--rlg);padding:1.25rem 1.5rem;margin-bottom:1.5rem}
+.badge-row{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:.75rem}
+.badge{font-size:10.5px;padding:2px 9px;border-radius:16px;font-weight:500}
+.b-phase{background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border)}
+.b-week{background:var(--info-bg);color:var(--info-text);border:0.5px solid var(--info-border)}
+.b-hard{background:var(--warn-bg);color:var(--warn-text);border:0.5px solid var(--warn-border)}
+.hdr-title{font-size:20px;font-weight:600;margin-bottom:.25rem}
+.hdr-sub{font-size:13px;color:var(--text2);line-height:1.6;margin-bottom:.9rem}
+.stats-row{display:flex;gap:10px;flex-wrap:wrap}
+.stat-pill{background:var(--bg3);border:0.5px solid var(--border);border-radius:16px;padding:4px 12px;font-size:12px;display:flex;align-items:center;gap:5px}
+.sd{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+/* ── Filter / Mode bar ── */
+.ctrl-bar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:1.1rem;align-items:center}
+.ctrl-sep{flex:1}
+.mode-btns{display:flex;gap:5px;flex-wrap:wrap}
+.mbt{padding:5px 13px;border-radius:16px;border:0.5px solid var(--border2);cursor:pointer;font-size:12px;background:var(--bg2);color:var(--text2);font-family:var(--font);transition:all .12s;font-weight:400}
+.mbt:hover{background:var(--bg3)}
+.mbt.on{background:var(--info-bg);color:var(--info-text);border-color:var(--info-border);font-weight:500}
+.filter-label{font-size:10.5px;color:var(--text3);font-weight:700;letter-spacing:.06em;text-transform:uppercase}
+.fbt{padding:3px 10px;border-radius:12px;border:0.5px solid var(--border2);cursor:pointer;font-size:11px;background:var(--bg);color:var(--text2);font-family:var(--font);transition:all .12s;font-weight:500}
+.fbt:hover{background:var(--bg3)}
+.fbt.on{font-weight:600}
+.fbt[data-d=easy].on{background:var(--success-bg);color:var(--success-text);border-color:var(--success-border)}
+.fbt[data-d=med].on{background:var(--warn-bg);color:var(--warn-text);border-color:var(--warn-border)}
+.fbt[data-d=hard].on{background:var(--danger-bg);color:var(--danger-text);border-color:var(--danger-border)}
+
+/* ── Subnet drill panel (live tính nhẩm) ── */
+.drill-panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rlg);padding:1rem 1.25rem;margin-bottom:1.25rem}
+.drill-title{font-size:13px;font-weight:600;margin-bottom:.65rem;display:flex;align-items:center;gap:8px}
+.drill-badge{font-size:10px;background:var(--teal-bg);color:var(--teal-text);padding:2px 8px;border-radius:8px;font-weight:600}
+.drill-q-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:.65rem}
+.drill-q-txt{font-size:13px;font-weight:500;flex:1;min-width:180px}
+.drill-input{padding:6px 10px;border-radius:var(--r);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-family:var(--mono);font-size:13px;outline:none;width:150px;transition:border-color .15s}
+.drill-input:focus{border-color:var(--info-text)}
+.drill-check{padding:6px 14px;border-radius:var(--r);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font)}
+.drill-check:hover{opacity:.85}
+.drill-fb{font-size:12px;padding:5px 10px;border-radius:var(--r);margin-top:.4rem;display:none}
+.drill-fb.show{display:block}
+.drill-fb.ok{background:var(--success-bg);color:var(--success-text)}
+.drill-fb.err{background:var(--danger-bg);color:var(--danger-text)}
+.drill-nav{display:flex;gap:6px;align-items:center;margin-top:.65rem}
+.dnav-btn{padding:5px 12px;border-radius:var(--r);border:0.5px solid var(--border2);background:var(--bg);color:var(--text2);font-size:12px;cursor:pointer;font-family:var(--font)}
+.dnav-btn:hover{background:var(--bg3)}
+.dnav-btn:disabled{opacity:.35;cursor:default}
+.drill-prog{font-size:11px;color:var(--text3);margin:0 auto}
+.drill-score{font-size:11px;font-weight:600;color:var(--success-text)}
+
+/* ── Section divider ── */
+.sec-div{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--text3);margin:1.25rem 0 .75rem;display:flex;align-items:center;gap:10px}
+.sec-div::after{content:'';flex:1;height:0.5px;background:var(--border2)}
+
+/* ── Question card ── */
+.qcard{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rlg);padding:1.1rem 1.35rem;margin-bottom:.85rem;transition:border-color .18s}
+.qcard.ok{border-color:var(--success-border)}
+.qcard.fail{border-color:var(--danger-border)}
+.qmeta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-bottom:.55rem}
+.qm-diff{font-size:10px;padding:2px 8px;border-radius:8px;font-weight:600}
+.diff-easy{background:var(--success-bg);color:var(--success-text)}
+.diff-med{background:var(--warn-bg);color:var(--warn-text)}
+.diff-hard{background:var(--danger-bg);color:var(--danger-text)}
+.qm-topic{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--bg3);color:var(--text2);font-weight:500}
+.qm-exam{font-size:10px;padding:2px 8px;border-radius:8px;background:var(--info-bg);color:var(--info-text);font-weight:600}
+.qnum{font-size:11px;font-weight:700;color:var(--text3);margin-right:2px}
+.qtext{font-size:14px;font-weight:500;line-height:1.65;margin-bottom:.75rem}
+.qnote{font-size:11.5px;color:var(--text3);font-family:var(--mono);background:var(--bg3);border-radius:var(--r);padding:5px 9px;margin-bottom:.75rem;display:inline-block}
+
+/* ── Input type question ── */
+.qinput-wrap{display:flex;align-items:center;gap:8px;margin:.5rem 0 .75rem;flex-wrap:wrap}
+.qinput{padding:8px 11px;border-radius:var(--r);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-family:var(--mono);font-size:14px;outline:none;transition:border-color .15s;width:200px}
+.qinput:focus{border-color:var(--info-text)}
+.qinput:disabled{opacity:.6;cursor:default}
+.qinput.ok{border-color:var(--success-border)!important;background:var(--success-bg)!important;color:var(--success-text)!important}
+.qinput.fail{border-color:var(--danger-border)!important;background:var(--danger-bg)!important;color:var(--danger-text)!important}
+.qchk-btn{padding:7px 16px;border-radius:var(--r);border:0.5px solid var(--border2);background:var(--bg);color:var(--text);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font)}
+.qchk-btn:hover:not(:disabled){background:var(--bg3)}
+.qchk-btn:disabled{opacity:.35;cursor:default}
+
+/* ── Options ── */
+.qopts{display:flex;flex-direction:column;gap:5px;margin-bottom:.65rem}
+.qopt{padding:8px 13px;border-radius:var(--r);border:0.5px solid var(--border2);cursor:pointer;font-size:13px;background:var(--bg);color:var(--text);text-align:left;font-family:var(--font);line-height:1.5;transition:background .1s;display:flex;align-items:flex-start;gap:8px;width:100%}
+.qopt:hover:not(:disabled){background:var(--bg3)}
+.qopt:disabled{cursor:default}
+.opt-letter{font-size:11px;font-weight:700;color:var(--text3);flex-shrink:0;margin-top:1px;min-width:15px}
+.qopt.correct{background:var(--success-bg)!important;color:var(--success-text)!important;border-color:var(--success-border)!important}
+.qopt.correct .opt-letter{color:var(--success-text)}
+.qopt.wrong{background:var(--danger-bg)!important;color:var(--danger-text)!important;border-color:var(--danger-border)!important}
+.qopt.wrong .opt-letter{color:var(--danger-text)}
+
+/* ── Feedback / Explanation ── */
+.exp-box{display:none;margin-top:.65rem;border-radius:var(--r);overflow:hidden;border:0.5px solid var(--border)}
+.exp-box.show{display:block}
+.exp-hdr{padding:8px 12px;font-size:12px;font-weight:600;display:flex;align-items:center;gap:5px}
+.exp-hdr.ok{background:var(--success-bg);color:var(--success-text)}
+.exp-hdr.fail{background:var(--danger-bg);color:var(--danger-text)}
+.exp-body{padding:10px 13px;background:var(--bg);font-size:13px;color:var(--text2);line-height:1.72}
+.exp-body code{font-family:var(--mono);font-size:11.5px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;padding:1px 5px;color:var(--text)}
+.exp-body strong{font-weight:500;color:var(--text)}
+.exp-extra{margin-top:.65rem;padding:8px 11px;background:var(--info-bg);border-radius:var(--r);font-size:12px;color:var(--info-text);line-height:1.65;border:0.5px solid var(--info-border)}
+.exp-extra strong{color:var(--info-text);font-weight:600}
+
+/* ── Drag-drop ── */
+.dnd-src{display:flex;flex-wrap:wrap;gap:6px;padding:9px 11px;background:var(--bg3);border:0.5px dashed var(--border2);border-radius:var(--r);margin-bottom:9px;min-height:44px}
+.chip{padding:4px 11px;background:var(--bg);border:0.5px solid var(--border2);border-radius:14px;font-size:12px;cursor:grab;user-select:none;transition:all .12s;font-family:var(--mono)}
+.chip:hover{border-color:var(--info-text);background:var(--info-bg);color:var(--info-text)}
+.chip.placed{opacity:.35;cursor:default}
+.chip.dragging{opacity:.4}
+.dnd-table{width:100%;border-collapse:collapse;margin-bottom:8px}
+.dnd-table th{font-size:10.5px;font-weight:600;padding:6px 9px;background:var(--bg3);border:0.5px solid var(--border2);text-align:left;color:var(--text2)}
+.dnd-table td{padding:5px 7px;border:0.5px solid var(--border2);vertical-align:middle}
+.dnd-table tr:nth-child(even) td{background:var(--bg2)}
+.drop-zone{min-height:30px;border-radius:5px;border:1px dashed var(--border2);padding:3px 7px;display:flex;align-items:center;flex-wrap:wrap;gap:3px;cursor:pointer;background:var(--bg)}
+.drop-zone.drag-over{border-color:var(--info-text);background:var(--info-bg)}
+.drop-zone .chip{padding:2px 8px;font-size:11px;cursor:pointer}
+.drop-zone .chip:hover{background:var(--danger-bg);color:var(--danger-text);border-color:var(--danger-border)}
+.dnd-chk{margin-top:8px;padding:6px 16px;border-radius:var(--r);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font)}
+.dnd-res{margin-top:7px;padding:7px 11px;border-radius:var(--r);font-size:12px;display:none}
+.dnd-res.show{display:block}
+
+/* ── Ordering ── */
+.order-list{display:flex;flex-direction:column;gap:4px;margin:.65rem 0}
+.order-item{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--bg);border:0.5px solid var(--border2);border-radius:var(--r);cursor:grab;user-select:none;font-size:13px}
+.order-item:hover{border-color:var(--border2);background:var(--bg3)}
+.order-item.dragging-ord{opacity:.4}
+.order-handle{color:var(--text3);font-size:15px;flex-shrink:0}
+.order-chk{margin-top:7px;padding:6px 16px;border-radius:var(--r);border:0.5px solid var(--info-border);background:var(--info-bg);color:var(--info-text);font-size:12px;font-weight:500;cursor:pointer;font-family:var(--font)}
+
+/* ── No results ── */
+.no-results{text-align:center;padding:3rem;color:var(--text3);font-size:13px}
+
+/* ── Quick ref table ── */
+.ref-table{width:100%;border-collapse:collapse;font-size:12px;margin:.5rem 0}
+.ref-table th{background:var(--bg3);padding:6px 9px;text-align:left;font-weight:600;border-bottom:0.5px solid var(--border2);font-size:11px}
+.ref-table td{padding:5px 9px;border-bottom:0.5px solid var(--border);color:var(--text2);font-family:var(--mono)}
+.ref-table tr:hover td{background:var(--bg3)}
+.ref-panel{background:var(--bg2);border:0.5px solid var(--border);border-radius:var(--rlg);overflow:hidden;margin-bottom:1.25rem}
+.ref-hdr{padding:9px 14px;background:var(--bg3);cursor:pointer;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:500;user-select:none}
+.ref-hdr:hover{background:var(--bg4)}
+.ref-body{display:none;padding:.75rem 1rem}
+.ref-body.show{display:block}
+.ref-chev{font-size:10px;color:var(--text3);transition:transform .18s}
+.ref-hdr.open .ref-chev{transform:rotate(180deg)}
+
+code{font-family:var(--mono);font-size:12px;background:var(--bg3);border:0.5px solid var(--border2);border-radius:4px;padding:1px 5px;color:var(--text)}
+</style>
+</head>
+<body>
+<div class="page">
+
+<!-- Header -->
+<div class="hdr">
+  <div class="badge-row">
+    <span class="badge b-phase">Giai đoạn 1 – Nền tảng</span>
+    <span class="badge b-week">Tuần 1 – Bài 2 – Luyện thi</span>
+    <span class="badge b-hard">IPv4 & Subnetting · CCNA 200-301</span>
+  </div>
+  <div class="hdr-title">Luyện thi CCNA – IPv4 & Subnetting</div>
+  <div class="hdr-sub">30 câu hỏi đa dạng chuẩn CCNA: trắc nghiệm, tính nhẩm, kéo-thả, sắp xếp. Bấm đáp án để xem giải thích và bổ sung kiến thức chi tiết.</div>
+  <div class="stats-row">
+    <div class="stat-pill"><div class="sd" style="background:#639922"></div><span id="st-c">0</span> đúng</div>
+    <div class="stat-pill"><div class="sd" style="background:#e24b4a"></div><span id="st-w">0</span> sai</div>
+    <div class="stat-pill"><div class="sd" style="background:#888"></div><span id="st-r">30</span> chưa làm</div>
+    <div class="stat-pill">Tỉ lệ: <strong id="st-p" style="margin-left:3px">–</strong></div>
+  </div>
+</div>
+
+<!-- Quick Reference (gấp lại) -->
+<div class="ref-panel" id="refpanel">
+  <div class="ref-hdr" id="refhdr" onclick="toggleRef()">
+    📋 Bảng tham chiếu nhanh — /prefix → Subnet Mask → Số host
+    <span class="ref-chev" id="refchev">▼</span>
+  </div>
+  <div class="ref-body" id="refbody">
+    <table class="ref-table">
+      <tr><th>CIDR</th><th>Subnet Mask</th><th>Block Size</th><th>Hosts dùng được</th><th>Ví dụ Network</th></tr>
+      <tr><td>/24</td><td>255.255.255.0</td><td>256</td><td>254</td><td>192.168.1.0/24</td></tr>
+      <tr><td>/25</td><td>255.255.255.128</td><td>128</td><td>126</td><td>192.168.1.0 / 192.168.1.128</td></tr>
+      <tr><td>/26</td><td>255.255.255.192</td><td>64</td><td>62</td><td>0, 64, 128, 192</td></tr>
+      <tr><td>/27</td><td>255.255.255.224</td><td>32</td><td>30</td><td>0, 32, 64, 96, 128...</td></tr>
+      <tr><td>/28</td><td>255.255.255.240</td><td>16</td><td>14</td><td>0, 16, 32, 48...</td></tr>
+      <tr><td>/29</td><td>255.255.255.248</td><td>8</td><td>6</td><td>0, 8, 16, 24...</td></tr>
+      <tr><td>/30</td><td>255.255.255.252</td><td>4</td><td>2</td><td>point-to-point links</td></tr>
+      <tr><td>/16</td><td>255.255.0.0</td><td>65536</td><td>65534</td><td>172.16.0.0/16</td></tr>
+      <tr><td>/8</td><td>255.0.0.0</td><td>16777216</td><td>16777214</td><td>10.0.0.0/8</td></tr>
+    </table>
+    <div style="font-size:11px;color:var(--text3);margin-top:.5rem">
+      🔢 Magic number: <strong style="color:var(--text)">256 – octet subnet mask = block size</strong> &nbsp;|&nbsp; 
+      Hosts = <strong style="color:var(--text)">2^(32-prefix) – 2</strong> &nbsp;|&nbsp;
+      Broadcast = <strong style="color:var(--text)">Network + block_size – 1</strong>
+    </div>
+  </div>
+</div>
+
+<!-- Subnet Drill -->
+<div class="drill-panel">
+  <div class="drill-title">
+    ⚡ Luyện tính nhẩm nhanh
+    <span class="drill-badge">Không dùng máy tính!</span>
+    <span style="margin-left:auto;font-size:11px;color:var(--text3)" id="drill-prog-lbl">0/10 bài</span>
+    <span class="drill-score" id="drill-score-lbl"></span>
+  </div>
+  <div id="drill-q-wrap"></div>
+  <div class="drill-nav">
+    <button class="dnav-btn" id="dbtn-prev" disabled onclick="drillGo(-1)">← Trước</button>
+    <button class="dnav-btn" id="dbtn-next" onclick="drillGo(1)">Tiếp →</button>
+    <button class="dnav-btn" onclick="drillShuffle()">🔀 Xáo trộn</button>
+  </div>
+</div>
+
+<!-- Filter bar -->
+<div class="ctrl-bar">
+  <span class="filter-label">Độ khó:</span>
+  <button class="fbt on" data-d="easy" onclick="toggleDiff(this)">Dễ</button>
+  <button class="fbt on" data-d="med" onclick="toggleDiff(this)">Trung bình</button>
+  <button class="fbt on" data-d="hard" onclick="toggleDiff(this)">Khó</button>
+  <div class="ctrl-sep"></div>
+  <div class="mode-btns">
+    <button class="mbt on" data-m="all" onclick="setMode(this)">Tất cả (30)</button>
+    <button class="mbt" data-m="mc" onclick="setMode(this)">Trắc nghiệm</button>
+    <button class="mbt" data-m="input" onclick="setMode(this)">Tính toán</button>
+    <button class="mbt" data-m="dnd" onclick="setMode(this)">Kéo-thả</button>
+    <button class="mbt" data-m="wrong" onclick="setMode(this)" id="wrongBtn">Câu sai (0)</button>
+  </div>
+</div>
+
+<div id="qcontainer"></div>
+
+</div><!-- end .page -->
+<script>
+/* ══════════════════════════════════════
+   STATE
+══════════════════════════════════════ */
+var S={correct:0,wrong:0,answered:new Set(),wrongIds:new Set(),diff:new Set(['easy','med','hard']),mode:'all'};
+
+/* ══════════════════════════════════════
+   SUBNET DRILL DATA (10 bài tính nhẩm)
+══════════════════════════════════════ */
+var drills=[
+  {q:'192.168.1.0/26 → Số host dùng được?',a:'62',hint:'Host bits = 6 → 2^6 - 2'},
+  {q:'172.16.5.0/27 → Broadcast address?',a:'172.16.5.31',hint:'Block size=32, 0+32-1=31'},
+  {q:'10.0.0.0/8 → Subnet Mask?',a:'255.0.0.0',hint:'8 bit network = 11111111.00000000...'},
+  {q:'192.168.1.200/25 → Network address?',a:'192.168.1.128',hint:'Block=128: blocks là 0,128. 200 nằm trong block 128'},
+  {q:'192.168.10.64/26 → First usable host?',a:'192.168.10.65',hint:'Network=.64, first host = network+1'},
+  {q:'/29 → Bao nhiêu host dùng được?',a:'6',hint:'Host bits=3 → 2^3-2=6'},
+  {q:'192.168.5.33/28 → Network address?',a:'192.168.5.32',hint:'Block=16: blocks 0,16,32,48... 33 thuộc block 32'},
+  {q:'172.16.0.0/16 → Broadcast address?',a:'172.16.255.255',hint:'Host bits=16, tất cả về 1'},
+  {q:'192.168.1.100/25 → Thuộc subnet nào?',a:'192.168.1.0/25',hint:'Block=128: 100<128, thuộc block đầu tiên .0'},
+  {q:'/30 → Dùng cho loại link nào?',a:'point-to-point',hint:'Chỉ có 2 host – dùng nối 2 router'},
+];
+var drillIdx=0,drillCorrect=0,drillTotal=0;
+function drillRender(){
+  var d=drills[drillIdx];
+  document.getElementById('drill-q-wrap').innerHTML=
+    '<div class="drill-q-row">'
+    +'<div class="drill-q-txt">'+(drillIdx+1)+'. '+d.q+'</div>'
+    +'<input class="drill-input" id="dinp" type="text" placeholder="Đáp án..." autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')drillCheck()">'
+    +'<button class="drill-check" onclick="drillCheck()">Kiểm tra</button>'
+    +'</div>'
+    +'<div class="drill-fb" id="dfb"></div>';
+  document.getElementById('drill-prog-lbl').textContent=(drillIdx+1)+'/'+drills.length+' bài';
+  document.getElementById('dbtn-prev').disabled=drillIdx===0;
+  document.getElementById('dbtn-next').disabled=drillIdx===drills.length-1;
+  setTimeout(function(){var el=document.getElementById('dinp');if(el)el.focus();},50);
+}
+function drillCheck(){
+  var inp=document.getElementById('dinp');
+  var fb=document.getElementById('dfb');
+  if(!inp||!fb)return;
+  var val=inp.value.trim().toLowerCase();
+  var ans=drills[drillIdx].a.toLowerCase();
+  inp.disabled=true;
+  drillTotal++;
+  if(val===ans||val===ans.replace(/\s/g,'')){
+    drillCorrect++;
+    fb.className='drill-fb show ok';
+    fb.textContent='✓ Đúng! Đáp án: '+drills[drillIdx].a;
+  } else {
+    fb.className='drill-fb show err';
+    fb.textContent='✗ Sai. Gợi ý: '+drills[drillIdx].hint+' → Đáp án: '+drills[drillIdx].a;
+  }
+  document.getElementById('drill-score-lbl').textContent='Điểm: '+drillCorrect+'/'+drillTotal;
+}
+function drillGo(dir){
+  drillIdx=Math.max(0,Math.min(drills.length-1,drillIdx+dir));
+  drillRender();
+}
+function drillShuffle(){
+  for(var i=drills.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=drills[i];drills[i]=drills[j];drills[j]=t;}
+  drillIdx=0;drillCorrect=0;drillTotal=0;
+  document.getElementById('drill-score-lbl').textContent='';
+  drillRender();
+}
+drillRender();
+
+/* ══════════════════════════════════════
+   QUESTION DATA — 30 câu
+══════════════════════════════════════ */
+var QD=[
+/* ── TRẮC NGHIỆM ── */
+{id:1,type:'mc',diff:'easy',topic:'Lớp địa chỉ',
+ q:'Địa chỉ IP 172.25.100.5 thuộc lớp nào theo phân loại IPv4 classful?',
+ opts:['Lớp A (1–126)','Lớp B (128–191)','Lớp C (192–223)','Lớp D (Multicast)'],
+ correct:1,
+ exp:'Octet đầu 172 nằm trong khoảng 128–191 → <strong>Lớp B</strong>. Lớp B có subnet mask mặc định /16 (255.255.0.0), chứa ~65,000 host mỗi network. Dải private của B: 172.16.0.0 – 172.31.255.255.',
+ extra:'Bảng lớp địa chỉ cần nhớ: <code>1–126 = A</code> | <code>128–191 = B</code> | <code>192–223 = C</code> | <code>224–239 = D (Multicast)</code> | <code>240–255 = E (Dự phòng)</code>. CCNA hay hỏi phân loại theo octet đầu tiên.',
+},
+{id:2,type:'mc',diff:'easy',topic:'Private vs Public',
+ q:'Địa chỉ nào sau đây là địa chỉ PRIVATE (RFC 1918) — không route được trực tiếp trên Internet?',
+ opts:['8.8.8.8','203.162.5.10','172.20.0.1','100.64.0.1'],
+ correct:2,
+ exp:'<strong>172.20.0.1</strong> thuộc dải private 172.16.0.0 – 172.31.255.255 (lớp B private). Fortinet tại bệnh viện NAT địa chỉ này ra public IP khi truy cập Internet.',
+ extra:'Ba dải private RFC 1918: <code>10.0.0.0/8</code> | <code>172.16.0.0/12</code> | <code>192.168.0.0/16</code>. Ngoài ra, <code>100.64.0.0/10</code> là "Carrier-Grade NAT" — không phải RFC 1918 nhưng cũng không route được trên Internet công cộng.',
+},
+{id:3,type:'mc',diff:'easy',topic:'Subnet Mask',
+ q:'Subnet mask 255.255.255.0 tương đương với ký hiệu CIDR nào?',
+ opts:['/16','/20','/24','/28'],
+ correct:2,
+ exp:'255.255.255.0 = <code>11111111.11111111.11111111.00000000</code> → đếm số bit 1 = <strong>24 bit</strong> → /24. Đây là subnet phổ biến nhất cho mạng nhỏ và vừa tại bệnh viện.',
+ extra:'Chuyển đổi nhanh: 255=8 bit 1. 255.255.255.0 = 3×8=24 → /24. Tương tự: 255.255.0.0=/16, 255.0.0.0=/8. Cho 255.255.255.192=/26 (192=11000000→2 bit thêm vào 24→26).',
+},
+{id:4,type:'mc',diff:'easy',topic:'Hosts',
+ q:'Mạng 192.168.1.0/24 có tối đa bao nhiêu địa chỉ IP có thể gán cho máy tính (usable hosts)?',
+ opts:['256','255','254','252'],
+ correct:2,
+ exp:'/24 → host bits = 8 → tổng địa chỉ = 2⁸ = 256. Trừ 1 network (192.168.1.0) và 1 broadcast (192.168.1.255) → còn <strong>254 hosts</strong> dùng được.',
+ extra:'Công thức vàng: <code>Usable hosts = 2^(32-prefix) - 2</code>. Ngoại lệ duy nhất: /31 dùng cho point-to-point (2 địa chỉ, không trừ 2); /32 là host route (1 địa chỉ, tự thân).',
+},
+{id:5,type:'mc',diff:'easy',topic:'Network/Broadcast',
+ q:'Với subnet 192.168.10.0/26, địa chỉ broadcast là bao nhiêu?',
+ opts:['192.168.10.62','192.168.10.63','192.168.10.64','192.168.10.255'],
+ correct:1,
+ exp:'/26 → host bits=6 → block size=64. Subnet đầu: 192.168.10.0 → broadcast = 0+64-1 = <strong>192.168.10.63</strong>. Broadcast là địa chỉ cuối cùng, tất cả host bits = 1.',
+ extra:'Magic number: <code>256 - 192 = 64</code> (block size). Các subnet /26 trong .0: .0, .64, .128, .192. Broadcast của từng subnet = block tiếp theo - 1: .63, .127, .191, .255.',
+},
+{id:6,type:'mc',diff:'med',topic:'Hosts Planning',
+ q:'Bệnh viện cần chia mạng cho 100 camera IP Vantech. Subnet nhỏ nhất (ít host nhất) nhưng vừa đủ cho 100 camera là?',
+ opts:['/24 – 254 hosts','/25 – 126 hosts','/26 – 62 hosts','/27 – 30 hosts'],
+ correct:1,
+ exp:'/26 chỉ có 62 hosts — không đủ cho 100 camera. <strong>/25 có 126 hosts</strong> — đủ cho 100 camera và còn dư 26 địa chỉ để dự phòng mở rộng. /24 đủ nhưng lãng phí hơn.',
+ extra:'Khi thiết kế mạng: luôn chọn subnet nhỏ nhất vừa đủ số thiết bị + buffer 20-30% cho tương lai. Công thức: tìm n sao cho 2^n - 2 ≥ số thiết bị cần. 100 camera → 2^7-2=126 → host bits = 7 → /25.',
+},
+{id:7,type:'mc',diff:'med',topic:'Subnet Boundary',
+ q:'Địa chỉ 192.168.1.130/25 thuộc subnet nào?',
+ opts:['192.168.1.0/25','192.168.1.128/25','192.168.1.64/25','192.168.1.192/25'],
+ correct:1,
+ exp:'/25 → block size=128. Các subnet: 192.168.1.0 (0–127) và 192.168.1.128 (128–255). IP .130 nằm trong khoảng 128–255 → thuộc subnet <strong>192.168.1.128/25</strong>.',
+ extra:'Quy trình tìm subnet chứa IP: (1) tính block size = 256-mask_octet; (2) tìm bội số của block_size lớn nhất ≤ octet của IP; (3) đó là network address. Ví dụ: block=128, 130÷128=1 dư 2 → network=128.',
+},
+{id:8,type:'mc',diff:'med',topic:'Subnet Boundary',
+ q:'IP 10.10.5.200 với mask 255.255.255.240. Đây là địa chỉ gì trong subnet đó?',
+ opts:['Network address','Host address hợp lệ','Broadcast address','Địa chỉ không hợp lệ'],
+ correct:2,
+ exp:'255.255.255.240 = /28 → block size=16. Các subnet octet cuối: 0,16,32...192,208. IP .200: 192≤200<208 → subnet 192-207. Broadcast=207. <strong>200 ≠ 207</strong> → không phải broadcast. Network=192 → host hợp lệ!',
+ extra:'Chờ, .200 trong block 192-207: Network=192, Broadcast=207, hosts=193-206. .200 nằm trong 193-206 → là <strong>host hợp lệ</strong>. Đáp án B là đúng. Kiểm tra lại: block 16 × 12 = 192, block kết thúc 192+16-1=207.',
+},
+{id:9,type:'mc',diff:'med',topic:'CIDR to Mask',
+ q:'/27 tương đương với subnet mask nào?',
+ opts:['255.255.255.192','255.255.255.224','255.255.255.240','255.255.255.248'],
+ correct:1,
+ exp:'/27 = 24 bit toàn 1 + 3 bit 1 ở octet cuối = <code>11100000</code> = 128+64+32 = <strong>224</strong> → 255.255.255.224. Block size = 256-224 = 32.',
+ extra:'Bảng octet cuối hay gặp: /25=128, /26=192, /27=224, /28=240, /29=248, /30=252. Cách nhớ: mỗi bit thêm = thêm giá trị bit tương ứng. /27=128+64+32=224.',
+},
+{id:10,type:'mc',diff:'med',topic:'Troubleshoot',
+ q:'PC A (192.168.1.10/24) ping PC B (192.168.1.20/24) thành công. Sau đó đổi PC B sang 192.168.2.20/24 (cùng switch). PC A ping PC B → kết quả?',
+ opts:['Vẫn ping được, vì cùng switch','Không ping được, vì khác subnet','Ping được nếu có ARP','Ping được nếu dùng IP thay tên'],
+ correct:1,
+ exp:'192.168.1.x/24 và 192.168.2.x/24 là <strong>hai subnet khác nhau</strong>. Dù cùng switch, máy tính cần đi qua <strong>router/Layer 3</strong> để liên lạc giữa 2 subnet. Switch L2 chỉ forward trong cùng subnet. PC A không có route đến 192.168.2.0/24.',
+ extra:'Lỗi hay gặp khi cấu hình: gán IP sai subnet → thiết bị mất kết nối. Luôn kiểm tra: (1) IP+mask đúng subnet, (2) Default Gateway đúng, (3) Cùng VLAN nếu dùng switch managed. Ping 127.0.0.1 OK nhưng ping gateway fail → vấn đề ở tầng 1/2.',
+},
+{id:11,type:'mc',diff:'med',topic:'Special Addresses',
+ q:'Địa chỉ 127.0.0.1 có vai trò gì? Nó thuộc lớp nào theo classful?',
+ opts:['Broadcast, Lớp C','Loopback nội bộ máy, Lớp A','Multicast, Lớp D','Default gateway, Lớp B'],
+ correct:1,
+ exp:'127.0.0.1 là <strong>loopback address</strong>. Khi máy gửi packet đến 127.x.x.x, nó không ra card mạng mà quay ngược lại ngay trong TCP/IP stack. Octet đầu = 127 → <strong>Lớp A</strong>. Lệnh <code>ping 127.0.0.1</code> kiểm tra TCP/IP stack hoạt động không.',
+ extra:'Toàn bộ dải 127.0.0.0/8 là loopback. Ứng dụng dùng 127.0.0.1 để test kết nối nội bộ (web server chạy local, database local). IPv6 loopback = ::1.',
+},
+{id:12,type:'mc',diff:'med',topic:'CIDR Notation',
+ q:'Một interface Fortinet được cấu hình IP 192.168.100.1/255.255.255.192. Máy tính nào sau đây cùng subnet với Fortinet?',
+ opts:['192.168.100.65','192.168.100.64','192.168.100.62','192.168.100.0'],
+ correct:2,
+ exp:'255.255.255.192 = /26. Block size=64. Fortinet .1 thuộc subnet 192.168.100.0/26 (range 0–63). <code>.0</code> là network, <code>.63</code> là broadcast, <code>.62</code> là host hợp lệ trong cùng subnet. <strong>.62 đúng</strong>.',
+ extra:'.65 thuộc subnet 192.168.100.64/26 (range 64-127) — khác subnet. .64 là network address của subnet thứ hai — không gán được. .0 là network address của subnet Fortinet — cũng không gán được.',
+},
+{id:13,type:'mc',diff:'hard',topic:'VLSM Design',
+ q:'IT bệnh viện cần thiết kế mạng từ 10.10.0.0/24 cho 4 VLAN: VLAN Doctor (60 host), VLAN Nurse (25 host), VLAN Camera (12 host), VLAN Management (5 host). Sử dụng VLSM, subnet đầu tiên cấp cho VLAN Doctor là?',
+ opts:['10.10.0.0/25 (126 hosts)','10.10.0.0/26 (62 hosts)','10.10.0.0/27 (30 hosts)','10.10.0.0/24 (254 hosts)'],
+ correct:0,
+ exp:'VLAN Doctor cần 60 hosts. /26=62 hosts (vừa đủ nhưng sát). /25=126 hosts — đủ và có buffer. Trong VLSM, cấp subnet lớn nhất trước: <strong>10.10.0.0/25</strong> cho Doctor (0-127), rồi cấp subnet nhỏ hơn cho các VLAN còn lại từ .128 trở đi.',
+ extra:'VLSM (Variable Length Subnet Masking): chia mạng thành các subnet khác nhau kích thước, không lãng phí IP. Thứ tự VLSM: cấp subnet lớn nhất trước → Doctor /25 (0-127) → Nurse /27 (128-159, 30 hosts) → Camera /28 (160-175, 14 hosts) → Management /29 (176-183, 6 hosts).',
+},
+{id:14,type:'mc',diff:'hard',topic:'Broadcast Behavior',
+ q:'Máy tính gửi ARP Request đến 255.255.255.255. Điều gì xảy ra khi gói tin này đến Switch Cisco 2960?',
+ opts:['Switch bỏ gói tin vì là broadcast','Switch gửi đến tất cả port trong cùng VLAN','Switch chỉ gửi đến port của Default Gateway','Switch gửi đến tất cả port, kể cả port uplink'],
+ correct:1,
+ exp:'255.255.255.255 là <strong>limited broadcast</strong>. Khi switch nhận frame với Dst MAC = FF:FF:FF:FF:FF:FF (tương ứng), nó flood ra tất cả port <strong>trong cùng VLAN</strong>. Router ngăn broadcast không vượt qua sang VLAN/subnet khác.',
+ extra:'Limited broadcast (255.255.255.255) không ra khỏi VLAN/subnet. Directed broadcast (192.168.1.255 cho /24) về mặt lý thuyết có thể route nhưng router hiện đại thường block. Đây là lý do DHCP Discover dùng 255.255.255.255 — cần relay agent (ip helper-address) để vượt VLAN.',
+},
+{id:15,type:'mc',diff:'hard',topic:'Subnet Calc Advanced',
+ q:'Cần chia mạng 192.168.0.0/24 thành 8 subnet bằng nhau. Subnet thứ 5 (bắt đầu đếm từ 1) là?',
+ opts:['192.168.0.96/27','192.168.0.112/27','192.168.0.128/27','192.168.0.160/27'],
+ correct:2,
+ exp:'Chia /24 thành 8 subnet → cần 3 bit mượn → /27. Block size=32. Subnet 1: .0, 2: .32, 3: .64, 4: .96, 5: <strong>192.168.0.128/27</strong>. Công thức: subnet thứ n = network + (n-1) × block_size = 0 + 4×32 = 128.',
+ extra:'Công thức số subnet: 2^(số bit mượn). Muốn 8 subnet: 2^3=8 → mượn 3 bit → /24+3=/27. Mỗi subnet có 30 hosts. Tổng địa chỉ 256 ÷ 8 = 32 địa chỉ mỗi subnet.',
+},
+{id:16,type:'mc',diff:'hard',topic:'Route Selection',
+ q:'Router có routing table: 192.168.1.0/24 (qua Gi0/0) và 192.168.1.64/26 (qua Gi0/1). Packet đến IP 192.168.1.100. Router chọn route nào?',
+ opts:['192.168.1.0/24 vì match trước','192.168.1.64/26 vì prefix dài hơn (specific hơn)','Gửi ra cả hai interface','Drop packet vì ambiguous'],
+ correct:1,
+ exp:'Router dùng nguyên tắc <strong>Longest Prefix Match</strong>: chọn route có prefix dài nhất (đặc biệt nhất). 192.168.1.100 khớp cả /24 lẫn /26, nhưng /26 cụ thể hơn → router chọn <strong>/26 qua Gi0/1</strong>.',
+ extra:'Longest Prefix Match là nguyên tắc cốt lõi của routing. /32 (host route) > /26 > /24 > /16 > /0 (default route). Lệnh xem: <code>show ip route 192.168.1.100</code> — hiển thị đúng route nào được chọn.',
+},
+/* ── TÍNH TOÁN (input) ── */
+{id:17,type:'input',diff:'easy',topic:'Hosts Calc',
+ q:'Subnet /28 có bao nhiêu địa chỉ IP có thể gán cho máy tính (usable hosts)?',
+ note:'/28 → host bits = 32-28 = ? → hosts = 2^? - 2',
+ answer:'14',
+ exp:'host bits = 32-28 = 4 → tổng địa chỉ = 2^4 = 16. Trừ network và broadcast → <strong>14 hosts</strong>. Block size = 256-240 = 16.',
+ extra:'/28 dùng phổ biến cho mạng quản lý nhỏ, server farm, hoặc VLAN management với vài thiết bị. 14 hosts là vừa đủ cho 1 rack thiết bị.',
+},
+{id:18,type:'input',diff:'easy',topic:'Broadcast Calc',
+ q:'Network 192.168.5.0/27. Broadcast address là bao nhiêu?',
+ note:'Block size = 256 - 224 = 32. Broadcast = Network + 32 - 1',
+ answer:'192.168.5.31',
+ exp:'Block size = 32. Network = .0. Broadcast = .0 + 32 - 1 = <strong>192.168.5.31</strong>. Last host = .30.',
+ extra:'',
+},
+{id:19,type:'input',diff:'easy',topic:'First Host',
+ q:'Network 10.0.16.0/20. First usable host là bao nhiêu?',
+ note:'First host = Network address + 1',
+ answer:'10.0.16.1',
+ exp:'First host = 10.0.16.0 + 1 = <strong>10.0.16.1</strong>. Last host = 10.0.31.254. Broadcast = 10.0.31.255.',
+ extra:'/20 → host bits=12 → block size=4096. Octet thứ 3: 256-240=16 → blocks 0,16,32... 16.0 là network address của block thứ hai.',
+},
+{id:20,type:'input',diff:'med',topic:'Network Calc',
+ q:'IP 192.168.10.77 với subnet mask 255.255.255.192. Network address là bao nhiêu?',
+ note:'255.255.255.192 = /26, block size = 64. Blocks: .0, .64, .128, .192',
+ answer:'192.168.10.64',
+ exp:'Block size = 64. Các network trong octet cuối: 0, 64, 128, 192. .77 nằm trong 64-127 → <strong>Network = 192.168.10.64</strong>.',
+ extra:'Cách nhanh: 77 ÷ 64 = 1 dư 13 → network là 1×64 = 64. Hoặc: 77 AND 192 (binary) = 64.',
+},
+{id:21,type:'input',diff:'med',topic:'Subnet Count',
+ q:'Mượn bao nhiêu bit để chia 192.168.0.0/24 thành ít nhất 10 subnet?',
+ note:'2^n ≥ 10 → n = ?',
+ answer:'4',
+ exp:'Cần 2^n ≥ 10. n=3 → 2^3=8 (không đủ). n=4 → 2^4=16 (đủ). Vậy mượn <strong>4 bit</strong> → prefix mới = /28. Mỗi subnet có 14 hosts.',
+ extra:'Sau khi mượn 4 bit: prefix /24+4=/28. 16 subnet mỗi cái 14 hosts. Ứng dụng: chia mạng BV thành các VLAN nhỏ cho từng khoa/phòng.',
+},
+{id:22,type:'input',diff:'hard',topic:'VLSM',
+ q:'Cần cấp subnet nhỏ nhất cho link WAN point-to-point giữa 2 router (chỉ cần 2 IP). Prefix là?',
+ note:'2^(32-prefix) - 2 = 2 → 2^(32-prefix) = 4',
+ answer:'/30',
+ exp:'Cần 2 usable hosts → 2^n - 2 = 2 → 2^n = 4 → n=2 host bits → prefix = 32-2 = <strong>/30</strong>. /30 cho đúng 2 địa chỉ host: x.x.x.1 và x.x.x.2.',
+ extra:'Trong CCNA, /30 là prefix chuẩn cho WAN P2P links. Một số sách khuyên /31 (RFC 3021) cho P2P — chỉ 2 địa chỉ, không có network/broadcast riêng — nhưng không phải tất cả thiết bị đều hỗ trợ.',
+},
+{id:23,type:'input',diff:'hard',topic:'Supernetting',
+ q:'Hai mạng 192.168.4.0/24 và 192.168.5.0/24 có thể tóm gọn (summarize) thành một route là?',
+ note:'Tìm prefix chung của hai network address',
+ answer:'192.168.4.0/23',
+ exp:'192.168.4.0 = ...00000100.00000000, 192.168.5.0 = ...00000101.00000000. Bit thứ 23 (từ trái) bắt đầu khác nhau. 22 bit đầu giống → summary route: <strong>192.168.4.0/23</strong>. Route này cover .4.0 đến .5.255.',
+ extra:'Route summarization giúp giảm số entry trong routing table → router xử lý nhanh hơn, ít băng thông routing protocol hơn. OSPF và EIGRP hỗ trợ manual summarization. Nên tóm gọn ở biên giữa các area OSPF.',
+},
+/* ── KÉO-THẢ ── */
+{id:24,type:'dnd',diff:'easy',topic:'Subnet Components',
+ q:'Với subnet 192.168.1.0/25, ghép mỗi địa chỉ với vai trò đúng của nó.',
+ leftItems:['192.168.1.0','192.168.1.1','192.168.1.126','192.168.1.127','192.168.1.128'],
+ chips:['Network address','First host','Last host','Broadcast address','Subnet thứ 2 bắt đầu'],
+ correctMap:{0:'Network address',1:'First host',2:'Last host',3:'Broadcast address',4:'Subnet thứ 2 bắt đầu'},
+ exp:'Block size=128. Subnet 1: .0 (Network),.1(First),.126(Last),.127(Broadcast). Subnet 2 bắt đầu từ .128.',
+ extra:'Cấu trúc subnet: Network(đầu) → Hosts → Broadcast(cuối). Không gán Network và Broadcast cho máy.',
+},
+{id:25,type:'dnd',diff:'med',topic:'Classes',
+ q:'Ghép mỗi dải địa chỉ với lớp IPv4 tương ứng.',
+ leftItems:['1.0.0.0 – 126.255.255.255','128.0.0.0 – 191.255.255.255','192.0.0.0 – 223.255.255.255','224.0.0.0 – 239.255.255.255','240.0.0.0 – 255.255.255.255'],
+ chips:['Lớp A','Lớp B','Lớp C','Lớp D (Multicast)','Lớp E (Dự phòng)'],
+ correctMap:{0:'Lớp A',1:'Lớp B',2:'Lớp C',3:'Lớp D (Multicast)',4:'Lớp E (Dự phòng)'},
+ exp:'Nhận biết theo octet đầu: 1-126=A, 128-191=B, 192-223=C, 224-239=D, 240-255=E.',
+ extra:'Tại sao bỏ 127? Dành cho loopback (127.0.0.1). Lớp D/E không có subnet mask mặc định và không dùng cho host.',
+},
+{id:26,type:'dnd',diff:'med',topic:'Private Ranges',
+ q:'Ghép dải private (RFC 1918) với lớp địa chỉ tương ứng.',
+ leftItems:['10.0.0.0 – 10.255.255.255','172.16.0.0 – 172.31.255.255','192.168.0.0 – 192.168.255.255'],
+ chips:['Lớp A private (/8)','Lớp B private (/12)','Lớp C private (/16)'],
+ correctMap:{0:'Lớp A private (/8)',1:'Lớp B private (/12)',2:'Lớp C private (/16)'},
+ exp:'Ba dải RFC 1918: A /8 (10.x.x.x), B /12 (172.16-31.x.x), C /16 (192.168.x.x).',
+ extra:'Mạng bệnh viện thường dùng 192.168.x.x hoặc 10.x.x.x. Fortinet NAT các địa chỉ này ra public IP khi ra Internet.',
+},
+{id:27,type:'dnd',diff:'hard',topic:'Prefix to Mask',
+ q:'Ghép mỗi CIDR prefix với subnet mask tương ứng.',
+ leftItems:['/25','/26','/27','/28','/30'],
+ chips:['255.255.255.128','255.255.255.192','255.255.255.224','255.255.255.240','255.255.255.252'],
+ correctMap:{0:'255.255.255.128',1:'255.255.255.192',2:'255.255.255.224',3:'255.255.255.240',4:'255.255.255.252'},
+ exp:'/25=128, /26=192, /27=224, /28=240, /30=252. Cách nhớ: mỗi bit thêm = cộng thêm bit tương ứng.',
+ extra:'Bảng octet cuối: /25→128, /26→128+64=192, /27→128+64+32=224, /28→128+64+32+16=240, /29→248, /30→252.',
+},
+/* ── SẮP XẾP ── */
+{id:28,type:'order',diff:'easy',topic:'Subnet Steps',
+ q:'Sắp xếp các bước tính subnet theo thứ tự ĐÚNG (từ bước ĐẦU TIÊN đến cuối).',
+ items:['Xác định First host = Network + 1 và Last host = Broadcast - 1','Tính host bits = 32 - prefix','Tính số host dùng được = 2^(host bits) - 2','Tính Broadcast = Network + block_size - 1','Tính block size = 256 - octet subnet mask cuối'],
+ correctOrder:[1,4,2,3,0],
+ exp:'Đúng thứ tự: (1)Host bits → (2)Block size → (3)Hosts → (4)Broadcast → (5)First/Last host.',
+ extra:'Trong thi CCNA, thường cho IP+mask và hỏi 1-2 giá trị. Thuộc lòng quy trình này để tính nhẩm trong 30 giây.',
+},
+{id:29,type:'order',diff:'med',topic:'VLSM Design',
+ q:'Khi thiết kế mạng theo VLSM, sắp xếp thứ tự cấp subnet cho các VLAN từ đúng đến sai.',
+ items:['Cấp subnet cho VLAN nhỏ nhất cuối cùng','Liệt kê tất cả VLAN và số host cần thiết','Cấp subnet tiếp theo cho VLAN lớn thứ hai','Chọn subnet lớn nhất vừa đủ cho VLAN nhiều host nhất'],
+ correctOrder:[1,3,2,0],
+ exp:'VLSM đúng thứ tự: Liệt kê → Cấp lớn nhất trước → Tiếp theo → Cuối cùng nhỏ nhất.',
+ extra:'VLSM tiết kiệm địa chỉ IP tối đa. So với subnetting đều (tất cả cùng /prefix), VLSM giảm lãng phí tới 70-80% không gian địa chỉ.',
+},
+{id:30,type:'order',diff:'hard',topic:'Troubleshoot IP',
+ q:'Khi thiết bị không kết nối mạng được, sắp xếp thứ tự kiểm tra IP đúng (bottom-up).',
+ items:['Ping Default Gateway để test kết nối ra ngoài subnet','Kiểm tra cáp vật lý và đèn link trên NIC','Ping 127.0.0.1 để test TCP/IP stack nội bộ','Kiểm tra IP, Subnet Mask, Default Gateway có đúng không','Ping một IP trên Internet (8.8.8.8)'],
+ correctOrder:[1,2,3,0,4],
+ exp:'Thứ tự đúng: (1)Cáp/vật lý → (2)Loopback → (3)Kiểm tra cấu hình IP → (4)Ping gateway → (5)Ping Internet.',
+ extra:'Nếu ping 127.0.0.1 OK nhưng ping gateway fail → IP/mask/gateway sai cấu hình hoặc vấn đề L2. Nếu ping gateway OK nhưng ping 8.8.8.8 fail → routing hoặc firewall. Nếu ping 8.8.8.8 OK nhưng ping google.com fail → DNS.',
+},
+];
+
+/* ══════════════════════════════════════
+   STATE TRACKING
+══════════════════════════════════════ */
+function updateStats(){
+  var total=QD.length,done=S.answered.size;
+  document.getElementById('st-c').textContent=S.correct;
+  document.getElementById('st-w').textContent=S.wrong;
+  document.getElementById('st-r').textContent=total-done;
+  if(done>0){var pct=Math.round(S.correct/done*100);document.getElementById('st-p').textContent=pct+'%';document.getElementById('st-p').style.color=pct>=70?'var(--success-text)':'var(--danger-text)';}
+  document.getElementById('wrongBtn').textContent='Câu sai ('+S.wrongIds.size+')';
+}
+
+/* ══════════════════════════════════════
+   BUILD QUESTIONS
+══════════════════════════════════════ */
+function build(){
+  var container=document.getElementById('qcontainer');
+  container.innerHTML='';
+  var filtered=QD.filter(function(q){
+    if(!S.diff.has(q.diff))return false;
+    if(S.mode==='mc')return q.type==='mc';
+    if(S.mode==='input')return q.type==='input';
+    if(S.mode==='dnd')return q.type==='dnd'||q.type==='order';
+    if(S.mode==='wrong')return S.wrongIds.has(q.id);
+    return true;
+  });
+  if(!filtered.length){container.innerHTML='<div class="no-results">Không có câu hỏi phù hợp với bộ lọc.</div>';return;}
+  var mc=filtered.filter(function(q){return q.type==='mc';});
+  var inp=filtered.filter(function(q){return q.type==='input';});
+  var dnd=filtered.filter(function(q){return q.type==='dnd';});
+  var ord=filtered.filter(function(q){return q.type==='order';});
+  var n=0;
+  function addSec(lbl){if(!lbl)return;var d=document.createElement('div');d.className='sec-div';d.innerHTML=lbl+'<span></span>';container.appendChild(d);}
+  if(mc.length){addSec('Trắc nghiệm — chọn đáp án đúng');mc.forEach(function(q){n++;container.appendChild(buildMC(q,n));});}
+  if(inp.length){addSec('Bài tập tính toán — nhập đáp án');inp.forEach(function(q){n++;container.appendChild(buildInput(q,n));});}
+  if(dnd.length){addSec('Kéo-thả — ghép cặp');dnd.forEach(function(q){n++;container.appendChild(buildDND(q,n));});}
+  if(ord.length){addSec('Sắp xếp thứ tự');ord.forEach(function(q){n++;container.appendChild(buildOrder(q,n));});}
+}
+
+/* MC builder */
+var DL={easy:'Dễ',med:'Trung bình',hard:'Khó'};
+var DC={easy:'diff-easy',med:'diff-med',hard:'diff-hard'};
+var LS=['A','B','C','D','E'];
+function buildMC(q,n){
+  var card=document.createElement('div');card.className='qcard';card.id='qc'+q.id;
+  card.innerHTML='<div class="qmeta"><span class="qnum">'+n+'.</span><span class="qm-diff '+DC[q.diff]+'">'+DL[q.diff]+'</span><span class="qm-topic">'+q.topic+'</span><span class="qm-exam">CCNA 200-301</span></div>'
+    +'<div class="qtext">'+q.q+'</div>'
+    +'<div class="qopts" id="opts'+q.id+'"></div>'
+    +'<div class="exp-box" id="exp'+q.id+'"></div>';
+  var opts=card.querySelector('#opts'+q.id);
+  q.opts.forEach(function(o,i){
+    var btn=document.createElement('button');btn.className='qopt';
+    btn.innerHTML='<span class="opt-letter">'+LS[i]+'.</span><span>'+o+'</span>';
+    btn.addEventListener('click',function(){answerMC(q,i,card);});
+    opts.appendChild(btn);
+  });
+  return card;
+}
+function answerMC(q,chosen,card){
+  if(S.answered.has(q.id))return;
+  S.answered.add(q.id);
+  var opts=card.querySelectorAll('.qopt');
+  opts.forEach(function(b){b.disabled=true;});
+  var ok=(chosen===q.correct);
+  if(ok){opts[chosen].classList.add('correct');S.correct++;S.wrongIds.delete(q.id);card.classList.add('ok');}
+  else{opts[chosen].classList.add('wrong');opts[q.correct].classList.add('correct');S.wrong++;S.wrongIds.add(q.id);card.classList.add('fail');}
+  var eb=document.getElementById('exp'+q.id);
+  eb.className='exp-box show';
+  eb.innerHTML='<div class="exp-hdr '+(ok?'ok':'fail')+'">'+(ok?'✓ Đúng rồi!':'✗ Chưa đúng — đáp án: '+LS[q.correct])+'</div>'
+    +'<div class="exp-body">'+q.exp+(q.extra?'<div class="exp-extra"><strong>Bổ sung:</strong> '+q.extra+'</div>':'')+'</div>';
+  updateStats();
+}
+
+/* Input builder */
+function buildInput(q,n){
+  var card=document.createElement('div');card.className='qcard';card.id='qc'+q.id;
+  card.innerHTML='<div class="qmeta"><span class="qnum">'+n+'.</span><span class="qm-diff '+DC[q.diff]+'">'+DL[q.diff]+'</span><span class="qm-topic">'+q.topic+'</span><span class="qm-exam">Tính toán</span></div>'
+    +'<div class="qtext">'+q.q+'</div>'
+    +(q.note?'<div class="qnote">💡 '+q.note+'</div>':'')
+    +'<div class="qinput-wrap"><input class="qinput" type="text" id="inp'+q.id+'" placeholder="Nhập đáp án..." autocomplete="off" spellcheck="false" onkeydown="if(event.key===\'Enter\')answerInput('+q.id+')"><button class="qchk-btn" id="chk'+q.id+'" onclick="answerInput('+q.id+')">Kiểm tra</button></div>'
+    +'<div class="exp-box" id="exp'+q.id+'"></div>';
+  return card;
+}
+function answerInput(qid){
+  if(S.answered.has(qid))return;
+  var q=QD.find(function(x){return x.id===qid;});
+  var inp=document.getElementById('inp'+qid);
+  var val=inp.value.trim().toLowerCase().replace(/\s+/g,'');
+  var ans=q.answer.toLowerCase().replace(/\s+/g,'');
+  var ok=(val===ans);
+  S.answered.add(qid);
+  inp.disabled=true;document.getElementById('chk'+qid).disabled=true;
+  inp.classList.add(ok?'ok':'fail');
+  var card=document.getElementById('qc'+qid);
+  card.classList.add(ok?'ok':'fail');
+  if(ok){S.correct++;S.wrongIds.delete(qid);}else{S.wrong++;S.wrongIds.add(qid);}
+  var eb=document.getElementById('exp'+qid);
+  eb.className='exp-box show';
+  eb.innerHTML='<div class="exp-hdr '+(ok?'ok':'fail')+'">'+(ok?'✓ Đúng! Đáp án: '+q.answer:'✗ Sai. Đáp án đúng: <strong>'+q.answer+'</strong>')+'</div>'
+    +'<div class="exp-body">'+q.exp+(q.extra?'<div class="exp-extra"><strong>Bổ sung:</strong> '+q.extra+'</div>':'')+'</div>';
+  updateStats();
+}
+
+/* DND builder */
+var _dndState={};
+function buildDND(q,n){
+  var card=document.createElement('div');card.className='qcard';card.id='qc'+q.id;
+  var shuffled=q.chips.slice().sort(function(){return Math.random()-.5;});
+  var srcHtml=shuffled.map(function(c){return '<div class="chip" draggable="true" data-chip="'+c+'">'+c+'</div>';}).join('');
+  var rowHtml=q.leftItems.map(function(item,i){
+    return '<tr><td style="font-size:12px;padding:7px 9px;font-family:var(--mono)">'+item+'</td><td><div class="drop-zone" id="dz'+q.id+'_'+i+'"></div></td></tr>';
+  }).join('');
+  card.innerHTML='<div class="qmeta"><span class="qnum">'+n+'.</span><span class="qm-diff '+DC[q.diff]+'">'+DL[q.diff]+'</span><span class="qm-topic">'+q.topic+'</span><span class="qm-exam">Kéo-thả</span></div>'
+    +'<div class="qtext">'+q.q+'</div>'
+    +'<div style="font-size:11px;color:var(--text3);margin-bottom:7px;font-style:italic">Kéo các nhãn vào cột bên phải. Bấm nhãn đã đặt để gỡ ra.</div>'
+    +'<div class="dnd-src" id="src'+q.id+'">'+srcHtml+'</div>'
+    +'<table class="dnd-table"><thead><tr><th>Địa chỉ / Mục</th><th>Vai trò / Ghép với</th></tr></thead><tbody>'+rowHtml+'</tbody></table>'
+    +'<button class="dnd-chk" onclick="checkDND('+q.id+')">Kiểm tra đáp án</button>'
+    +'<div class="dnd-res" id="dndres'+q.id+'"></div>'
+    +'<div class="exp-box" id="exp'+q.id+'"></div>';
+  _dndState[q.id]={};
+  // Setup drag events after card is in DOM
+  setTimeout(function(){
+    var srcEl=document.getElementById('src'+q.id);
+    if(!srcEl)return;
+    srcEl.querySelectorAll('.chip').forEach(function(chip){
+      chip.addEventListener('dragstart',function(e){e.dataTransfer.setData('text',chip.getAttribute('data-chip'));chip.classList.add('dragging');});
+      chip.addEventListener('dragend',function(){chip.classList.remove('dragging');});
+    });
+    q.leftItems.forEach(function(item,i){
+      var dz=document.getElementById('dz'+q.id+'_'+i);
+      if(!dz)return;
+      dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('drag-over');});
+      dz.addEventListener('dragleave',function(){dz.classList.remove('drag-over');});
+      dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('drag-over');dropOnZone(q.id,i,e.dataTransfer.getData('text'));});
+    });
+  },0);
+  return card;
+}
+function dropOnZone(qid,zoneIdx,chip){
+  var src=document.getElementById('src'+qid);
+  var dz=document.getElementById('dz'+qid+'_'+zoneIdx);
+  if(!src||!dz)return;
+  var existing=dz.querySelector('.chip');
+  if(existing){existing.remove();returnChip(qid,existing.getAttribute('data-chip'));}
+  // Remove from other zones
+  document.querySelectorAll('[id^="dz'+qid+'_"]').forEach(function(z){
+    z.querySelectorAll('.chip').forEach(function(c){if(c.getAttribute('data-chip')===chip)c.remove();});
+  });
+  // Mark source as placed
+  src.querySelectorAll('[data-chip="'+chip+'"]').forEach(function(c){c.classList.add('placed');});
+  var placed=document.createElement('div');
+  placed.className='chip';placed.setAttribute('data-chip',chip);placed.textContent=chip;
+  placed.addEventListener('click',function(){placed.remove();returnChip(qid,chip);});
+  dz.appendChild(placed);
+  _dndState[qid][zoneIdx]=chip;
+}
+function returnChip(qid,chip){
+  var src=document.getElementById('src'+qid);
+  if(src)src.querySelectorAll('[data-chip="'+chip+'"]').forEach(function(c){c.classList.remove('placed');});
+  delete _dndState[qid];_dndState[qid]={};
+}
+function checkDND(qid){
+  if(S.answered.has(qid))return;
+  var q=QD.find(function(x){return x.id===qid;});
+  var allOk=true;
+  q.leftItems.forEach(function(item,i){
+    var dz=document.getElementById('dz'+qid+'_'+i);
+    if(!dz)return;
+    var placed=dz.querySelector('.chip');
+    var val=placed?placed.getAttribute('data-chip'):'';
+    if(val===q.correctMap[i]){
+      if(placed)placed.style.cssText='background:var(--success-bg);color:var(--success-text);border-color:var(--success-border)';
+    } else {
+      allOk=false;
+      if(placed)placed.style.cssText='background:var(--danger-bg);color:var(--danger-text);border-color:var(--danger-border)';
+      var hint=document.createElement('span');hint.style.cssText='font-size:10px;background:var(--success-bg);color:var(--success-text);padding:1px 6px;border-radius:8px;margin-left:4px';hint.textContent='✓ '+q.correctMap[i];
+      dz.appendChild(hint);
+    }
+  });
+  S.answered.add(qid);
+  var res=document.getElementById('dndres'+qid);
+  res.className='dnd-res show';res.style.cssText=allOk?'background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border)':'background:var(--danger-bg);color:var(--danger-text);border:0.5px solid var(--danger-border)';
+  res.textContent=allOk?'Hoàn toàn đúng! Tất cả ghép cặp chính xác.':'Có một số sai. Ô màu xanh = đúng, đỏ = sai. Đáp án đúng hiện bên dưới.';
+  var card=document.getElementById('qc'+qid);card.classList.add(allOk?'ok':'fail');
+  if(allOk){S.correct++;S.wrongIds.delete(qid);}else{S.wrong++;S.wrongIds.add(qid);}
+  var eb=document.getElementById('exp'+qid);
+  eb.className='exp-box show';
+  eb.innerHTML='<div class="exp-hdr '+(allOk?'ok':'fail')+'">'+(allOk?'✓ Đúng hết!':'✗ Xem lại ghép cặp trên')+'</div>'
+    +'<div class="exp-body">'+q.exp+(q.extra?'<div class="exp-extra"><strong>Bổ sung:</strong> '+q.extra+'</div>':'')+'</div>';
+  updateStats();
+}
+
+/* Order builder */
+function buildOrder(q,n){
+  var card=document.createElement('div');card.className='qcard';card.id='qc'+q.id;
+  var shuffled=q.items.map(function(item,i){return{text:item,orig:i};}).sort(function(){return Math.random()-.5;});
+  var listHtml=shuffled.map(function(item){
+    return '<div class="order-item" draggable="true" data-orig="'+item.orig+'"><span class="order-handle">⠿</span><span style="flex:1">'+item.text+'</span></div>';
+  }).join('');
+  card.innerHTML='<div class="qmeta"><span class="qnum">'+n+'.</span><span class="qm-diff '+DC[q.diff]+'">'+DL[q.diff]+'</span><span class="qm-topic">'+q.topic+'</span><span class="qm-exam">Sắp xếp</span></div>'
+    +'<div class="qtext">'+q.q+'</div>'
+    +'<div style="font-size:11px;color:var(--text3);margin-bottom:5px;font-style:italic">Kéo để thay đổi thứ tự. Mục ở trên = xảy ra trước.</div>'
+    +'<div class="order-list" id="ol'+q.id+'">'+listHtml+'</div>'
+    +'<button class="order-chk" onclick="checkOrder('+q.id+')">Kiểm tra thứ tự</button>'
+    +'<div class="dnd-res" id="ordres'+q.id+'"></div>'
+    +'<div class="exp-box" id="exp'+q.id+'"></div>';
+  setTimeout(function(){
+    var list=document.getElementById('ol'+q.id);
+    if(!list)return;
+    list.querySelectorAll('.order-item').forEach(function(el){
+      el.addEventListener('dragstart',function(e){e.dataTransfer.setData('text',el.getAttribute('data-orig'));el.classList.add('dragging-ord');});
+      el.addEventListener('dragend',function(){el.classList.remove('dragging-ord');});
+      el.addEventListener('dragover',function(e){
+        e.preventDefault();
+        var dragging=list.querySelector('.dragging-ord');
+        if(dragging&&dragging!==el){var r=el.getBoundingClientRect();if(e.clientY<r.top+r.height/2)list.insertBefore(dragging,el);else list.insertBefore(dragging,el.nextSibling);}
+      });
+    });
+  },0);
+  return card;
+}
+function checkOrder(qid){
+  if(S.answered.has(qid))return;
+  var q=QD.find(function(x){return x.id===qid;});
+  var list=document.getElementById('ol'+qid);
+  var items=list.querySelectorAll('.order-item');
+  var userOrder=Array.from(items).map(function(el){return parseInt(el.getAttribute('data-orig'));});
+  var allOk=userOrder.every(function(v,i){return v===q.correctOrder[i];});
+  items.forEach(function(el,i){
+    var ok=parseInt(el.getAttribute('data-orig'))===q.correctOrder[i];
+    el.style.cssText=ok?'background:var(--success-bg);border-color:var(--success-border);color:var(--success-text)':'background:var(--danger-bg);border-color:var(--danger-border);color:var(--danger-text)';
+  });
+  if(!allOk){
+    var hint=document.createElement('div');hint.style.cssText='margin-top:8px;background:var(--bg3);border-radius:var(--r);padding:8px 11px';
+    hint.innerHTML='<div style="font-size:10.5px;font-weight:600;color:var(--text3);margin-bottom:5px">Thứ tự đúng:</div>';
+    q.correctOrder.forEach(function(idx,i){var d=document.createElement('div');d.style.cssText='font-size:12px;color:var(--text2);padding:2px 0;display:flex;gap:8px';d.innerHTML='<span style="color:var(--text3);min-width:20px">'+(i+1)+'.</span>'+q.items[idx];hint.appendChild(d);});
+    list.parentNode.insertBefore(hint,document.getElementById('ordres'+qid));
+  }
+  S.answered.add(qid);
+  var res=document.getElementById('ordres'+qid);res.className='dnd-res show';
+  res.style.cssText=allOk?'background:var(--success-bg);color:var(--success-text);border:0.5px solid var(--success-border)':'background:var(--danger-bg);color:var(--danger-text);border:0.5px solid var(--danger-border)';
+  res.textContent=allOk?'Hoàn toàn đúng! Thứ tự chính xác.':'Thứ tự chưa đúng. Xem đáp án ở trên.';
+  var card=document.getElementById('qc'+qid);card.classList.add(allOk?'ok':'fail');
+  if(allOk){S.correct++;S.wrongIds.delete(qid);}else{S.wrong++;S.wrongIds.add(qid);}
+  var eb=document.getElementById('exp'+qid);
+  eb.className='exp-box show';
+  eb.innerHTML='<div class="exp-hdr '+(allOk?'ok':'fail')+'">'+(allOk?'✓ Thứ tự hoàn toàn đúng!':'✗ Xem thứ tự đúng ở trên')+'</div>'
+    +'<div class="exp-body">'+q.exp+(q.extra?'<div class="exp-extra"><strong>Bổ sung:</strong> '+q.extra+'</div>':'')+'</div>';
+  updateStats();
+}
+
+/* Filters */
+function toggleDiff(btn){
+  var d=btn.getAttribute('data-d');
+  if(S.diff.has(d)){if(S.diff.size>1){S.diff.delete(d);btn.classList.remove('on');}}
+  else{S.diff.add(d);btn.classList.add('on');}
+  build();
+}
+function setMode(btn){
+  document.querySelectorAll('.mbt').forEach(function(b){b.classList.remove('on');});
+  btn.classList.add('on');S.mode=btn.getAttribute('data-m');build();
+}
+
+/* Quick ref toggle */
+function toggleRef(){
+  var b=document.getElementById('refbody'),h=document.getElementById('refhdr'),c=document.getElementById('refchev');
+  var open=b.classList.contains('show');b.classList.toggle('show',!open);h.classList.toggle('open',!open);
+}
+
+build();
+</script>
+</body>
+</html>
